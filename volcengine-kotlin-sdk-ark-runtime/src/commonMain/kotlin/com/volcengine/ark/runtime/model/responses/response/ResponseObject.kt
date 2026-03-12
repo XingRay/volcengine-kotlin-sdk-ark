@@ -1,158 +1,93 @@
 package com.volcengine.ark.runtime.model.responses.response
-import kotlinx.serialization.Serializable
+
+import com.volcengine.ark.runtime.model.responses.common.Error
+import com.volcengine.ark.runtime.model.responses.common.ResponsesCaching
+import com.volcengine.ark.runtime.model.responses.common.ResponsesReasoning
+import com.volcengine.ark.runtime.model.responses.common.ResponsesText
+import com.volcengine.ark.runtime.model.responses.common.ResponsesThinking
+import com.volcengine.ark.runtime.model.responses.item.BaseItem
+import com.volcengine.ark.runtime.model.responses.tool.ResponsesTool
+import com.volcengine.ark.runtime.model.responses.tool.ResponsesToolChoice
+import com.volcengine.ark.runtime.model.responses.usage.IncompleteDetails
+import com.volcengine.ark.runtime.model.responses.usage.Usage
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 @Serializable
-class ResponseObject {
+data class ResponseObject(
     @SerialName("created_at")
-    var createdAt: Long? = null
+    val createdAt: Long? = null,
 
     @SerialName("error")
-    var error: Error? = null
+    val error: Error? = null,
 
     @SerialName("id")
-    var id: String? = null
+    val id: String? = null,
 
     @SerialName("incomplete_details")
-    private var incompleteDetails: IncompleteDetails? = null
+    val incompleteDetails: IncompleteDetails? = null,
 
     @SerialName("max_output_tokens")
-    var maxOutputTokens: Long? = null
+    val maxOutputTokens: Long? = null,
 
     @SerialName("model")
-    var model: String? = null
+    val model: String? = null,
 
     @SerialName("object")
-    var `object`: String? = null
-        set(object) {
-            field = this.`object`
-        }
+    val `object`: String? = null,
 
     @SerialName("output")
-    private var output: List<BaseItem?>? = null
+    val output: List<BaseItem?>? = null,
 
     @SerialName("previous_response_id")
-    var previousResponseId: String? = null
+    val previousResponseId: String? = null,
 
     @SerialName("thinking")
-    private var thinking: ResponsesThinking? = null
+    val thinking: ResponsesThinking? = null,
 
     @SerialName("reasoning")
-    private var reasoning: ResponsesReasoning? = null
+    val reasoning: ResponsesReasoning? = null,
 
     @SerialName("service_tier")
-    var serviceTier: String? = null
+    val serviceTier: String? = null,
 
     @SerialName("status")
-    var status: String? = null
+    val status: String? = null,
 
     @SerialName("temperature")
-    var temperature: Double? = null
+    val temperature: Double? = null,
 
     @SerialName("tools")
-    private var tools: List<ResponsesTool?>? = null
+    val tools: List<ResponsesTool?>? = null,
 
     @SerialName("top_p")
-    var topP: Double? = null
+    val topP: Double? = null,
 
     @SerialName("usage")
-    private var usage: Usage? = null
+    val usage: Usage? = null,
 
     @SerialName("caching")
-    private var caching: ResponsesCaching? = null
+    val caching: ResponsesCaching? = null,
 
     @SerialName("text")
-    private var text: ResponsesText? = null
+    val text: ResponsesText? = null,
 
     @SerialName("instructions")
-    var instructions: String? = null
+    val instructions: String? = null,
 
     @SerialName("store")
-    var store: Boolean? = null
+    val store: Boolean? = null,
 
     @SerialName("expire_at")
-    var expireAt: Long? = null
+    val expireAt: Long? = null,
 
     @SerialName("tool_choice")
-    private var toolChoice: ResponsesToolChoice? = null
+    val toolChoice: ResponsesToolChoice? = null,
 
     @SerialName("parallel_tool_calls")
-    var parallelToolCalls: Boolean? = null
+    val parallelToolCalls: Boolean? = null,
 
     @SerialName("max_tool_calls")
-    var maxToolCalls: Long? = null
-
-    fun getIncompleteDetails(): IncompleteDetails? {
-        return incompleteDetails
-    }
-
-    fun setIncompleteDetails(incompleteDetails: IncompleteDetails?) {
-        this.incompleteDetails = incompleteDetails
-    }
-
-    fun getOutput(): List<BaseItem?>? {
-        return output
-    }
-
-    fun setOutput(output: List<BaseItem?>?) {
-        this.output = output
-    }
-
-    fun getThinking(): ResponsesThinking? {
-        return thinking
-    }
-
-    fun setThinking(thinking: ResponsesThinking?) {
-        this.thinking = thinking
-    }
-
-    fun getReasoning(): ResponsesReasoning? {
-        return reasoning
-    }
-
-    fun setReasoning(reasoning: ResponsesReasoning?) {
-        this.reasoning = reasoning
-    }
-
-    fun getTools(): List<ResponsesTool?>? {
-        return tools
-    }
-
-    fun setTools(tools: List<ResponsesTool?>?) {
-        this.tools = tools
-    }
-
-    fun getUsage(): Usage? {
-        return usage
-    }
-
-    fun setUsage(usage: Usage?) {
-        this.usage = usage
-    }
-
-    fun getCaching(): ResponsesCaching? {
-        return caching
-    }
-
-    fun setCaching(caching: ResponsesCaching?) {
-        this.caching = caching
-    }
-
-    fun getText(): ResponsesText? {
-        return text
-    }
-
-    fun setText(text: ResponsesText?) {
-        this.text = text
-    }
-
-    fun getToolChoice(): ResponsesToolChoice? {
-        return toolChoice
-    }
-
-    fun setToolChoice(toolChoice: ResponsesToolChoice?) {
-        this.toolChoice = toolChoice
-    }
-
-}
+    val maxToolCalls: Long? = null
+)

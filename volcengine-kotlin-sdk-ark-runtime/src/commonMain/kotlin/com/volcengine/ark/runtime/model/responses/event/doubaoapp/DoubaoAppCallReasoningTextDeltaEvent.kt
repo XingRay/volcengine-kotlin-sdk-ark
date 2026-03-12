@@ -1,38 +1,25 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
+import com.volcengine.ark.runtime.model.responses.event.StreamEvent
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-class DoubaoAppCallReasoningTextDeltaEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_TEXT_DELTA) {
+@SerialName(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_TEXT_DELTA)
+data class DoubaoAppCallReasoningTextDeltaEvent(
+    @SerialName("type")
+    override val type: String = ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_TEXT_DELTA,
+    @SerialName("sequence_number")
+    override val sequenceNumber: Long? = null,
+    @SerialName("output_index")
+    val outputIndex: Long? = null,
+    @SerialName("item_id")
+    val itemId: String? = null,
     @SerialName("block_index")
-    var blockIndex: Long? = null
-
+    val blockIndex: Long? = null,
     @SerialName("delta")
-    var delta: String? = null
-
-
-    class Builder {
-        private val event: DoubaoAppCallReasoningTextDeltaEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningTextDeltaEvent()
-
-        fun blockIndex(blockIndex: Long?): Builder {
-            event.blockIndex = blockIndex
-            return this
-        }
-
-        fun delta(delta: String?): Builder {
-            event.delta = delta
-            return this
-        }
-
-        fun build(): DoubaoAppCallReasoningTextDeltaEvent {
-            return event
-        }
-    }
-
-    companion object {
-        fun builder(): Builder {
-            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningTextDeltaEvent.Builder()
-        }
-    }
+    val delta: String? = null
+) : StreamEvent(type) {
+    constructor() : this(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_TEXT_DELTA)
 }

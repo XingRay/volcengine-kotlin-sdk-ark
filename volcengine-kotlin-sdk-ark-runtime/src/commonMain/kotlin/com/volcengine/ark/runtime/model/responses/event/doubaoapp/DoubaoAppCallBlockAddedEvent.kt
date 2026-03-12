@@ -1,38 +1,24 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
+import com.volcengine.ark.runtime.model.responses.item.doubaoapp.DoubaoAppCallBlock
+import com.volcengine.ark.runtime.model.responses.event.StreamEvent
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-class DoubaoAppCallBlockAddedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_BLOCK_ADDED) {
+@SerialName(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_BLOCK_ADDED)
+data class DoubaoAppCallBlockAddedEvent(
+    @SerialName("type")
+    override val type: String = ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_BLOCK_ADDED,
+    @SerialName("sequence_number")
+    override val sequenceNumber: Long? = null,
+    @SerialName("output_index")
+    val outputIndex: Long? = null,
+    @SerialName("item_id")
+    val itemId: String? = null,
     @SerialName("block")
-    private var block: DoubaoAppCallBlock? = null
-
-    fun getBlock(): DoubaoAppCallBlock? {
-        return block
-    }
-
-    fun setBlock(block: DoubaoAppCallBlock?) {
-        this.block = block
-    }
-
-
-    class Builder {
-        private val event: DoubaoAppCallBlockAddedEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallBlockAddedEvent()
-
-        fun block(block: DoubaoAppCallBlock?): Builder {
-            event.setBlock(block)
-            return this
-        }
-
-        fun build(): DoubaoAppCallBlockAddedEvent {
-            return event
-        }
-    }
-
-    companion object {
-        fun builder(): Builder {
-            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallBlockAddedEvent.Builder()
-        }
-    }
+    val block: DoubaoAppCallBlock? = null
+) : StreamEvent(type) {
+    constructor() : this(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_BLOCK_ADDED)
 }

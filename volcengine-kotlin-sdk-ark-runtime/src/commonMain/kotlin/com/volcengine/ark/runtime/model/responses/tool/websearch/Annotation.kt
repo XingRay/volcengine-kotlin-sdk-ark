@@ -7,32 +7,32 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Annotation(
     @SerialName("type")
-    var type: String? = null,
+    val type: String? = null,
 
     @SerialName("title")
-    var title: String? = null,
+    val title: String? = null,
 
     @SerialName("url")
-    var url: String? = null,
+    val url: String? = null,
 
     @SerialName("logo_url")
-    var logoUrl: String? = null,
+    val logoUrl: String? = null,
 
     @SerialName("mobile_url")
-    var mobileUrl: String? = null,
+    val mobileUrl: String? = null,
 
     @SerialName("site_name")
-    var siteName: String? = null,
+    val siteName: String? = null,
 
     @SerialName("publish_time")
-    var publishTime: String? = null,
+    val publishTime: String? = null,
 
     @SerialName("cover_image")
-    private var coverImage: CoverImage? = null,
+    val coverImage: CoverImage? = null,
 
     @SerialName("summary")
-    var summary: String? = null,
+    val summary: String? = null,
 
     @SerialName("freshness_info")
-    var freshnessInfo: String? = null,
+    val freshnessInfo: String? = null
 )

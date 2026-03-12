@@ -1,6 +1,7 @@
 package com.volcengine.ark.runtime.model.responses.usage
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.json.JsonElement
 
 
 @Serializable
@@ -21,8 +22,8 @@ data class Usage(
     val outputTokensDetails: OutputTokensDetails? = null,
 
     @SerialName("tool_usage")
-    val toolUsage: Map<String?, Object?>? = null,
+    val toolUsage: Map<String, JsonElement>? = null,
 
     @SerialName("tool_usage_details")
-    val toolUsageDetails: Map<String?, Object?>? = null
+    val toolUsageDetails: Map<String, JsonElement>? = null
 )

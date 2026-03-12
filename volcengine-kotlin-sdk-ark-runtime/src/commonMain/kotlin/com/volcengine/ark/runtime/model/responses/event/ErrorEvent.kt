@@ -1,17 +1,22 @@
 package com.volcengine.ark.runtime.model.responses.event
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-class ErrorEvent : StreamEvent(ResponsesConstants.EVENT_TYPE_ERROR) {
+@SerialName(ResponsesConstants.EVENT_TYPE_ERROR)
+data class ErrorEvent(
+    @SerialName("type")
+    override val type: String = ResponsesConstants.EVENT_TYPE_ERROR,
+    @SerialName("sequence_number")
+    override val sequenceNumber: Long? = null,
     @SerialName("code")
-    var code: String? = null
-
+    val code: String? = null,
     @SerialName("message")
-    var message: String? = null
-
+    val message: String? = null,
     @SerialName("param")
-    var param: String? = null
-
+    val param: String? = null
+) : StreamEvent(type) {
+    constructor() : this(ResponsesConstants.EVENT_TYPE_ERROR)
 }

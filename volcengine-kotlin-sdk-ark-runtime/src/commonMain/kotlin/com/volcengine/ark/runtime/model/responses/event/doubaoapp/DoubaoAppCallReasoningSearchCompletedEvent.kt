@@ -1,62 +1,30 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
+import com.volcengine.ark.runtime.model.responses.item.doubaoapp.DoubaoAppSearchResult
+import com.volcengine.ark.runtime.model.responses.event.StreamEvent
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-class DoubaoAppCallReasoningSearchCompletedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_COMPLETED) {
+@SerialName(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_COMPLETED)
+data class DoubaoAppCallReasoningSearchCompletedEvent(
+    @SerialName("type")
+    override val type: String = ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_COMPLETED,
+    @SerialName("sequence_number")
+    override val sequenceNumber: Long? = null,
+    @SerialName("output_index")
+    val outputIndex: Long? = null,
+    @SerialName("item_id")
+    val itemId: String? = null,
     @SerialName("block_index")
-    var blockIndex: Long? = null
-
+    val blockIndex: Long? = null,
     @SerialName("summary")
-    var summary: String? = null
-
+    val summary: String? = null,
     @SerialName("queries")
-    var queries: List<String?>? = null
-
+    val queries: List<String?>? = null,
     @SerialName("results")
-    private var results: List<DoubaoAppSearchResult?>? = null
-
-    fun getResults(): List<DoubaoAppSearchResult?>? {
-        return results
-    }
-
-    fun setResults(results: List<DoubaoAppSearchResult?>?) {
-        this.results = results
-    }
-
-
-    class Builder {
-        private val event: DoubaoAppCallReasoningSearchCompletedEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningSearchCompletedEvent()
-
-        fun blockIndex(blockIndex: Long?): Builder {
-            event.blockIndex = blockIndex
-            return this
-        }
-
-        fun summary(summary: String?): Builder {
-            event.summary = summary
-            return this
-        }
-
-        fun queries(queries: List<String?>?): Builder {
-            event.queries = queries
-            return this
-        }
-
-        fun results(results: List<DoubaoAppSearchResult?>?): Builder {
-            event.setResults(results)
-            return this
-        }
-
-        fun build(): DoubaoAppCallReasoningSearchCompletedEvent {
-            return event
-        }
-    }
-
-    companion object {
-        fun builder(): Builder {
-            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningSearchCompletedEvent.Builder()
-        }
-    }
+    val results: List<DoubaoAppSearchResult?>? = null
+) : StreamEvent(type) {
+    constructor() : this(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_COMPLETED)
 }

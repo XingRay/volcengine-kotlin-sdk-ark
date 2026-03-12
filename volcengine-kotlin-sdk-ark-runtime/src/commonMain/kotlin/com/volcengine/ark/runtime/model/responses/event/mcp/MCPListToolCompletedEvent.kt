@@ -1,11 +1,21 @@
 package com.volcengine.ark.runtime.model.responses.event.mcp
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
+import com.volcengine.ark.runtime.model.responses.event.StreamEvent
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-class MCPListToolCompletedEvent : OutputEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_MCP_LIST_TOOLS_COMPLETED) {
+@SerialName(ResponsesConstants.EVENT_TYPE_RESPONSE_MCP_LIST_TOOLS_COMPLETED)
+data class MCPListToolCompletedEvent(
+    @SerialName("type")
+    override val type: String = ResponsesConstants.EVENT_TYPE_RESPONSE_MCP_LIST_TOOLS_COMPLETED,
+    @SerialName("sequence_number")
+    override val sequenceNumber: Long? = null,
+    @SerialName("output_index")
+    val outputIndex: Long? = null,
     @SerialName("item_id")
-    var itemId: String? = null
-
+    val itemId: String? = null
+) : StreamEvent(type) {
+    constructor() : this(ResponsesConstants.EVENT_TYPE_RESPONSE_MCP_LIST_TOOLS_COMPLETED)
 }

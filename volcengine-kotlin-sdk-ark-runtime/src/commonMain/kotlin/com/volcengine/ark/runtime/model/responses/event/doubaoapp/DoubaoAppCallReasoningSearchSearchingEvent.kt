@@ -1,38 +1,25 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
+import com.volcengine.ark.runtime.model.responses.event.StreamEvent
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-class DoubaoAppCallReasoningSearchSearchingEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_SEARCHING) {
+@SerialName(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_SEARCHING)
+data class DoubaoAppCallReasoningSearchSearchingEvent(
+    @SerialName("type")
+    override val type: String = ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_SEARCHING,
+    @SerialName("sequence_number")
+    override val sequenceNumber: Long? = null,
+    @SerialName("output_index")
+    val outputIndex: Long? = null,
+    @SerialName("item_id")
+    val itemId: String? = null,
     @SerialName("block_index")
-    var blockIndex: Long? = null
-
+    val blockIndex: Long? = null,
     @SerialName("searching_state")
-    var searchingState: String? = null
-
-
-    class Builder {
-        private val event: DoubaoAppCallReasoningSearchSearchingEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningSearchSearchingEvent()
-
-        fun blockIndex(blockIndex: Long?): Builder {
-            event.blockIndex = blockIndex
-            return this
-        }
-
-        fun searchingState(searchingState: String?): Builder {
-            event.searchingState = searchingState
-            return this
-        }
-
-        fun build(): DoubaoAppCallReasoningSearchSearchingEvent {
-            return event
-        }
-    }
-
-    companion object {
-        fun builder(): Builder {
-            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningSearchSearchingEvent.Builder()
-        }
-    }
+    val searchingState: String? = null
+) : StreamEvent(type) {
+    constructor() : this(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_SEARCHING)
 }

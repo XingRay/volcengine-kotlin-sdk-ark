@@ -1,13 +1,16 @@
 package com.volcengine.ark.runtime.model.responses.content
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@SerialName(ContentItemType.CONTENT_ITEM_TYPE_INPUT_TEXT)
+@SerialName(ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_TEXT)
 data class InputContentItemText(
     @SerialName("type")
-    override val type: String = ContentItemType.CONTENT_ITEM_TYPE_INPUT_TEXT,
+    override val type: String = ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_TEXT,
     @SerialName("text")
-    var text: String? = null
-) : InputContentItem(type)
+    val text: String? = null
+) : InputContentItem(type) {
+    constructor() : this(ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_TEXT)
+}

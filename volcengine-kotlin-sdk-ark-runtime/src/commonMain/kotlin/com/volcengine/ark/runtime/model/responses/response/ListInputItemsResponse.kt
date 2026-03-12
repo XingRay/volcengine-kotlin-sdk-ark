@@ -1,34 +1,24 @@
 package com.volcengine.ark.runtime.model.responses.response
-import kotlinx.serialization.Serializable
+
+import com.volcengine.ark.runtime.model.responses.item.BaseItem
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 @Serializable
-class ListInputItemsResponse {
+data class ListInputItemsResponse(
     @SerialName("object")
-    var `object`: String? = null
-        set(object) {
-            field = this.`object`
-        }
+    val `object`: String? = null,
 
     @SerialName("data")
-    private var data: List<BaseItem?>? = null
+    val data: List<BaseItem?>? = null,
 
     @SerialName("first_id")
-    var firstId: String? = null
+    val firstId: String? = null,
 
     @SerialName("last_id")
-    var lastId: String? = null
+    val lastId: String? = null,
 
     @SerialName("has_more")
-    var hasMore: Boolean? = null
-
-    fun getData(): List<BaseItem?>? {
-        return data
-    }
-
-    fun setData(data: List<BaseItem?>?) {
-        this.data = data
-    }
-
-}
+    val hasMore: Boolean? = null
+)

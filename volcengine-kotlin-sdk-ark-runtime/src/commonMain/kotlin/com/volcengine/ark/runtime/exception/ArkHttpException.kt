@@ -14,10 +14,6 @@ class ArkHttpException(error: ArkAPIError, parent: Exception?, val statusCode: I
         this.type = error.error.type
     }
 
-    fun getMessage(): String {
-        return this.toString()
-    }
-
     companion object {
         var INTERNAL_SERVICE_CODE = 500
     }

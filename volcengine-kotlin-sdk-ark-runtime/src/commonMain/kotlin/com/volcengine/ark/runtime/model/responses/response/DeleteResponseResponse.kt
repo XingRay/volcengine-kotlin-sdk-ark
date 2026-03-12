@@ -4,17 +4,13 @@ import kotlinx.serialization.SerialName
 
 
 @Serializable
-class DeleteResponseResponse {
+data class DeleteResponseResponse(
     @SerialName("id")
-    var id: String? = null
+    val id: String? = null,
 
     @SerialName("object")
-    var `object`: String? = null
-        set(object) {
-            field = this.`object`
-        }
+    val `object`: String? = null,
 
     @SerialName("deleted")
-    var deleted: Boolean? = null
-
-}
+    val deleted: Boolean? = null
+)

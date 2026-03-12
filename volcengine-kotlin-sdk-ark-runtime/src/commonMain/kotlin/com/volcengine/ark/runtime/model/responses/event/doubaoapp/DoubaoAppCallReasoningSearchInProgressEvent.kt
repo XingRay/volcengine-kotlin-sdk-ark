@@ -1,30 +1,23 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
+import com.volcengine.ark.runtime.model.responses.event.StreamEvent
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-class DoubaoAppCallReasoningSearchInProgressEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_IN_PROGRESS) {
+@SerialName(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_IN_PROGRESS)
+data class DoubaoAppCallReasoningSearchInProgressEvent(
+    @SerialName("type")
+    override val type: String = ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_IN_PROGRESS,
+    @SerialName("sequence_number")
+    override val sequenceNumber: Long? = null,
+    @SerialName("output_index")
+    val outputIndex: Long? = null,
+    @SerialName("item_id")
+    val itemId: String? = null,
     @SerialName("block_index")
-    var blockIndex: Long? = null
-
-
-    class Builder {
-        private val event: DoubaoAppCallReasoningSearchInProgressEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningSearchInProgressEvent()
-
-        fun blockIndex(blockIndex: Long?): Builder {
-            event.blockIndex = blockIndex
-            return this
-        }
-
-        fun build(): DoubaoAppCallReasoningSearchInProgressEvent {
-            return event
-        }
-    }
-
-    companion object {
-        fun builder(): Builder {
-            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningSearchInProgressEvent.Builder()
-        }
-    }
+    val blockIndex: Long? = null
+) : StreamEvent(type) {
+    constructor() : this(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_IN_PROGRESS)
 }

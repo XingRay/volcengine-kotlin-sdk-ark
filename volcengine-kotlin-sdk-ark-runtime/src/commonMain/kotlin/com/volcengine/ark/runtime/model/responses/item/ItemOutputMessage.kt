@@ -1,76 +1,25 @@
 package com.volcengine.ark.runtime.model.responses.item
-import kotlinx.serialization.Serializable
+
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
+import com.volcengine.ark.runtime.model.responses.content.OutputContentItem
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-
-@JsonDeserialize
-@JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
 @Serializable
-class ItemOutputMessage : BaseMessageItem(), OutputItem {
+@SerialName(ResponsesConstants.ITEM_TYPE_MESSAGE)
+data class ItemOutputMessage(
+    @SerialName("type")
+    override val type: String = ResponsesConstants.ITEM_TYPE_MESSAGE,
+    @SerialName("role")
+    val role: String? = null,
     @SerialName("content")
-    private var content: List<OutputContentItem?>? = null
-
+    val content: List<OutputContentItem?>? = null,
+    @SerialName("id")
+    val id: String? = null,
     @SerialName("status")
-    var status: String? = null
-
+    val status: String? = null,
     @SerialName("partial")
-    var partial: Boolean? = null
-
-    fun getContent(): List<OutputContentItem?>? {
-        return content
-    }
-
-    fun setContent(content: List<OutputContentItem?>?) {
-        this.content = content
-    }
-
-
-    class Builder {
-        private var role: String? = null
-        private var content: List<OutputContentItem?>? = null
-        private var status: String? = null
-        private var id: String? = null
-        private var partial: Boolean? = null
-
-        fun role(role: String?): Builder {
-            this.role = role
-            return this
-        }
-
-        fun content(content: List<OutputContentItem?>?): Builder {
-            this.content = content
-            return this
-        }
-
-        fun status(status: String?): Builder {
-            this.status = status
-            return this
-        }
-
-        fun id(id: String?): Builder {
-            this.id = id
-            return this
-        }
-
-        fun partial(partial: Boolean?): Builder {
-            this.partial = partial
-            return this
-        }
-
-        fun build(): ItemOutputMessage {
-            val itemOutputMessage: ItemOutputMessage = com.volcengine.ark.runtime.model.responses.item.ItemOutputMessage()
-            itemOutputMessage.setRole(role)
-            itemOutputMessage.setContent(content)
-            itemOutputMessage.status = status
-            itemOutputMessage.setId(id)
-            itemOutputMessage.partial = partial
-            return itemOutputMessage
-        }
-    }
-
-    companion object {
-        fun builder(): Builder {
-            return com.volcengine.ark.runtime.model.responses.item.ItemOutputMessage.Builder()
-        }
-    }
+    val partial: Boolean? = null
+) : BaseItem(type) {
+    constructor() : this(ResponsesConstants.ITEM_TYPE_MESSAGE)
 }

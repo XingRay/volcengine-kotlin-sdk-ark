@@ -1,5 +1,6 @@
 package com.volcengine.ark.runtime.model.responses.content
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
@@ -14,10 +15,10 @@ object InputContentItemPolymorphicSerializer : JsonContentPolymorphicSerializer<
             "Missing 'type' field for InputContentItem deserialization"
         )
         return when (type) {
-            ContentItemType.CONTENT_ITEM_TYPE_INPUT_TEXT -> InputContentItemText.serializer()
-            ContentItemType.CONTENT_ITEM_TYPE_INPUT_IMAGE -> InputContentItemImage.serializer()
-            ContentItemType.CONTENT_ITEM_TYPE_INPUT_VIDEO -> InputContentItemVideo.serializer()
-            ContentItemType.CONTENT_ITEM_TYPE_INPUT_FILE -> InputContentItemFile.serializer()
+            ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_TEXT -> InputContentItemText.serializer()
+            ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_IMAGE -> InputContentItemImage.serializer()
+            ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_VIDEO -> InputContentItemVideo.serializer()
+            ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_FILE -> InputContentItemFile.serializer()
             else -> throw SerializationException("Unsupported InputContentItem type: $type")
         }
     }

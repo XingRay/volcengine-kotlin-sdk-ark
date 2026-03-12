@@ -1,19 +1,22 @@
 package com.volcengine.ark.runtime.model.responses.content
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@SerialName(ContentItemType.CONTENT_ITEM_TYPE_INPUT_IMAGE)
+@SerialName(ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_IMAGE)
 data class InputContentItemImage(
     @SerialName("type")
-    override val type: String = ContentItemType.CONTENT_ITEM_TYPE_INPUT_IMAGE,
+    override val type: String = ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_IMAGE,
     @SerialName("detail")
-    var detail: String? = null,
+    val detail: String? = null,
     @SerialName("image_url")
-    var imageUrl: String? = null,
+    val imageUrl: String? = null,
     @SerialName("file_id")
-    var fileId: String? = null,
+    val fileId: String? = null,
     @SerialName("image_pixel_limit")
-    var imagePixelLimit: ImagePixelLimit? = null
-) : InputContentItem(type)
+    val imagePixelLimit: ImagePixelLimit? = null
+) : InputContentItem(type) {
+    constructor() : this(ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_IMAGE)
+}

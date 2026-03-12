@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class ContextChatCompletionRequest(
+data class ContextChatCompletionRequest(
     /**
      * ID of the model to use.
      */

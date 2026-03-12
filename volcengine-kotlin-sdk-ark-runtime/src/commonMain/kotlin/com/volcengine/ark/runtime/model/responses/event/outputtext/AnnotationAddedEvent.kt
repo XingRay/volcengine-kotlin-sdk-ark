@@ -1,23 +1,32 @@
 package com.volcengine.ark.runtime.model.responses.event.outputtext
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
+import com.volcengine.ark.runtime.model.responses.tool.websearch.Annotation
+import com.volcengine.ark.runtime.model.responses.event.StreamEvent
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-class AnnotationAddedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_OUTPUT_TEXT_ANNOTATION_ADDED) {
+@SerialName(ResponsesConstants.EVENT_TYPE_RESPONSE_OUTPUT_TEXT_ANNOTATION_ADDED)
+data class AnnotationAddedEvent(
+    @SerialName("type")
+    override val type: String = ResponsesConstants.EVENT_TYPE_RESPONSE_OUTPUT_TEXT_ANNOTATION_ADDED,
+    @SerialName("sequence_number")
+    override val sequenceNumber: Long? = null,
+    @SerialName("output_index")
+    val outputIndex: Long? = null,
+    @SerialName("item_id")
+    val itemId: String? = null,
     @SerialName("content_index")
-    var contentIndex: Long? = null
-
+    val contentIndex: Long? = null,
     @SerialName("delta")
-    var delta: String? = null
-
+    val delta: String? = null,
     @SerialName("text")
-    var text: String? = null
-
+    val text: String? = null,
     @SerialName("annotation_index")
-    var annotationIndex: Long? = null
-
+    val annotationIndex: Long? = null,
     @SerialName("annotation")
-    var annotation: Annotation? = null
-
+    val annotation: Annotation? = null
+) : StreamEvent(type) {
+    constructor() : this(ResponsesConstants.EVENT_TYPE_RESPONSE_OUTPUT_TEXT_ANNOTATION_ADDED)
 }

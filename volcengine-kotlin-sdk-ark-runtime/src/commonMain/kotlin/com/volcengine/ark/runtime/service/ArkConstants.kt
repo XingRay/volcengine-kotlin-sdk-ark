@@ -7,7 +7,7 @@ import kotlin.time.Duration.Companion.minutes
 /**
  * The interface ark service.
  */
-object ArkBaseService {
+object ArkConstants {
     val BASE_URL: String = "https://ark.cn-beijing.volces.com"
     val BASE_REGION: String = "cn-beijing"
     val DEFAULT_TIMEOUT: Duration = 10.minutes

@@ -1,93 +1,55 @@
 package com.volcengine.ark.runtime.model.responses.item
+
+import com.volcengine.ark.runtime.model.responses.content.InputContentItem
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.*
 
+@Serializable(with = MessageContentSerializer::class)
+data class MessageContent(
+    val stringValue: String? = null,
+    val listValue: List<InputContentItem>? = null
+)
 
-@JsonSerialize(using = com.volcengine.ark.runtime.model.responses.item.MessageContent.MessageContentSerializer::class)
-@JsonDeserialize(using = com.volcengine.ark.runtime.model.responses.item.MessageContent.MessageContentDeserializer::class)
-@Serializable
-class MessageContent {
-    var stringValue: String? = null
-    private var listValue: List<InputContentItem?>? = null
+object MessageContentSerializer : KSerializer<MessageContent> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("MessageContent")
 
-    fun getListValue(): List<InputContentItem?>? {
-        return listValue
-    }
+    override fun serialize(encoder: Encoder, value: MessageContent) {
+        val jsonEncoder = encoder as? JsonEncoder
+            ?: throw SerializationException("MessageContent 只能用于 JSON 格式")
 
-    fun setListValue(listValue: List<InputContentItem?>?) {
-        this.listValue = listValue
-    }
-
-    class MessageContentSerializer : JsonSerializer<MessageContent?>() {
-        @Override
-        @Throws(IOException::class)
-        fun serialize(value: MessageContent, gen: JsonGenerator, serializers: SerializerProvider?) {
-            if (value.stringValue != null) {
-                gen.writeString(value.stringValue)
-            } else if (value.listValue != null) {
-                gen.writeObject(value.listValue)
-            } else {
-                gen.writeNull()
+        when {
+            value.stringValue != null -> jsonEncoder.encodeString(value.stringValue)
+            value.listValue != null -> {
+                jsonEncoder.encodeJsonElement(
+                    Json.encodeToJsonElement(ListSerializer(InputContentItem.serializer()), value.listValue)
+                )
             }
+            else -> jsonEncoder.encodeNull()
         }
     }
 
-    class MessageContentDeserializer : JsonDeserializer<MessageContent?>() {
-        @Override
-        @Throws(IOException::class)
-        fun deserialize(p: JsonParser, ctxt: DeserializationContext?): MessageContent {
-            val node: JsonNode = p.getCodec().readTree(p)
-            val result: MessageContent = com.volcengine.ark.runtime.model.responses.item.MessageContent()
+    override fun deserialize(decoder: Decoder): MessageContent {
+        val jsonDecoder = decoder as? JsonDecoder
+            ?: throw SerializationException("MessageContent 只能用于 JSON 格式")
 
-            if (node.isTextual()) {
-                result.stringValue = node.asText()
-            } else if (node.isArray()) {
-                val list: List<InputContentItem?> = ArrayList()
-                for (itemNode in node) {
-                    val item: InputContentItem? = p.getCodec().treeToValue(itemNode, InputContentItem::class.java)
-                    list.add(item)
-                }
-                result.setListValue(list)
-            } else {
-                throw IOException("Unexpected JSON type for MessageContent")
+        val element = jsonDecoder.decodeJsonElement()
+
+        return when {
+            element is JsonPrimitive && element.isString -> MessageContent(stringValue = element.content)
+            element is JsonArray -> {
+                val list = Json.decodeFromJsonElement(ListSerializer(InputContentItem.serializer()), element)
+                MessageContent(listValue = list)
             }
-
-            return result
-        }
-    }
-
-    class Builder {
-        private var stringValue: String? = null
-        private var listValue: List<InputContentItem?>? = null
-
-        fun stringValue(stringValue: String?): Builder {
-            this.stringValue = stringValue
-            return this
-        }
-
-        fun listValue(listValue: List<InputContentItem?>?): Builder {
-            this.listValue = listValue
-            return this
-        }
-
-        fun addListItem(listValue: InputContentItem?): Builder {
-            if (this.listValue == null) {
-                this.listValue = ArrayList()
-            }
-            this.listValue.add(listValue)
-            return this
-        }
-
-        fun build(): MessageContent {
-            val messageContent: MessageContent = com.volcengine.ark.runtime.model.responses.item.MessageContent()
-            messageContent.stringValue = stringValue
-            messageContent.setListValue(listValue)
-            return messageContent
-        }
-    }
-
-    companion object {
-        fun builder(): Builder {
-            return com.volcengine.ark.runtime.model.responses.item.MessageContent.Builder()
+            element is JsonNull -> MessageContent()
+            else -> throw SerializationException("MessageContent 的 JSON 类型不支持")
         }
     }
 }

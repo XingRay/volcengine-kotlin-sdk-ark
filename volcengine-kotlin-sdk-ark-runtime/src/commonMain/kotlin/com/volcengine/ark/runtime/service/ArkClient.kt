@@ -1,20 +1,29 @@
 package com.volcengine.ark.runtime.service
 
-import com.volcengine.ark.runtime.model.completion.chat.*
-import com.volcengine.ark.runtime.model.embeddings.*
-import com.volcengine.ark.runtime.model.context.*
-import com.volcengine.ark.runtime.model.bot.completion.chat.*
-import com.volcengine.ark.runtime.model.images.generation.*
-import com.volcengine.ark.runtime.model.tokenization.*
-import com.volcengine.ark.runtime.model.files.*
+import com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionChunk
+import com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionRequest
+import com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionResult
+import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionChunk
+import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionRequest
+import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionResult
 import com.volcengine.ark.runtime.model.content.generation.*
+import com.volcengine.ark.runtime.model.context.CreateContextRequest
+import com.volcengine.ark.runtime.model.context.CreateContextResult
 import com.volcengine.ark.runtime.model.context.chat.ContextChatCompletionRequest
+import com.volcengine.ark.runtime.model.embeddings.EmbeddingRequest
+import com.volcengine.ark.runtime.model.embeddings.EmbeddingResult
+import com.volcengine.ark.runtime.model.files.*
+import com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest
+import com.volcengine.ark.runtime.model.images.generation.ImageGenStreamEvent
+import com.volcengine.ark.runtime.model.images.generation.ImagesResponse
+import com.volcengine.ark.runtime.model.tokenization.TokenizationRequest
+import com.volcengine.ark.runtime.model.tokenization.TokenizationResult
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.utils.io.readUTF8Line
+import io.ktor.utils.io.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
@@ -27,27 +36,15 @@ import kotlinx.serialization.json.Json
  * @param defaultBaseUrl 默认 Base URL
  */
 class ArkClient(
+
     private val httpClient: HttpClient,
     val defaultApiKey: String? = null,
-    val defaultBaseUrl: String = "https://ark.cn-beijing.volces.com"
-) {
-
-    private val json = Json {
+    val defaultBaseUrl: String = ArkConstants.BASE_URL,
+    private val json: Json = Json {
         ignoreUnknownKeys = true
         isLenient = true
-    }
-
-    /**
-     * 构造函数：使用默认 HttpClient
-     */
-    constructor(
-        apiKey: String,
-        baseUrl: String = "https://ark.cn-beijing.volces.com"
-    ) : this(
-        httpClient = KtorClientConfig.createDefaultClient(apiKey),
-        defaultApiKey = apiKey,
-        defaultBaseUrl = baseUrl
-    )
+    },
+) {
 
     // ==================== Chat Completion ====================
 
@@ -421,15 +418,4 @@ class ArkClient(
         httpClient.close()
     }
 
-    companion object {
-        /**
-         * 创建默认客户端
-         */
-        fun create(
-            apiKey: String,
-            baseUrl: String = "https://ark.cn-beijing.volces.com"
-        ): ArkClient {
-            return ArkClient(apiKey, baseUrl)
-        }
-    }
 }

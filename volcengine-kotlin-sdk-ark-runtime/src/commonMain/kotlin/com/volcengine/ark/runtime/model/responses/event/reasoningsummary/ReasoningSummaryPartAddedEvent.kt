@@ -1,22 +1,26 @@
 package com.volcengine.ark.runtime.model.responses.event.reasoningsummary
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
+import com.volcengine.ark.runtime.model.responses.content.ReasoningSummaryPart
+import com.volcengine.ark.runtime.model.responses.event.StreamEvent
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-class ReasoningSummaryPartAddedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_REASONING_SUMMARY_PART_ADDED) {
+@SerialName(ResponsesConstants.EVENT_TYPE_RESPONSE_REASONING_SUMMARY_PART_ADDED)
+data class ReasoningSummaryPartAddedEvent(
+    @SerialName("type")
+    override val type: String = ResponsesConstants.EVENT_TYPE_RESPONSE_REASONING_SUMMARY_PART_ADDED,
+    @SerialName("sequence_number")
+    override val sequenceNumber: Long? = null,
+    @SerialName("output_index")
+    val outputIndex: Long? = null,
+    @SerialName("item_id")
+    val itemId: String? = null,
     @SerialName("summary_index")
-    var summaryIndex: Long? = null
-
+    val summaryIndex: Long? = null,
     @SerialName("part")
-    private var part: ReasoningSummaryPart? = null
-
-    fun getPart(): ReasoningSummaryPart? {
-        return part
-    }
-
-    fun setPart(part: ReasoningSummaryPart?) {
-        this.part = part
-    }
-
+    val part: ReasoningSummaryPart? = null
+) : StreamEvent(type) {
+    constructor() : this(ResponsesConstants.EVENT_TYPE_RESPONSE_REASONING_SUMMARY_PART_ADDED)
 }

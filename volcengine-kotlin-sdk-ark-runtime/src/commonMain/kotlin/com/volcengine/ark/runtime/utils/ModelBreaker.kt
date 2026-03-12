@@ -1,27 +1,36 @@
 package com.volcengine.ark.runtime.utils
 
-import java.time.Duration
+import kotlin.time.Clock
+import kotlin.time.Duration
+import kotlin.time.Instant
 
+/**
+ * 模型速率限制断路器
+ * 用于处理批量请求的 Retry-After 限制
+ */
 class ModelBreaker {
-    private var allowTime: LocalDateTime?
+    private var allowTime: Instant = Clock.System.now()
 
-    init {
-        this.allowTime = LocalDateTime.now()
+    /**
+     * 检查是否允许执行请求
+     */
+    fun allow(): Boolean {
+        return Clock.System.now() >= allowTime
     }
 
-    fun Allow(): Boolean {
-        return LocalDateTime.now().isAfter(allowTime)
+    /**
+     * 重置允许时间
+     */
+    fun reset(duration: Duration) {
+        allowTime = Clock.System.now() + duration
     }
 
-    fun Reset(duration: Duration) {
-        this.allowTime = LocalDateTime.now().plusSeconds(duration.getSeconds())
-    }
-
-    fun GetAllowedDuration(): Duration {
-        val allowDuration: Duration = Duration.between(LocalDateTime.now(), this.allowTime)
-        if (allowDuration.isNegative()) {
-            return Duration.ZERO
-        }
-        return allowDuration
+    /**
+     * 获取距离允许时间的剩余时长
+     */
+    fun getAllowedDuration(): Duration {
+        val now = Clock.System.now()
+        val remaining = allowTime - now
+        return if (remaining.isNegative()) Duration.ZERO else remaining
     }
 }

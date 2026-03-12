@@ -1,38 +1,25 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
+import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants
+import com.volcengine.ark.runtime.model.responses.event.StreamEvent
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-class DoubaoAppCallOutputTextDoneEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_OUTPUT_TEXT_DONE) {
+@SerialName(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_OUTPUT_TEXT_DONE)
+data class DoubaoAppCallOutputTextDoneEvent(
+    @SerialName("type")
+    override val type: String = ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_OUTPUT_TEXT_DONE,
+    @SerialName("sequence_number")
+    override val sequenceNumber: Long? = null,
+    @SerialName("output_index")
+    val outputIndex: Long? = null,
+    @SerialName("item_id")
+    val itemId: String? = null,
     @SerialName("block_index")
-    var blockIndex: Long? = null
-
+    val blockIndex: Long? = null,
     @SerialName("text")
-    var text: String? = null
-
-
-    class Builder {
-        private val event: DoubaoAppCallOutputTextDoneEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallOutputTextDoneEvent()
-
-        fun blockIndex(blockIndex: Long?): Builder {
-            event.blockIndex = blockIndex
-            return this
-        }
-
-        fun text(text: String?): Builder {
-            event.text = text
-            return this
-        }
-
-        fun build(): DoubaoAppCallOutputTextDoneEvent {
-            return event
-        }
-    }
-
-    companion object {
-        fun builder(): Builder {
-            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallOutputTextDoneEvent.Builder()
-        }
-    }
+    val text: String? = null
+) : StreamEvent(type) {
+    constructor() : this(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_OUTPUT_TEXT_DONE)
 }
