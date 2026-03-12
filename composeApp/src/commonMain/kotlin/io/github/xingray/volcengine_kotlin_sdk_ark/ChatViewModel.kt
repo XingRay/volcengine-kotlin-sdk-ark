@@ -26,7 +26,12 @@ data class ChatUiState(
     val topP: Double = 0.9,
     val maxTokens: Int = 2048,
     val streamEnabled: Boolean = false,
-    val deepThinkingEnabled: Boolean = false
+    val deepThinkingEnabled: Boolean = false,
+    val showAddMessageDialog: Boolean = false,
+    val addMessageRole: ChatMessageRole? = null,
+    val addMessageText: String = "",
+    val editingMessageIndex: Int? = null,
+    val editingMessageText: String = ""
 )
 
 class ChatViewModel : ViewModel() {
@@ -63,6 +68,98 @@ class ChatViewModel : ViewModel() {
 
     fun updateDeepThinkingEnabled(enabled: Boolean) {
         _uiState.value = _uiState.value.copy(deepThinkingEnabled = enabled)
+    }
+
+    fun showAddMessageDialog(role: ChatMessageRole) {
+        _uiState.value = _uiState.value.copy(
+            showAddMessageDialog = true,
+            addMessageRole = role,
+            addMessageText = ""
+        )
+    }
+
+    fun hideAddMessageDialog() {
+        _uiState.value = _uiState.value.copy(
+            showAddMessageDialog = false,
+            addMessageRole = null,
+            addMessageText = ""
+        )
+    }
+
+    fun updateAddMessageText(text: String) {
+        _uiState.value = _uiState.value.copy(addMessageText = text)
+    }
+
+    fun confirmAddMessage() {
+        val currentState = _uiState.value
+        if (currentState.addMessageText.isNotBlank() && currentState.addMessageRole != null) {
+            val newMessage = ChatMessage(
+                role = currentState.addMessageRole,
+                content = ChatMessageContent.TextContent(currentState.addMessageText)
+            )
+            _uiState.value = currentState.copy(
+                messages = currentState.messages + newMessage,
+                showAddMessageDialog = false,
+                addMessageRole = null,
+                addMessageText = ""
+            )
+        }
+    }
+
+    fun deleteMessage(index: Int) {
+        val currentMessages = _uiState.value.messages.toMutableList()
+        if (index in currentMessages.indices) {
+            currentMessages.removeAt(index)
+            _uiState.value = _uiState.value.copy(messages = currentMessages)
+        }
+    }
+
+    fun startEditMessage(index: Int) {
+        val message = _uiState.value.messages.getOrNull(index)
+        if (message != null) {
+            val text = when (val content = message.content) {
+                is ChatMessageContent.TextContent -> content.value
+                is ChatMessageContent.MultiContent -> content.items.joinToString("\n") { part ->
+                    when (part) {
+                        is com.volcengine.ark.runtime.model.completion.chat.ContentPart.TextPart -> part.text
+                        else -> ""
+                    }
+                }
+                null -> ""
+            }
+            _uiState.value = _uiState.value.copy(
+                editingMessageIndex = index,
+                editingMessageText = text
+            )
+        }
+    }
+
+    fun updateEditingMessageText(text: String) {
+        _uiState.value = _uiState.value.copy(editingMessageText = text)
+    }
+
+    fun confirmEditMessage() {
+        val currentState = _uiState.value
+        val index = currentState.editingMessageIndex
+        if (index != null && index in currentState.messages.indices && currentState.editingMessageText.isNotBlank()) {
+            val currentMessages = currentState.messages.toMutableList()
+            val oldMessage = currentMessages[index]
+            currentMessages[index] = oldMessage.copy(
+                content = ChatMessageContent.TextContent(currentState.editingMessageText)
+            )
+            _uiState.value = currentState.copy(
+                messages = currentMessages,
+                editingMessageIndex = null,
+                editingMessageText = ""
+            )
+        }
+    }
+
+    fun cancelEditMessage() {
+        _uiState.value = _uiState.value.copy(
+            editingMessageIndex = null,
+            editingMessageText = ""
+        )
     }
 
     fun sendMessage() {

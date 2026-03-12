@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
@@ -40,6 +41,9 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                 onMaxTokensChange = viewModel::updateMaxTokens,
                 onStreamEnabledChange = viewModel::updateStreamEnabled,
                 onDeepThinkingEnabledChange = viewModel::updateDeepThinkingEnabled,
+                onAddSystemMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.SYSTEM) },
+                onAddAssistantMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.ASSISTANT) },
+                onAddUserMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.USER) },
                 modifier = Modifier.weight(0.3f)
             )
 
@@ -48,9 +52,27 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                 messages = uiState.messages,
                 inputText = uiState.inputText,
                 isLoading = uiState.isLoading,
+                editingMessageIndex = uiState.editingMessageIndex,
+                editingMessageText = uiState.editingMessageText,
                 onInputChange = viewModel::updateInputText,
                 onSendClick = viewModel::sendMessage,
+                onDeleteMessage = viewModel::deleteMessage,
+                onEditMessage = viewModel::startEditMessage,
+                onEditingTextChange = viewModel::updateEditingMessageText,
+                onConfirmEdit = viewModel::confirmEditMessage,
+                onCancelEdit = viewModel::cancelEditMessage,
                 modifier = Modifier.weight(0.7f)
+            )
+        }
+
+        // Add message dialog
+        if (uiState.showAddMessageDialog) {
+            AddMessageDialog(
+                role = uiState.addMessageRole,
+                text = uiState.addMessageText,
+                onTextChange = viewModel::updateAddMessageText,
+                onConfirm = viewModel::confirmAddMessage,
+                onDismiss = viewModel::hideAddMessageDialog
             )
         }
     }
@@ -72,6 +94,9 @@ fun ParametersPanel(
     onMaxTokensChange: (Int) -> Unit,
     onStreamEnabledChange: (Boolean) -> Unit,
     onDeepThinkingEnabledChange: (Boolean) -> Unit,
+    onAddSystemMessage: () -> Unit,
+    onAddAssistantMessage: () -> Unit,
+    onAddUserMessage: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -89,6 +114,31 @@ fun ParametersPanel(
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+
+            // Add message buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = onAddSystemMessage,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("System", style = MaterialTheme.typography.labelSmall)
+                }
+                Button(
+                    onClick = onAddAssistantMessage,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Assistant", style = MaterialTheme.typography.labelSmall)
+                }
+                Button(
+                    onClick = onAddUserMessage,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("User", style = MaterialTheme.typography.labelSmall)
+                }
+            }
 
             OutlinedTextField(
                 value = apiKey,
@@ -166,8 +216,15 @@ fun ChatPanel(
     messages: List<com.volcengine.ark.runtime.model.completion.chat.ChatMessage>,
     inputText: String,
     isLoading: Boolean,
+    editingMessageIndex: Int?,
+    editingMessageText: String,
     onInputChange: (String) -> Unit,
     onSendClick: () -> Unit,
+    onDeleteMessage: (Int) -> Unit,
+    onEditMessage: (Int) -> Unit,
+    onEditingTextChange: (String) -> Unit,
+    onConfirmEdit: () -> Unit,
+    onCancelEdit: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -190,8 +247,22 @@ fun ChatPanel(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(messages) { message ->
-                MessageBubble(message)
+            items(messages.size) { index ->
+                val message = messages[index]
+                if (editingMessageIndex == index) {
+                    EditMessageCard(
+                        text = editingMessageText,
+                        onTextChange = onEditingTextChange,
+                        onConfirm = onConfirmEdit,
+                        onCancel = onCancelEdit
+                    )
+                } else {
+                    MessageBubble(
+                        message = message,
+                        onEdit = { onEditMessage(index) },
+                        onDelete = { onDeleteMessage(index) }
+                    )
+                }
             }
 
             if (isLoading) {
@@ -238,7 +309,11 @@ fun ChatPanel(
 }
 
 @Composable
-fun MessageBubble(message: com.volcengine.ark.runtime.model.completion.chat.ChatMessage) {
+fun MessageBubble(
+    message: com.volcengine.ark.runtime.model.completion.chat.ChatMessage,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
+) {
     val isUser = message.role == com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.USER
     val alignment = if (isUser) Alignment.CenterEnd else Alignment.CenterStart
     val backgroundColor = if (isUser) {
@@ -276,11 +351,25 @@ fun MessageBubble(message: com.volcengine.ark.runtime.model.completion.chat.Chat
             modifier = Modifier.widthIn(max = 400.dp)
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
-                Text(
-                    text = message.role?.value ?: "unknown",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = textColor.copy(alpha = 0.7f)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = message.role?.value ?: "unknown",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = textColor.copy(alpha = 0.7f)
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        TextButton(onClick = onEdit) {
+                            Text("编辑", style = MaterialTheme.typography.labelSmall)
+                        }
+                        TextButton(onClick = onDelete) {
+                            Text("删除", style = MaterialTheme.typography.labelSmall)
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(4.dp))
 
                 // Display reasoning content if available
@@ -314,6 +403,108 @@ fun MessageBubble(message: com.volcengine.ark.runtime.model.completion.chat.Chat
                         style = MaterialTheme.typography.bodyMedium,
                         color = textColor
                     )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AddMessageDialog(
+    role: com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole?,
+    text: String,
+    onTextChange: (String) -> Unit,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    androidx.compose.ui.window.Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.widthIn(min = 400.dp, max = 600.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "添加 ${role?.value ?: ""} 消息",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = onTextChange,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    placeholder = { Text("输入消息内容...") },
+                    maxLines = 10
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextButton(onClick = onDismiss) {
+                        Text("取消")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(
+                        onClick = onConfirm,
+                        enabled = text.isNotBlank()
+                    ) {
+                        Text("确认")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EditMessageCard(
+    text: String,
+    onTextChange: (String) -> Unit,
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit
+) {
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "编辑消息",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            OutlinedTextField(
+                value = text,
+                onValueChange = onTextChange,
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 10
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                TextButton(onClick = onCancel) {
+                    Text("取消")
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(
+                    onClick = onConfirm,
+                    enabled = text.isNotBlank()
+                ) {
+                    Text("确认")
                 }
             }
         }
