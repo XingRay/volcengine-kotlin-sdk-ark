@@ -1,21 +1,16 @@
 package com.volcengine.ark.runtime.model.responses.tool.imageprocess
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ImageProcessAction {
-    @JsonProperty("type")
+    @SerialName("type")
     var type: String? = null
 
-    @JsonProperty("result_image_url")
+    @SerialName("result_image_url")
     var resultImageUrl: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "ImageProcessAction{" +
-                "type='" + type + '\'' +
-                ", resultImageUrl='" + resultImageUrl + '\'' +
-                '}'
-    }
 
     class Builder {
         private var type: String? = null

@@ -1,24 +1,26 @@
 package com.volcengine.ark.runtime.model.responses.tool
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ToolMCP : ResponsesTool(ResponsesConstants.TOOL_TYPE_MCP) {
-    @JsonProperty("server_label")
+    @SerialName("server_label")
     var serverLabel: String? = null
 
-    @JsonProperty("server_url")
+    @SerialName("server_url")
     var serverUrl: String? = null
 
-    @JsonProperty("allowed_tools")
+    @SerialName("allowed_tools")
     private var allowedTools: MCPAllowedTools? = null
 
-    @JsonProperty("headers")
+    @SerialName("headers")
     var headers: Map<String?, String?>? = null
 
-    @JsonProperty("require_approval")
+    @SerialName("require_approval")
     private var requireApproval: MCPRequireApproval? = null
 
-    @JsonProperty("server_description")
+    @SerialName("server_description")
     var serverDescription: String? = null
 
     fun getAllowedTools(): MCPAllowedTools? {
@@ -37,17 +39,6 @@ class ToolMCP : ResponsesTool(ResponsesConstants.TOOL_TYPE_MCP) {
         this.requireApproval = requireApproval
     }
 
-    @Override
-    fun toString(): String? {
-        return "ToolMCP{" +
-                "serverLabel='" + serverLabel + '\'' +
-                ", serverUrl='" + serverUrl + '\'' +
-                ", allowedTools=" + allowedTools +
-                ", headers=" + headers +
-                ", requireApproval=" + requireApproval +
-                ", serverDescription='" + serverDescription + '\'' +
-                '}'
-    }
 
     class Builder private constructor() {
         private var serverDescription: String? = null

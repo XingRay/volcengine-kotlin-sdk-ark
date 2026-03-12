@@ -1,35 +1,25 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class ItemFunctionToolCall : BaseItem(ResponsesConstants.ITEM_TYPE_FUNCTION_CALL), InputItem, OutputItem {
-    @JsonProperty("arguments")
+    @SerialName("arguments")
     var arguments: String? = null
 
-    @JsonProperty("call_id")
+    @SerialName("call_id")
     var callId: String? = null
 
-    @JsonProperty("name")
+    @SerialName("name")
     var name: String? = null
 
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @JsonProperty("status")
+    @SerialName("status")
     var status: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "ItemFunctionToolCall{" +
-                "arguments='" + arguments + '\'' +
-                ", callId='" + callId + '\'' +
-                ", name='" + name + '\'' +
-                ", type='" + getType() + '\'' +
-                ", id='" + id + '\'' +
-                ", status='" + status + '\'' +
-                '}'
-    }
 
     class Builder {
         private var arguments: String? = null

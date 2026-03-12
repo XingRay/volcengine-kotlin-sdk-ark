@@ -1,3 +1,7 @@
 package com.volcengine.ark.runtime.model.content.generation
+import kotlinx.serialization.Serializable
 
-class DeleteContentGenerationTaskResponse 
+@Serializable
+data class DeleteContentGenerationTaskResponse(
+    val placeholder: String? = null
+) 

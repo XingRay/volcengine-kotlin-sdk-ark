@@ -1,9 +1,10 @@
 package com.volcengine.ark.runtime.model.responses.usage
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class OutputTokensDetails {
-    @JsonProperty("reasoning_tokens")
-    var reasoningTokens: Long? = null
-}
+@Serializable
+data class OutputTokensDetails(
+    @SerialName("reasoning_tokens")
+    val reasoningTokens: Long? = null
+)

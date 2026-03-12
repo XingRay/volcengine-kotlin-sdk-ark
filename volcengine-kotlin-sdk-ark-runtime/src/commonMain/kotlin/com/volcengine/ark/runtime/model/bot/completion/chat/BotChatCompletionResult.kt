@@ -1,46 +1,82 @@
 package com.volcengine.ark.runtime.model.bot.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.volcengine.ark.runtime.model.Usage
+import com.volcengine.ark.runtime.model.bot.completion.chat.reference.BotChatResultReference
+import com.volcengine.ark.runtime.model.bot.completion.chat.usage.BotUsage
+import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionChoice
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class BotChatCompletionResult : ChatCompletionResult() {
+
+@Serializable
+class BotChatCompletionResult(
+    /**
+     * Unique id assigned to this chat completion.
+     */
+    val id: String? = null,
+
+    /**
+     * The type of object returned, should be "chat.completion"
+     */
+    val `object`: String? = null,
+
+    /**
+     * The creation time in epoch seconds.
+     */
+    val created: Long = 0,
+
+    /**
+     * The GPT model used.
+     */
+    val model: String? = null,
+
+    /**
+     * Specifies the latency tier to use for processing the request.
+     *
+     * This parameter is relevant for customers subscribed to the scale tier service:
+     *
+     * - If set to 'auto', and the endpoint is Scale tier enabled, the system will
+     * utilize scale tier credits until they are exhausted.
+     * - If set to 'auto', and the endpoint is not Scale tier enabled, the request will
+     * be processed using the default service tier with a lower uptime SLA and no
+     * latency guarentee.
+     * - If set to 'default', the request will be processed using the default service
+     * tier with a lower uptime SLA and no latency guarentee.
+     * - When not set, the default behavior is 'auto'.
+     *
+     * When this parameter is set, the response body will include the `service_tier`
+     * utilized.
+     */
+    @SerialName("service_tier")
+    val serviceTier: String? = null,
+
+    /**
+     * A list of all generated completions.
+     */
+    val choices: List<ChatCompletionChoice>? = null,
+
+    /**
+     * The API usage for this request.
+     */
+    val usage: Usage? = null,
+
     /**
      * Same as BotChaCompletionRequest.metadata
      */
-    private var metadata: Map<String?, Object?>? = null
+    val metadata: JsonObject? = null,
 
     /**
      * In bot chat completion, the bot_usage will be returned instead of usage
      */
-    @JsonProperty("bot_usage")
-    private var botUsage: BotUsage? = null
+    @SerialName("bot_usage")
+    val botUsage: BotUsage? = null,
 
     /**
      * The references returned by Search Actions.
      */
-    private var references: List<BotChatResultReference?>? = null
+    val references: List<BotChatResultReference?>? = null
 
-    fun getMetadata(): Map<String?, Object?>? {
-        return metadata
-    }
+) {
 
-    fun setMetadata(metadata: Map<String?, Object?>?) {
-        this.metadata = metadata
-    }
-
-    fun getBotUsage(): BotUsage? {
-        return botUsage
-    }
-
-    fun setBotUsage(botUsage: BotUsage?) {
-        this.botUsage = botUsage
-    }
-
-    fun getReferences(): List<BotChatResultReference?>? {
-        return references
-    }
-
-    fun setReferences(references: List<BotChatResultReference?>?) {
-        this.references = references
-    }
 }

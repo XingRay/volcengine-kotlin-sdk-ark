@@ -1,12 +1,14 @@
 package com.volcengine.ark.runtime.model.responses.event.contentpart
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ContentPartDoneEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_CONTENT_PART_DONE) {
-    @JsonProperty("content_index")
+    @SerialName("content_index")
     var contentIndex: Long? = null
 
-    @JsonProperty("part")
+    @SerialName("part")
     private var part: OutputContentItem? = null
 
     fun getPart(): OutputContentItem? {
@@ -17,15 +19,4 @@ class ContentPartDoneEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_CO
         this.part = part
     }
 
-    @Override
-    fun toString(): String? {
-        return "ContentPartDoneEvent{" +
-                "type='" + getType() + '\'' +
-                ", sequenceNumber=" + getSequenceNumber() +
-                ", itemId='" + getItemId() + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", contentIndex=" + contentIndex +
-                ", part=" + part +
-                '}'
-    }
 }

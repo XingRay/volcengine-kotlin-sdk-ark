@@ -1,8 +1,7 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes(
     [JsonSubTypes.Type(value = BaseMessageItem::class, name = ResponsesConstants.ITEM_TYPE_MESSAGE), JsonSubTypes.Type(
@@ -25,4 +24,5 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
         name = ResponsesConstants.ITEM_TYPE_DOUBAO_APP_CALL
     )]
 )
+@Serializable
 class BaseItem(@field:JsonProperty("type") var type: String?) 

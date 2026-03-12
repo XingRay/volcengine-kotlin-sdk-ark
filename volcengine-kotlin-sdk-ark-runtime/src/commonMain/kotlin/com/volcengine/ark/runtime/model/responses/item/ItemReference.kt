@@ -1,19 +1,13 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class ItemReference : BaseItem(ResponsesConstants.ITEM_TYPE_ITEM_REFERENCE), InputItem {
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "ItemReference{" +
-                "id='" + id + '\'' +
-                ", type='" + getType() + '\'' +
-                '}'
-    }
 
     class Builder {
         private var id: String? = null

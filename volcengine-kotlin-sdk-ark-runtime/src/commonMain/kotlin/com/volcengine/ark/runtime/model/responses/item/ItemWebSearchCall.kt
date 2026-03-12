@@ -1,16 +1,17 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class ItemWebSearchCall : BaseItem(ResponsesConstants.ITEM_TYPE_WEB_SEARCH_CALL), OutputItem {
-    @JsonProperty("action")
+    @SerialName("action")
     private var action: Action? = null
 
-    @JsonProperty("status")
+    @SerialName("status")
     var status: String? = null
 
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
     fun getAction(): Action? {
@@ -21,15 +22,6 @@ class ItemWebSearchCall : BaseItem(ResponsesConstants.ITEM_TYPE_WEB_SEARCH_CALL)
         this.action = action
     }
 
-    @Override
-    fun toString(): String? {
-        return "ItemWebSearchCall{" +
-                "type='" + getType() + '\'' +
-                ", action=" + action +
-                ", status='" + status + '\'' +
-                ", id='" + id + '\'' +
-                '}'
-    }
 
     class Builder {
         private var action: Action? = null

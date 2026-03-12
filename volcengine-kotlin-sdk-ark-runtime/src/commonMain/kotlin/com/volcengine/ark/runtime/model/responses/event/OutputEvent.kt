@@ -1,17 +1,11 @@
 package com.volcengine.ark.runtime.model.responses.event
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class OutputEvent(type: String?) : StreamEvent(type) {
-    @JsonProperty("output_index")
+    @SerialName("output_index")
     var outputIndex: Long? = null
 
-    @Override
-    fun toString(): String? {
-        return "OutputEvent{" +
-                "type='" + getType() + '\'' +
-                ", sequenceNumber=" + getSequenceNumber() +
-                ", outputIndex=" + outputIndex +
-                '}'
-    }
 }

@@ -1,49 +1,18 @@
 package com.volcengine.ark.runtime.model.responses.content
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.volcengine.ark.runtime.model.responses.tool.websearch.Annotation
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-class OutputContentItemText : OutputContentItem(ResponsesConstants.CONTENT_ITEM_TYPE_OUTPUT_TEXT) {
-    @JsonProperty("text")
-    var text: String? = null
+@Serializable
+@SerialName(ContentItemType.CONTENT_ITEM_TYPE_OUTPUT_TEXT)
+data class OutputContentItemText(
+    @SerialName("type")
+    override val type: String = ContentItemType.CONTENT_ITEM_TYPE_OUTPUT_TEXT,
 
-    @JsonProperty("annotations")
-    var annotations: List<Annotation?>? = null
+    @SerialName("text")
+    val text: String? = null,
 
-    @Override
-    fun toString(): String? {
-        return "OutputContentItemText{" +
-                "type='" + getType() + '\'' +
-                ", text='" + text + '\'' +
-                ", annotations=" + annotations +
-                '}'
-    }
-
-    class Builder {
-        private var text: String? = null
-        private var annotations: List<Annotation?>? = null
-
-
-        fun text(text: String?): Builder {
-            this.text = text
-            return this
-        }
-
-        fun annotations(annotations: List<Annotation?>?): Builder {
-            this.annotations = annotations
-            return this
-        }
-
-        fun build(): OutputContentItemText {
-            val outputContentItemText: OutputContentItemText = com.volcengine.ark.runtime.model.responses.content.OutputContentItemText()
-            outputContentItemText.text = text
-            outputContentItemText.annotations = annotations
-            return outputContentItemText
-        }
-    }
-
-    companion object {
-        fun builder(): Builder {
-            return com.volcengine.ark.runtime.model.responses.content.OutputContentItemText.Builder()
-        }
-    }
-}
+    @SerialName("annotations")
+    val annotations: List<Annotation>? = null
+) : OutputContentItem(type) 

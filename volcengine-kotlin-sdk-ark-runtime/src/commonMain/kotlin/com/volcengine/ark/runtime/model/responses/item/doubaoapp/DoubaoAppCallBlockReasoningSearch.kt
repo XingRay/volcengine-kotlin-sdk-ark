@@ -1,27 +1,29 @@
 package com.volcengine.ark.runtime.model.responses.item.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DoubaoAppCallBlockReasoningSearch : DoubaoAppCallBlock() {
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @JsonProperty("type")
+    @SerialName("type")
     var type: String? = ResponsesConstants.DOBAO_APP_BLOCK_TYPE_REASONING_SEARCH
 
-    @JsonProperty("summary")
+    @SerialName("summary")
     var summary: String? = null
 
-    @JsonProperty("queries")
+    @SerialName("queries")
     var queries: List<String?>? = null
 
-    @JsonProperty("results")
+    @SerialName("results")
     private var results: List<DoubaoAppSearchResult?>? = null
 
-    @JsonProperty("status")
+    @SerialName("status")
     var status: String? = null
 
-    @JsonProperty("parent_id")
+    @SerialName("parent_id")
     var parentId: String? = null
 
     fun getResults(): List<DoubaoAppSearchResult?>? {
@@ -82,18 +84,6 @@ class DoubaoAppCallBlockReasoningSearch : DoubaoAppCallBlock() {
         }
     }
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppCallBlockReasoningSearch{" +
-                "id='" + id + '\'' +
-                ", type='" + type + '\'' +
-                ", summary='" + summary + '\'' +
-                ", queries=" + queries +
-                ", results=" + results +
-                ", status='" + status + '\'' +
-                ", parentId='" + parentId + '\'' +
-                '}'
-    }
 
     companion object {
         fun builder(): Builder {

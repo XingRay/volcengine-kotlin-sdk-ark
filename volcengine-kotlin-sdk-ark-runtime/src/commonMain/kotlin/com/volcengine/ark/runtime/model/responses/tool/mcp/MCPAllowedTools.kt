@@ -1,10 +1,10 @@
 package com.volcengine.ark.runtime.model.responses.tool.mcp
+import kotlinx.serialization.Serializable
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(using = com.volcengine.ark.runtime.model.responses.tool.mcp.MCPAllowedTools.MCPAllowedToolsSerializer::class)
 @JsonDeserialize(using = com.volcengine.ark.runtime.model.responses.tool.mcp.MCPAllowedTools.MCPAllowedToolsDeserializer::class)
+@Serializable
 class MCPAllowedTools {
     var allowedTools: List<String?>? = null
 
@@ -18,13 +18,6 @@ class MCPAllowedTools {
         this.filter = filter
     }
 
-    @Override
-    fun toString(): String? {
-        return "MCPAllowedTools{" +
-                "allowedTools=" + allowedTools +
-                ", toolFilter=" + filter +
-                '}'
-    }
 
     internal class MCPAllowedToolsSerializer : JsonSerializer<MCPAllowedTools?>() {
         @Override

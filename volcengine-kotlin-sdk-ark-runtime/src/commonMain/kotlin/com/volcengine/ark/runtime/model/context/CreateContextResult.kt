@@ -1,60 +1,27 @@
 package com.volcengine.ark.runtime.model.context
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.volcengine.ark.runtime.model.Usage
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class CreateContextResult {
-    @JsonProperty("id")
-    var id: String? = null
 
-    @JsonProperty("model")
-    var model: String? = null
+@Serializable
+data class CreateContextResult(
+    @SerialName("id")
+    val id: String? = null,
 
-    @JsonProperty("mode")
-    var mode: String? = null
+    @SerialName("model")
+    val model: String? = null,
 
-    @JsonProperty("ttl")
-    private var ttl: Integer? = null
+    @SerialName("mode")
+    val mode: String? = null,
 
-    @JsonProperty("truncation_strategy")
-    private var truncationStrategy: TruncationStrategy? = null
+    @SerialName("ttl")
+    val ttl: Int? = null,
 
-    @JsonProperty("usage")
-    private var usage: Usage? = null
+    @SerialName("truncation_strategy")
+    val truncationStrategy: TruncationStrategy? = null,
 
-    fun getTtl(): Integer? {
-        return ttl
-    }
-
-    fun setTtl(ttl: Integer?) {
-        this.ttl = ttl
-    }
-
-    fun getTruncationStrategy(): TruncationStrategy? {
-        return truncationStrategy
-    }
-
-    fun setTruncationStrategy(truncationStrategy: TruncationStrategy?) {
-        this.truncationStrategy = truncationStrategy
-    }
-
-    fun getUsage(): Usage? {
-        return usage
-    }
-
-    fun setUsage(usage: Usage?) {
-        this.usage = usage
-    }
-
-    @Override
-    fun toString(): String? {
-        return "CreateContextResult{" +
-                "id='" + id + '\'' +
-                ", model='" + model + '\'' +
-                ", mode='" + mode + '\'' +
-                ", ttl=" + ttl +
-                ", truncationStrategy=" + truncationStrategy +
-                ", usage=" + usage +
-                '}'
-    }
-}
+    @SerialName("usage")
+    val usage: Usage? = null
+)

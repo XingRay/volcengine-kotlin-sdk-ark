@@ -1,12 +1,14 @@
 package com.volcengine.ark.runtime.model.responses.event.reasoningsummary
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ReasoningSummaryPartDoneEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_REASONING_SUMMARY_PART_DONE) {
-    @JsonProperty("summary_index")
+    @SerialName("summary_index")
     var summaryIndex: Long? = null
 
-    @JsonProperty("part")
+    @SerialName("part")
     private var part: ReasoningSummaryPart? = null
 
     fun getPart(): ReasoningSummaryPart? {
@@ -17,15 +19,4 @@ class ReasoningSummaryPartDoneEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RE
         this.part = part
     }
 
-    @Override
-    fun toString(): String? {
-        return "ReasoningSummaryPartDoneEvent{" +
-                "summaryIndex=" + summaryIndex +
-                ", part=" + part +
-                ", itemId='" + itemId + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", type='" + getType() + '\'' +
-                ", sequenceNumber=" + getSequenceNumber() +
-                '}'
-    }
 }

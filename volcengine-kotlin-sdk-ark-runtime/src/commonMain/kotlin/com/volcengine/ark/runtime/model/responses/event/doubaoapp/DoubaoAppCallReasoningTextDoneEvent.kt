@@ -1,25 +1,16 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DoubaoAppCallReasoningTextDoneEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_TEXT_DONE) {
-    @JsonProperty("block_index")
+    @SerialName("block_index")
     var blockIndex: Long? = null
 
-    @JsonProperty("text")
+    @SerialName("text")
     var text: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppCallReasoningTextDoneEvent{" +
-                "type='" + getType() + '\'' +
-                ", blockIndex=" + blockIndex +
-                ", text='" + text + '\'' +
-                ", itemId='" + getItemId() + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", sequenceNumber=" + getSequenceNumber() +
-                '}'
-    }
 
     class Builder {
         private val event: DoubaoAppCallReasoningTextDoneEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningTextDoneEvent()

@@ -1,14 +1,15 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize(using = com.volcengine.ark.runtime.model.responses.item.BaseMessageItem.BaseMessageItemDeserializer::class)
+@Serializable
 class BaseMessageItem : BaseItem(ResponsesConstants.ITEM_TYPE_MESSAGE) {
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @JsonProperty("role")
+    @SerialName("role")
     var role: String? = null
 
     internal class BaseMessageItemDeserializer : JsonDeserializer<BaseMessageItem?>() {

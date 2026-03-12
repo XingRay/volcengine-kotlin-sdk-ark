@@ -1,13 +1,14 @@
 package com.volcengine.ark.runtime.model.responses.usage
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class IncompleteDetails {
-    @JsonProperty("reason")
+    @SerialName("reason")
     var reason: String? = null
 
-    @JsonProperty("content_filter")
+    @SerialName("content_filter")
     private var contentFilter: ContentFilter? = null
 
     fun getContentFilter(): ContentFilter? {
@@ -18,13 +19,6 @@ class IncompleteDetails {
         this.contentFilter = contentFilter
     }
 
-    @Override
-    fun toString(): String? {
-        return "IncompleteDetails{" +
-                "reason='" + reason + '\'' +
-                ", contentFilter=" + contentFilter +
-                '}'
-    }
 
     class Builder {
         private var reason: String? = null

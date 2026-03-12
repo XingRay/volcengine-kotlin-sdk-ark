@@ -1,65 +1,20 @@
 package com.volcengine.ark.runtime.model.tokenization
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class Tokenization {
-    var index: Integer? = null
+@Serializable
+data class Tokenization(
+    val index: Int? = null,
 
-    var `object`: String? = null
-        set(object) {
-            field = this.`object`
-        }
+    val `object`: String? = null,
 
-    @JsonProperty("total_tokens")
-    var totalTokens: Integer? = null
+    @SerialName("total_tokens")
+    val totalTokens: Int? = null,
 
-    @JsonProperty("token_ids")
-    var tokenIds: List<Integer?>? = null
+    @SerialName("token_ids")
+    val tokenIds: List<Int?>? = null,
 
-    @JsonProperty("offset_mapping")
-    var offsetMapping: List<List<Integer?>?>? = null
-
-    fun getIndex(): Integer? {
-        return index
-    }
-
-    fun setIndex(index: Integer?) {
-        this.index = index
-    }
-
-    fun getTotalTokens(): Integer? {
-        return totalTokens
-    }
-
-    fun setTotalTokens(totalTokens: Integer?) {
-        this.totalTokens = totalTokens
-    }
-
-    fun getTokenIds(): List<Integer?>? {
-        return tokenIds
-    }
-
-    fun setTokenIds(tokenIds: List<Integer?>?) {
-        this.tokenIds = tokenIds
-    }
-
-    fun getOffsetMapping(): List<List<Integer?>?>? {
-        return offsetMapping
-    }
-
-    fun setOffsetMapping(offsetMapping: List<List<Integer?>?>?) {
-        this.offsetMapping = offsetMapping
-    }
-
-    @Override
-    fun toString(): String? {
-        return "Tokenization{" +
-                "index=" + index +
-                ", object='" + this.`object` + '\'' +
-                ", totalTokens=" + totalTokens +
-                ", tokenIds=" + tokenIds +
-                ", offsetMapping=" + offsetMapping +
-                '}'
-    }
-}
+    @SerialName("offset_mapping")
+    val offsetMapping: List<List<Int?>?>? = null
+)

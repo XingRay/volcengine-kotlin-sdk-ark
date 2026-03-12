@@ -1,50 +1,32 @@
 package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class ChatFunction {
+
+@Serializable
+data class ChatFunction(
     /**
      * The name of the function being called.
      */
-    var name: String? = null
+    val name: String? = null,
 
     /**
      * A description of what the function does, used by the model to choose when and how to call the function.
      */
-    var description: String? = null
+    val description: String? = null,
 
     /**
      * The parameters the functions accepts.
      */
-    @JsonProperty("parameters")
-    var parameters: JsonNode? = null
-
-    fun <T> getParameters(cls: Class<T?>?): T? {
-        return JacksonUtil.jsonNodeToCls(this.parameters, cls)
-    }
-
-    fun getParameters(): JsonNode? {
-        return parameters
-    }
-
-    fun setParameters(parameters: JsonNode?) {
-        this.parameters = parameters
-    }
-
-    @Override
-    fun toString(): String? {
-        return "ChatFunction{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", parameters=" + parameters +
-                '}'
-    }
-
+    @SerialName("parameters")
+    val parameters: JsonElement? = null
+) {
     class Builder {
         private var name: String? = null
         private var description: String? = null
-        private var parameters: JsonNode? = null
+        private var parameters: JsonElement? = null
 
         fun name(name: String?): Builder {
             this.name = name
@@ -56,17 +38,17 @@ class ChatFunction {
             return this
         }
 
-        fun parameters(parameters: Object?): Builder {
-            this.parameters = JacksonUtil.clsToJsonNode(parameters)
+        fun parameters(parameters: JsonElement?): Builder {
+            this.parameters = parameters
             return this
         }
 
         fun build(): ChatFunction {
-            val chatFunction: ChatFunction = com.volcengine.ark.runtime.model.completion.chat.ChatFunction()
-            chatFunction.name = name
-            chatFunction.description = description
-            chatFunction.setParameters(parameters)
-            return chatFunction
+            return ChatFunction(
+                name = name,
+                description = description,
+                parameters = parameters,
+            )
         }
     }
 }

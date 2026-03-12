@@ -1,21 +1,16 @@
 package com.volcengine.ark.runtime.model.bot.completion.chat.usage
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.volcengine.ark.runtime.model.Usage
+import kotlinx.serialization.Serializable
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class BotModelUsage : Usage() {
+
+@Serializable
+data class BotModelUsage(
     /**
      * The model name
      */
-    var name: String? = null
+    val name: String? = null
+) : Usage() {
 
-    @Override
-    fun toString(): String? {
-        return "BotModelUsage{" +
-                "promptTokens=" + getPromptTokens() +
-                ", completionTokens=" + getCompletionTokens() +
-                ", totalTokens=" + getTotalTokens() +
-                ", name='" + name + '\'' +
-                '}'
-    }
+
 }

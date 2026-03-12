@@ -1,17 +1,13 @@
 package com.volcengine.ark.runtime.model.responses.tool.imageprocess
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ImageProcessError {
-    @JsonProperty("message")
+    @SerialName("message")
     var message: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "ImageProcessError{" +
-                "message='" + message + '\'' +
-                '}'
-    }
 
     class Builder {
         private var message: String? = null

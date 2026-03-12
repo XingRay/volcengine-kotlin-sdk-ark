@@ -1,18 +1,13 @@
 package com.volcengine.ark.runtime.model.responses.tool.mcp
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-@JsonIgnoreProperties
+@Serializable
 class MCPToolFilter {
-    @JsonProperty("tool_names")
+    @SerialName("tool_names")
     var toolNames: List<String?>? = null
 
-    @Override
-    fun toString(): String? {
-        return "MCPToolFilter{" +
-                "toolNames=" + toolNames +
-                '}'
-    }
 
     class Builder private constructor() {
         private var toolNames: List<String?>? = null

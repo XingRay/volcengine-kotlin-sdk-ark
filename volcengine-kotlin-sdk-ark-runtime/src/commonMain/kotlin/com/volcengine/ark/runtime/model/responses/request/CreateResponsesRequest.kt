@@ -1,150 +1,70 @@
 package com.volcengine.ark.runtime.model.responses.request
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
-class CreateResponsesRequest {
-    @JsonProperty("input")
-    private var input: ResponsesInput? = null
+@Serializable
+data class CreateResponsesRequest(
+    @SerialName("input")
+    val input: ResponsesInput? = null,
 
-    @JsonProperty("model")
-    var model: String? = null
+    @SerialName("model")
+    val model: String? = null,
 
-    @JsonProperty("max_output_tokens")
-    var maxOutputTokens: Long? = null
+    @SerialName("max_output_tokens")
+    val maxOutputTokens: Long? = null,
 
-    @JsonProperty("previous_response_id")
-    var previousResponseId: String? = null
+    @SerialName("previous_response_id")
+    val previousResponseId: String? = null,
 
-    @JsonProperty("thinking")
-    private var thinking: ResponsesThinking? = null
+    @SerialName("thinking")
+    val thinking: ResponsesThinking? = null,
 
-    @JsonProperty("reasoning")
-    private var reasoning: ResponsesReasoning? = null
+    @SerialName("reasoning")
+    val reasoning: ResponsesReasoning? = null,
 
-    @JsonProperty("service_tier")
-    var serviceTier: String? = null
+    @SerialName("service_tier")
+    val serviceTier: String? = null,
 
-    @JsonProperty("store")
-    var store: Boolean? = null
+    @SerialName("store")
+    val store: Boolean? = null,
 
-    @JsonProperty("stream")
-    var stream: Boolean? = null
+    @SerialName("stream")
+    val stream: Boolean? = null,
 
-    @JsonProperty("temperature")
-    var temperature: Double? = null
+    @SerialName("temperature")
+    val temperature: Double? = null,
 
-    @JsonProperty("tools")
-    private var tools: List<ResponsesTool?>? = null
+    @SerialName("tools")
+    val tools: List<ResponsesTool?>? = null,
 
-    @JsonProperty("top_p")
-    var topP: Double? = null
+    @SerialName("top_p")
+    val topP: Double? = null,
 
-    @JsonProperty("instructions")
-    var instructions: String? = null
+    @SerialName("instructions")
+    val instructions: String? = null,
 
-    @JsonProperty("include")
-    var include: List<String?>? = null
+    @SerialName("include")
+    val include: List<String?>? = null,
 
-    @JsonProperty("caching")
-    private var caching: ResponsesCaching? = null
+    @SerialName("caching")
+    val caching: ResponsesCaching? = null,
 
-    @JsonProperty("text")
-    private var text: ResponsesText? = null
+    @SerialName("text")
+    val text: ResponsesText? = null,
 
-    @JsonProperty("expire_at")
-    var expireAt: Long? = null
+    @SerialName("expire_at")
+    val expireAt: Long? = null,
 
-    @JsonProperty("tool_choice")
-    private var toolChoice: ResponsesToolChoice? = null
+    @SerialName("tool_choice")
+    val toolChoice: ResponsesToolChoice? = null,
 
-    @JsonProperty("parallel_tool_calls")
-    var parallelToolCalls: Boolean? = null
+    @SerialName("parallel_tool_calls")
+    val parallelToolCalls: Boolean? = null,
 
-    @JsonProperty("max_tool_calls")
-    var maxToolCalls: Long? = null
-
-    fun getInput(): ResponsesInput? {
-        return input
-    }
-
-    fun setInput(input: ResponsesInput?) {
-        this.input = input
-    }
-
-    fun getThinking(): ResponsesThinking? {
-        return thinking
-    }
-
-    fun setThinking(thinking: ResponsesThinking?) {
-        this.thinking = thinking
-    }
-
-    fun getReasoning(): ResponsesReasoning? {
-        return reasoning
-    }
-
-    fun setReasoning(reasoning: ResponsesReasoning?) {
-        this.reasoning = reasoning
-    }
-
-    fun getTools(): List<ResponsesTool?>? {
-        return tools
-    }
-
-    fun setTools(tools: List<ResponsesTool?>?) {
-        this.tools = tools
-    }
-
-    fun getCaching(): ResponsesCaching? {
-        return caching
-    }
-
-    fun setCaching(caching: ResponsesCaching?) {
-        this.caching = caching
-    }
-
-    fun getText(): ResponsesText? {
-        return text
-    }
-
-    fun setText(text: ResponsesText?) {
-        this.text = text
-    }
-
-    fun getToolChoice(): ResponsesToolChoice? {
-        return toolChoice
-    }
-
-    fun setToolChoice(toolChoice: ResponsesToolChoice?) {
-        this.toolChoice = toolChoice
-    }
-
-    @Override
-    fun toString(): String? {
-        return "ResponsesRequest{" +
-                "input=" + input +
-                ", model='" + model + '\'' +
-                ", maxOutputTokens=" + maxOutputTokens +
-                ", previousResponseId='" + previousResponseId + '\'' +
-                ", thinking=" + thinking +
-                ", reasoning=" + reasoning +
-                ", serviceTier='" + serviceTier + '\'' +
-                ", store=" + store +
-                ", stream=" + stream +
-                ", temperature=" + temperature +
-                ", tools=" + tools +
-                ", topP=" + topP +
-                ", instructions='" + instructions + '\'' +
-                ", include=" + include +
-                ", caching=" + caching +
-                ", text=" + text +
-                ", expireAt=" + expireAt +
-                ", toolChoice=" + toolChoice +
-                ", parallelToolCalls=" + parallelToolCalls +
-                ", maxToolCalls=" + maxToolCalls +
-                '}'
-    }
-
+    @SerialName("max_tool_calls")
+    val maxToolCalls: Long? = null
+) {
     class Builder {
         private var input: ResponsesInput? = null
         private var model: String? = null

@@ -1,9 +1,11 @@
 package com.volcengine.ark.runtime.model.responses.event.response
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ResponseFailedEvent : StreamEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_FAILED) {
-    @JsonProperty("response")
+    @SerialName("response")
     private var response: ResponseObject? = null
 
     fun getResponse(): ResponseObject? {
@@ -14,12 +16,4 @@ class ResponseFailedEvent : StreamEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_F
         this.response = response
     }
 
-    @Override
-    fun toString(): String? {
-        return "ResponseFailedEvent{" +
-                "type='" + getType() + '\'' +
-                ", sequenceNumber=" + getSequenceNumber() +
-                ", response=" + response +
-                '}'
-    }
 }

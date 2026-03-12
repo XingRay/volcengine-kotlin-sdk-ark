@@ -1,18 +1,20 @@
 package com.volcengine.ark.runtime.model.responses.tool.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DoubaoAppFeature {
-    @JsonProperty("chat")
+    @SerialName("chat")
     private var chat: DoubaoAppFeatureItem? = null
 
-    @JsonProperty("deep_chat")
+    @SerialName("deep_chat")
     private var deepChat: DoubaoAppFeatureItem? = null
 
-    @JsonProperty("ai_search")
+    @SerialName("ai_search")
     private var aiSearch: DoubaoAppFeatureItem? = null
 
-    @JsonProperty("reasoning_search")
+    @SerialName("reasoning_search")
     private var reasoningSearch: DoubaoAppFeatureItem? = null
 
     fun getChat(): DoubaoAppFeatureItem? {
@@ -83,15 +85,6 @@ class DoubaoAppFeature {
         }
     }
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppFeature{" +
-                "chat=" + chat +
-                ", deepChat=" + deepChat +
-                ", aiSearch=" + aiSearch +
-                ", reasoningSearch=" + reasoningSearch +
-                '}'
-    }
 
     companion object {
         fun builder(): Builder {

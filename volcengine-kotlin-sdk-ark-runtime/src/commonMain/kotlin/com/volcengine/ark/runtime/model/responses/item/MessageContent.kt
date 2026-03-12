@@ -1,10 +1,10 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(using = com.volcengine.ark.runtime.model.responses.item.MessageContent.MessageContentSerializer::class)
 @JsonDeserialize(using = com.volcengine.ark.runtime.model.responses.item.MessageContent.MessageContentDeserializer::class)
+@Serializable
 class MessageContent {
     var stringValue: String? = null
     private var listValue: List<InputContentItem?>? = null

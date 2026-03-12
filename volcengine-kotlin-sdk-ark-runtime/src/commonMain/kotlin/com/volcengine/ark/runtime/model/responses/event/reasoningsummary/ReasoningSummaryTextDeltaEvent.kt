@@ -1,23 +1,14 @@
 package com.volcengine.ark.runtime.model.responses.event.reasoningsummary
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ReasoningSummaryTextDeltaEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_REASONING_SUMMARY_TEXT_DELTA) {
-    @JsonProperty("summary_index")
+    @SerialName("summary_index")
     var summaryIndex: Long? = null
 
-    @JsonProperty("delta")
+    @SerialName("delta")
     var delta: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "ReasoningSummaryTextDeltaEvent{" +
-                "summaryIndex=" + summaryIndex +
-                ", delta='" + delta + '\'' +
-                ", itemId='" + getItemId() + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", type='" + getType() + '\'' +
-                ", sequenceNumber=" + getSequenceNumber() +
-                '}'
-    }
 }

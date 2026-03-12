@@ -1,10 +1,10 @@
 package com.volcengine.ark.runtime.model.responses.tool.mcp
+import kotlinx.serialization.Serializable
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(using = com.volcengine.ark.runtime.model.responses.tool.mcp.MCPRequireApproval.MCPRequireApprovalSerializer::class)
 @JsonDeserialize(using = com.volcengine.ark.runtime.model.responses.tool.mcp.MCPRequireApproval.MCPRequireApprovalDeserializer::class)
+@Serializable
 class MCPRequireApproval {
     var mode: String? = null
 
@@ -18,13 +18,6 @@ class MCPRequireApproval {
         this.filter = filter
     }
 
-    @Override
-    fun toString(): String? {
-        return "MCPRequireApproval{" +
-                "mode='" + mode + '\'' +
-                ", filter=" + filter +
-                '}'
-    }
 
     internal class MCPRequireApprovalSerializer : JsonSerializer<MCPRequireApproval?>() {
         @Override

@@ -1,210 +1,347 @@
 package com.volcengine.ark.runtime.model.bot.completion.chat
 
-import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionRequest
+import com.volcengine.ark.runtime.model.completion.chat.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
-class BotChatCompletionRequest : ChatCompletionRequest() {
+@Serializable
+data class BotChatCompletionRequest(
     /**
      * In bot chat completion, the request.model supposed to be set with botId
      * Or you can pass botId directly, and the request.model will be replaced with it.
      */
-    var botId: String? = null
+    val botId: String? = null,
 
     /**
      * A map to pass extra parameters for bot chat completion.
      */
-    private var metadata: Map<String?, Object?>? = null
+    val metadata: JsonObject? = null,
 
-    fun getMetadata(): Map<String?, Object?>? {
-        return metadata
-    }
+    /**
+     * ID of the model to use.
+     */
+    val model: String? = null,
 
-    fun setMetadata(metadata: Map<String?, Object?>?) {
-        this.metadata = metadata
-    }
+    /**
+     * The messages to generate chat completions.
+     * see [ChatMessage]
+     */
+    val messages: List<ChatMessage>? = null,
 
-    @Override
-    fun toString(): String? {
-        return "BotChatCompletionRequest{" +
-                "model='" + getModel() + '\'' +
-                ", messages=" + getMessages() +
-                ", temperature=" + getTemperature() +
-                ", topP=" + getTopP() +
-                ", stream=" + getStream() +
-                ", streamOptions=" + getStreamOptions() +
-                ", stop=" + getStop() +
-                ", maxTokens=" + getMaxTokens() +
-                ", presencePenalty=" + getPresencePenalty() +
-                ", frequencyPenalty=" + getFrequencyPenalty() +
-                ", logitBias=" + getLogitBias() +
-                ", user='" + getUser() + '\'' +
-                ", tools=" + getTools() +
-                ", functionCall=" + getFunctionCall() +
-                ", logprobs=" + getLogprobs() +
-                ", topLogprobs=" + getTopLogprobs() +
-                ", botId=" + this.botId +
-                ", metadata=" + getMetadata() +
-                '}'
-    }
+    /**
+     * What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower
+     * values like 0.2 will make it more focused and deterministic.
+     * We generally recommend altering this or top_p but not both.
+     */
+    val temperature: Double? = null,
 
-    class Builder private constructor() : ChatCompletionRequest.Builder() {
-        private var metadata: Map<String?, Object?>? = null
-        private var botId: String? = null
-        private var model: String? = null
-        private var messages: List<ChatMessage?>? = null
-        private var temperature: Double? = null
-        private var topP: Double? = null
-        private var stream: Boolean? = null
-        private var streamOptions: ChatCompletionRequestStreamOptions? = null
-        private var stop: List<String?>? = null
-        private var maxTokens: Integer? = null
-        private var presencePenalty: Double? = null
-        private var frequencyPenalty: Double? = null
-        private var logitBias: Map<String?, Integer?>? = null
-        private var user: String? = null
-        private var functions: List<ChatFunction?>? = null
-        private var tools: List<ChatTool?>? = null
-        private var functionCall: ChatCompletionRequestFunctionCall? = null
-        private var logprobs: Boolean? = null
-        private var topLogprobs: Integer? = null
-        private var n: Integer? = null
+    /**
+     * An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens
+     * with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.<br></br>
+     * We generally recommend altering this or temperature but not both.
+     */
 
-        fun metadata(metadata: Map<String?, Object?>?): Builder {
-            this.metadata = metadata
-            return this
-        }
+    val topP: Double? = null,
 
-        fun botId(botId: String?): Builder {
-            this.botId = botId
-            // overwrite the model.
-            this.model = botId
-            return this
-        }
+    /**
+     * If set, partial message deltas will be sent, like in ChatGPT. Tokens will be sent as data-only
+     * as they become available, with the stream terminated by a data: [DONE] message.
+     */
+    val stream: Boolean? = null,
+
+    /**
+     * Options for streaming response. Only set this when you set stream: true.
+     */
+    @SerialName("stream_options")
+    val streamOptions: ChatCompletionRequestStreamOptions? = null,
+
+    /**
+     * Specifies the latency tier to use for processing the request.
+     *
+     * This parameter is relevant for customers subscribed to the scale tier service:
+     *
+     * - If set to 'auto', and the endpoint is Scale tier enabled, the system will
+     * utilize scale tier credits until they are exhausted.
+     * - If set to 'auto', and the endpoint is not Scale tier enabled, the request will
+     * be processed using the default service tier with a lower uptime SLA and no
+     * latency guarentee.
+     * - If set to 'default', the request will be processed using the default service
+     * tier with a lower uptime SLA and no latency guarentee.
+     * - When not set, the default behavior is 'auto'.
+     *
+     * When this parameter is set, the response body will include the `service_tier`
+     * utilized.
+     */
+    @SerialName("service_tier")
+    val serviceTier: String? = null,
+
+    /**
+     * Up to 4 sequences where the API will stop generating further tokens.
+     */
+    val stop: List<String>? = null,
+
+    /**
+     * The maximum number of tokens allowed for the generated answer.
+     */
+    @SerialName("max_tokens")
+    val maxTokens: Int? = null,
+
+    /**
+     * The maximum number of tokens allowed for the generated answer, including reasoning tokens.
+     */
+    @SerialName("max_completion_tokens")
+    val maxCompletionTokens: Int? = null,
+
+    /**
+     * Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,
+     * increasing the model's likelihood to talk about new topics.
+     */
+    @SerialName("presence_penalty")
+    val presencePenalty: Double? = null,
+
+    /**
+     * Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far,
+     * decreasing the model's likelihood to repeat the same line verbatim.
+     */
+    @SerialName("frequency_penalty")
+    val frequencyPenalty: Double? = null,
+
+    /**
+     * Accepts a json object that maps tokens (specified by their token ID in the tokenizer) to an associated bias value from -100
+     * to 100. Mathematically, the bias is added to the logits generated by the model prior to sampling. The exact effect will
+     * vary per model, but values between -1 and 1 should decrease or increase likelihood of selection; values like -100 or 100
+     * should result in a ban or exclusive selection of the relevant token.
+     */
+    @SerialName("logit_bias")
+    val logitBias: Map<String, Int>? = null,
 
 
-        fun model(model: String?): Builder {
-            this.model = model
-            return this
-        }
+    /**
+     * A unique identifier representing your end-user, which will help to monitor and detect abuse.
+     */
+    val user: String? = null,
 
-        fun messages(messages: List<ChatMessage?>?): Builder {
-            this.messages = messages
-            return this
-        }
+    /**
+     * A list of the available tools.
+     */
+    val tools: List<ChatTool>? = null,
 
-        fun temperature(temperature: Double?): Builder {
-            this.temperature = temperature
-            return this
-        }
+    /**
+     * Controls how the model responds to function calls.
+     */
+    @SerialName("function_call")
+    val functionCall: ChatCompletionRequestFunctionCall? = null,
 
-        fun topP(topP: Double?): Builder {
-            this.topP = topP
-            return this
-        }
+    /**
+     * Whether to return log probabilities of the output tokens or not.
+     * If true, returns the log probabilities of each output token returned in the content of message.
+     */
+    val logprobs: Boolean? = null,
 
-        fun stream(stream: Boolean?): Builder {
-            this.stream = stream
-            return this
-        }
+    /**
+     * An integer between 0 and 20 specifying the number of most likely tokens to return at each token position,
+     * each with an associated log probability. logprobs must be set to true if this parameter is used.
+     */
+    @SerialName("top_logprobs")
+    val topLogprobs: Int? = null,
 
-        fun streamOptions(streamOptions: ChatCompletionRequestStreamOptions?): Builder {
-            this.streamOptions = streamOptions
-            return this
-        }
+    @SerialName("repetition_penalty")
+    val repetitionPenalty: Double? = null,
 
-        fun stop(stop: List<String?>?): Builder {
-            this.stop = stop
-            return this
-        }
+    /**
+     * How many chat completion chatCompletionChoices to generate for each input message.
+     */
+    val n: Int? = null,
 
-        fun maxTokens(maxTokens: Integer?): Builder {
-            this.maxTokens = maxTokens
-            return this
-        }
+    /**
+     * Whether to enable parallel function calling during tool use.
+     */
+    val parallelToolCalls: Boolean? = null,
 
-        fun presencePenalty(presencePenalty: Double?): Builder {
-            this.presencePenalty = presencePenalty
-            return this
-        }
+    // toolChoice 字段使用自定义多态序列化器
+    @SerialName("tool_choice")
+    @Serializable(with = ChatToolChoiceSerializer::class)
+    val toolChoice: ChatToolChoice? = null,
 
-        fun frequencyPenalty(frequencyPenalty: Double?): Builder {
-            this.frequencyPenalty = frequencyPenalty
-            return this
-        }
+    /**
+     * `type` must be one of `text` or `json_object`.
+     * If the request only specifies type=`json_object` and no schema is specified, refer to the openai behavior,
+     * the model outputs an arbitrary json object (depending on the user's instruction in the user prompt/system prompt)
+     *
+     * Even if the schema is specified, still need to specify the expected json format in user prompt/system prompt
+     */
+    @SerialName("response_format")
+    val responseFormat: ChatCompletionRequestResponseFormat? = null,
 
-        fun logitBias(logitBias: Map<String?, Integer?>?): Builder {
-            this.logitBias = logitBias
-            return this
-        }
+    @SerialName("thinking")
+    val thinking: ChatCompletionRequestThinking? = null,
 
-        fun user(user: String?): Builder {
-            this.user = user
-            return this
-        }
+    @SerialName("reasoning_effort")
+    val reasoningEffort: String? = null,
 
-        fun functions(functions: List<ChatFunction?>?): Builder {
-            this.functions = functions
-            return this
-        }
-
-        fun tools(tools: List<ChatTool?>?): Builder {
-            this.tools = tools
-            return this
-        }
-
-        fun functionCall(functionCall: ChatCompletionRequestFunctionCall?): Builder {
-            this.functionCall = functionCall
-            return this
-        }
-
-        fun logprobs(logprobs: Boolean?): Builder {
-            this.logprobs = logprobs
-            return this
-        }
-
-        fun topLogprobs(topLogprobs: Integer?): Builder {
-            this.topLogprobs = topLogprobs
-            return this
-        }
-
-        fun n(n: Integer?): Builder {
-            this.n = n
-            return this
-        }
-
-        fun build(): BotChatCompletionRequest {
-            val botChatCompletionRequest: BotChatCompletionRequest = com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionRequest()
-            botChatCompletionRequest.setMetadata(metadata)
-            botChatCompletionRequest.setModel(model)
-            botChatCompletionRequest.botId = botId
-            botChatCompletionRequest.setMessages(messages)
-            botChatCompletionRequest.setTemperature(temperature)
-            botChatCompletionRequest.setTopP(topP)
-            botChatCompletionRequest.setStream(stream)
-            botChatCompletionRequest.setStreamOptions(streamOptions)
-            botChatCompletionRequest.setStop(stop)
-            botChatCompletionRequest.setMaxTokens(maxTokens)
-            botChatCompletionRequest.setPresencePenalty(presencePenalty)
-            botChatCompletionRequest.setFrequencyPenalty(frequencyPenalty)
-            botChatCompletionRequest.setLogitBias(logitBias)
-            botChatCompletionRequest.setUser(user)
-            botChatCompletionRequest.setTools(tools)
-            botChatCompletionRequest.setFunctionCall(functionCall)
-            botChatCompletionRequest.setLogprobs(logprobs)
-            botChatCompletionRequest.setTopLogprobs(topLogprobs)
-            botChatCompletionRequest.setN(n)
-            return botChatCompletionRequest
-        }
-
-        companion object {
-            fun aBotChatCompletionRequest(): Builder {
-                return com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionRequest.Builder()
-            }
-        }
-    }
+    ) {
 
     companion object {
+
+        class Builder {
+            private var metadata: JsonObject? = null
+            private var botId: String? = null
+            private var model: String? = null
+            private var messages: List<ChatMessage>? = null
+            private var temperature: Double? = null
+            private var topP: Double? = null
+            private var stream: Boolean? = null
+            private var streamOptions: ChatCompletionRequestStreamOptions? = null
+            private var stop: List<String>? = null
+            private var maxTokens: Int? = null
+            private var presencePenalty: Double? = null
+            private var frequencyPenalty: Double? = null
+            private var logitBias: Map<String, Int>? = null
+            private var user: String? = null
+            private var functions: List<ChatFunction>? = null
+            private var tools: List<ChatTool>? = null
+            private var functionCall: ChatCompletionRequestFunctionCall? = null
+            private var logprobs: Boolean? = null
+            private var topLogprobs: Int? = null
+            private var n: Int? = null
+
+            fun metadata(metadata: JsonObject?): Builder {
+                this.metadata = metadata
+                return this
+            }
+
+            fun botId(botId: String?): Builder {
+                this.botId = botId
+                // overwrite the model.
+                this.model = botId
+                return this
+            }
+
+
+            fun model(model: String?): Builder {
+                this.model = model
+                return this
+            }
+
+            fun messages(messages: List<ChatMessage>?): Builder {
+                this.messages = messages
+                return this
+            }
+
+            fun temperature(temperature: Double?): Builder {
+                this.temperature = temperature
+                return this
+            }
+
+            fun topP(topP: Double?): Builder {
+                this.topP = topP
+                return this
+            }
+
+            fun stream(stream: Boolean?): Builder {
+                this.stream = stream
+                return this
+            }
+
+            fun streamOptions(streamOptions: ChatCompletionRequestStreamOptions?): Builder {
+                this.streamOptions = streamOptions
+                return this
+            }
+
+            fun stop(stop: List<String>?): Builder {
+                this.stop = stop
+                return this
+            }
+
+            fun maxTokens(maxTokens: Int?): Builder {
+                this.maxTokens = maxTokens
+                return this
+            }
+
+            fun presencePenalty(presencePenalty: Double?): Builder {
+                this.presencePenalty = presencePenalty
+                return this
+            }
+
+            fun frequencyPenalty(frequencyPenalty: Double?): Builder {
+                this.frequencyPenalty = frequencyPenalty
+                return this
+            }
+
+            fun logitBias(logitBias: Map<String, Int>?): Builder {
+                this.logitBias = logitBias
+                return this
+            }
+
+            fun user(user: String?): Builder {
+                this.user = user
+                return this
+            }
+
+            fun functions(functions: List<ChatFunction>?): Builder {
+                this.functions = functions
+                return this
+            }
+
+            fun tools(tools: List<ChatTool>?): Builder {
+                this.tools = tools
+                return this
+            }
+
+            fun functionCall(functionCall: ChatCompletionRequestFunctionCall?): Builder {
+                this.functionCall = functionCall
+                return this
+            }
+
+            fun logprobs(logprobs: Boolean?): Builder {
+                this.logprobs = logprobs
+                return this
+            }
+
+            fun topLogprobs(topLogprobs: Int?): Builder {
+                this.topLogprobs = topLogprobs
+                return this
+            }
+
+            fun n(n: Int?): Builder {
+                this.n = n
+                return this
+            }
+
+            fun build(): BotChatCompletionRequest {
+                return BotChatCompletionRequest(
+                    metadata = metadata,
+                    model = model,
+                    botId = botId,
+                    messages = messages,
+                    temperature = temperature,
+                    topP = topP,
+                    stream = stream,
+                    streamOptions = streamOptions,
+                    stop = stop,
+                    maxTokens = maxTokens,
+                    presencePenalty = presencePenalty,
+                    frequencyPenalty = frequencyPenalty,
+                    logitBias = logitBias,
+                    user = user,
+                    tools = tools,
+                    functionCall = functionCall,
+                    logprobs = logprobs,
+                    topLogprobs = topLogprobs,
+                    n = n,
+                )
+            }
+
+            companion object {
+                fun aBotChatCompletionRequest(): Builder {
+                    return Builder()
+                }
+            }
+        }
+
         fun builder(): Builder {
-            return com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionRequest.Builder()
+            return Builder()
         }
     }
 }

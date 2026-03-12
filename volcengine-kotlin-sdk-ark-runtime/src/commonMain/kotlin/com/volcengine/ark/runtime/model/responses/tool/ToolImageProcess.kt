@@ -1,18 +1,20 @@
 package com.volcengine.ark.runtime.model.responses.tool
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ToolImageProcess : ResponsesTool(ResponsesConstants.TOOL_TYPE_IMAGE_PROCESS) {
-    @JsonProperty("point")
+    @SerialName("point")
     private var point: ImageProcessPointOptions? = null
 
-    @JsonProperty("grounding")
+    @SerialName("grounding")
     private var grounding: ImageProcessGroundingOptions? = null
 
-    @JsonProperty("zoom")
+    @SerialName("zoom")
     private var zoom: ImageProcessZoomOptions? = null
 
-    @JsonProperty("rotate")
+    @SerialName("rotate")
     private var rotate: ImageProcessRotateOptions? = null
 
     fun getPoint(): ImageProcessPointOptions? {
@@ -47,16 +49,6 @@ class ToolImageProcess : ResponsesTool(ResponsesConstants.TOOL_TYPE_IMAGE_PROCES
         this.rotate = rotate
     }
 
-    @Override
-    fun toString(): String? {
-        return "ToolImageProcess{" +
-                "type='" + getType() + '\'' +
-                ", point=" + point +
-                ", grounding=" + grounding +
-                ", zoom=" + zoom +
-                ", rotate=" + rotate +
-                '}'
-    }
 
     class Builder {
         private var point: ImageProcessPointOptions? = null

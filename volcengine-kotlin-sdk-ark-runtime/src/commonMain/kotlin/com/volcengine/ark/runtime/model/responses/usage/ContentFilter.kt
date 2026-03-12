@@ -1,22 +1,16 @@
 package com.volcengine.ark.runtime.model.responses.usage
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
-class ContentFilter {
-    @JsonProperty("type")
-    var type: String? = null
+@Serializable
+data class ContentFilter(
+    @SerialName("type")
+    val type: String? = null,
 
-    @JsonProperty("details")
-    var details: String? = null
-
-    @Override
-    fun toString(): String? {
-        return "ContentFilter{" +
-                "type='" + type + '\'' +
-                ", details='" + details + '\'' +
-                '}'
-    }
-
+    @SerialName("details")
+    val details: String? = null
+) {
     class Builder {
         private var type: String? = null
         private var details: String? = null

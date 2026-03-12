@@ -1,21 +1,23 @@
 package com.volcengine.ark.runtime.model.responses.item.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DoubaoAppCallBlockReasoningText : DoubaoAppCallBlock() {
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @JsonProperty("type")
+    @SerialName("type")
     var type: String? = ResponsesConstants.DOBAO_APP_BLOCK_TYPE_REASONING_TEXT
 
-    @JsonProperty("reasoning_text")
+    @SerialName("reasoning_text")
     var reasoningText: String? = null
 
-    @JsonProperty("status")
+    @SerialName("status")
     var status: String? = null
 
-    @JsonProperty("parent_id")
+    @SerialName("parent_id")
     var parentId: String? = null
 
     class Builder {
@@ -54,16 +56,6 @@ class DoubaoAppCallBlockReasoningText : DoubaoAppCallBlock() {
         }
     }
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppCallBlockReasoningText{" +
-                "id='" + id + '\'' +
-                ", type='" + type + '\'' +
-                ", reasoningText='" + reasoningText + '\'' +
-                ", status='" + status + '\'' +
-                ", parentId='" + parentId + '\'' +
-                '}'
-    }
 
     companion object {
         fun builder(): Builder {

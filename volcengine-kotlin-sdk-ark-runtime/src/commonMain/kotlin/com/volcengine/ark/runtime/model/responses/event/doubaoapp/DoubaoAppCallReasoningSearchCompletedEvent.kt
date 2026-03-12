@@ -1,18 +1,20 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DoubaoAppCallReasoningSearchCompletedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_COMPLETED) {
-    @JsonProperty("block_index")
+    @SerialName("block_index")
     var blockIndex: Long? = null
 
-    @JsonProperty("summary")
+    @SerialName("summary")
     var summary: String? = null
 
-    @JsonProperty("queries")
+    @SerialName("queries")
     var queries: List<String?>? = null
 
-    @JsonProperty("results")
+    @SerialName("results")
     private var results: List<DoubaoAppSearchResult?>? = null
 
     fun getResults(): List<DoubaoAppSearchResult?>? {
@@ -23,19 +25,6 @@ class DoubaoAppCallReasoningSearchCompletedEvent : ItemEvent(ResponsesConstants.
         this.results = results
     }
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppCallReasoningSearchCompletedEvent{" +
-                "type='" + getType() + '\'' +
-                ", blockIndex=" + blockIndex +
-                ", summary='" + summary + '\'' +
-                ", queries=" + queries +
-                ", results=" + results +
-                ", itemId='" + getItemId() + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", sequenceNumber=" + getSequenceNumber() +
-                '}'
-    }
 
     class Builder {
         private val event: DoubaoAppCallReasoningSearchCompletedEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningSearchCompletedEvent()

@@ -1,21 +1,13 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DoubaoAppCallFailedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_FAILED) {
-    @JsonProperty("error_message")
+    @SerialName("error_message")
     var errorMessage: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppCallFailedEvent{" +
-                "type='" + getType() + '\'' +
-                ", errorMessage='" + errorMessage + '\'' +
-                ", itemId='" + getItemId() + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", sequenceNumber=" + getSequenceNumber() +
-                '}'
-    }
 
     class Builder {
         private val event: DoubaoAppCallFailedEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallFailedEvent()

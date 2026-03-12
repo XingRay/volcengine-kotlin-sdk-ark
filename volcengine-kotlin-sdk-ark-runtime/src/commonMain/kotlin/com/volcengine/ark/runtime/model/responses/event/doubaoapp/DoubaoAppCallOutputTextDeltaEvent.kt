@@ -1,25 +1,16 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DoubaoAppCallOutputTextDeltaEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_OUTPUT_TEXT_DELTA) {
-    @JsonProperty("block_index")
+    @SerialName("block_index")
     var blockIndex: Long? = null
 
-    @JsonProperty("delta")
+    @SerialName("delta")
     var delta: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppCallOutputTextDeltaEvent{" +
-                "type='" + getType() + '\'' +
-                ", blockIndex=" + blockIndex +
-                ", delta='" + delta + '\'' +
-                ", itemId='" + getItemId() + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", sequenceNumber=" + getSequenceNumber() +
-                '}'
-    }
 
     class Builder {
         private val event: DoubaoAppCallOutputTextDeltaEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallOutputTextDeltaEvent()

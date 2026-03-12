@@ -1,18 +1,13 @@
 package com.volcengine.ark.runtime.model.responses.request
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
-class GetResponseRequest {
-    @JsonProperty("response_id")
-    var responseId: String? = null
-
-    @Override
-    fun toString(): String? {
-        return "GetResponseRequest{" +
-                "responseId='" + responseId + '\'' +
-                '}'
-    }
-
+@Serializable
+data class GetResponseRequest(
+    @SerialName("response_id")
+    val responseId: String? = null
+) {
     class Builder {
         private var responseId: String? = null
 

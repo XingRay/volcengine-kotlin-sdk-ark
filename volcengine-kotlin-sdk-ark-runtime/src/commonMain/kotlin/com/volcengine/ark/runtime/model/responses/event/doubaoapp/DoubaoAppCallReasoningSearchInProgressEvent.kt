@@ -1,21 +1,13 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DoubaoAppCallReasoningSearchInProgressEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_IN_PROGRESS) {
-    @JsonProperty("block_index")
+    @SerialName("block_index")
     var blockIndex: Long? = null
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppCallReasoningSearchInProgressEvent{" +
-                "type='" + getType() + '\'' +
-                ", blockIndex=" + blockIndex +
-                ", itemId='" + getItemId() + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", sequenceNumber=" + getSequenceNumber() +
-                '}'
-    }
 
     class Builder {
         private val event: DoubaoAppCallReasoningSearchInProgressEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningSearchInProgressEvent()

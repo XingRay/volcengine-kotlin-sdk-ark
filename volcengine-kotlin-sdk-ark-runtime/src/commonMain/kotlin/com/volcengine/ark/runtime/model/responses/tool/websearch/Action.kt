@@ -1,21 +1,16 @@
 package com.volcengine.ark.runtime.model.responses.tool.websearch
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class Action {
-    @JsonProperty("query")
+    @SerialName("query")
     var query: String? = null
 
-    @JsonProperty("type")
+    @SerialName("type")
     var type: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "Action{" +
-                "query='" + query + '\'' +
-                ", type='" + type + '\'' +
-                '}'
-    }
 
     class Builder {
         private var query: String? = null

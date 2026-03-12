@@ -1,16 +1,10 @@
 package com.volcengine.ark.runtime.model.responses.usage
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class InputTokensDetails {
-    @JsonProperty("cached_tokens")
-    var cachedTokens: Long? = null
-
-    @Override
-    fun toString(): String? {
-        return "InputTokensDetails{" +
-                "cachedTokens=" + cachedTokens +
-                '}'
-    }
-}
+@Serializable
+data class InputTokensDetails(
+    @SerialName("cached_tokens")
+    val cachedTokens: Long? = null
+)

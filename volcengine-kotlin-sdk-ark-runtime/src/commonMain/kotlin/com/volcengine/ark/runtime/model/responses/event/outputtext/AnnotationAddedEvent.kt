@@ -1,35 +1,23 @@
 package com.volcengine.ark.runtime.model.responses.event.outputtext
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class AnnotationAddedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_OUTPUT_TEXT_ANNOTATION_ADDED) {
-    @JsonProperty("content_index")
+    @SerialName("content_index")
     var contentIndex: Long? = null
 
-    @JsonProperty("delta")
+    @SerialName("delta")
     var delta: String? = null
 
-    @JsonProperty("text")
+    @SerialName("text")
     var text: String? = null
 
-    @JsonProperty("annotation_index")
+    @SerialName("annotation_index")
     var annotationIndex: Long? = null
 
-    @JsonProperty("annotation")
+    @SerialName("annotation")
     var annotation: Annotation? = null
 
-    @Override
-    fun toString(): String? {
-        return "AnnotationAddedEvent{" +
-                "type='" + getType() + '\'' +
-                ", sequenceNumber=" + getSequenceNumber() +
-                ", itemId='" + getItemId() + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", contentIndex=" + contentIndex +
-                ", delta='" + delta + '\'' +
-                ", text='" + text + '\'' +
-                ", annotationIndex=" + annotationIndex +
-                ", annotation=" + annotation +
-                '}'
-    }
 }

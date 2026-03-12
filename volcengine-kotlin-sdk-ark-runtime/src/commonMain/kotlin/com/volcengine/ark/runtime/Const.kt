@@ -10,9 +10,9 @@ object Const {
     val REQUEST_PROJECT_NAME: String = "X-Project-Name"
     val RETRY_AFTER: String = "Retry-After"
     val REQUEST_BOT_ID: String = "botId"
-    val DEFAULT_MANDATORY_REFRESH_TIMEOUT: Integer = 10 * 60 // 10 min
-    val DEFAULT_ADVISORY_REFRESH_TIMEOUT: Integer = 30 * 60 // 30 min
-    val DEFAULT_STS_TIMEOUT: Integer = 7 * 24 * 60 * 60 // 7 days
+    val DEFAULT_MANDATORY_REFRESH_TIMEOUT = 10 * 60 // 10 min
+    val DEFAULT_ADVISORY_REFRESH_TIMEOUT = 30 * 60 // 30 min
+    val DEFAULT_STS_TIMEOUT = 7 * 24 * 60 * 60 // 7 days
 
     val RESOURCE_TYPE_BOT: String = "bot"
     val RESOURCE_TYPE_ENDPOINT: String = "endpoint"

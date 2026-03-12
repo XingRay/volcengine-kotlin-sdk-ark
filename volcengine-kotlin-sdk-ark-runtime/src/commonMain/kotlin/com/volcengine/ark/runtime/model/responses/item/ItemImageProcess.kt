@@ -1,22 +1,23 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class ItemImageProcess : BaseItem(ResponsesConstants.ITEM_TYPE_IMAGE_PROCESS), InputItem, OutputItem {
-    @JsonProperty("action")
+    @SerialName("action")
     private var action: ImageProcessAction? = null
 
-    @JsonProperty("arguments")
+    @SerialName("arguments")
     private var arguments: ImageProcessArguments? = null
 
-    @JsonProperty("status")
+    @SerialName("status")
     var status: String? = null
 
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @JsonProperty("error")
+    @SerialName("error")
     private var error: ImageProcessError? = null
 
     fun getAction(): ImageProcessAction? {
@@ -43,17 +44,6 @@ class ItemImageProcess : BaseItem(ResponsesConstants.ITEM_TYPE_IMAGE_PROCESS), I
         this.error = error
     }
 
-    @Override
-    fun toString(): String? {
-        return "ItemImageProcess{" +
-                "type='" + getType() + '\'' +
-                ", action=" + action +
-                ", arguments=" + arguments +
-                ", status='" + status + '\'' +
-                ", id='" + id + '\'' +
-                ", error=" + error +
-                '}'
-    }
 
     class Builder {
         private var action: ImageProcessAction? = null

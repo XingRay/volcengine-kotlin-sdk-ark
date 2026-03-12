@@ -1,15 +1,17 @@
 package com.volcengine.ark.runtime.model.responses.event.imageprocess
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ImageProcessCallFailedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_IMAGE_PROCESS_CALL_FAILED) {
-    @JsonProperty("action")
+    @SerialName("action")
     private var action: ImageProcessAction? = null
 
-    @JsonProperty("arguments")
+    @SerialName("arguments")
     private var arguments: ImageProcessArguments? = null
 
-    @JsonProperty("error")
+    @SerialName("error")
     private var error: ImageProcessError? = null
 
     fun getAction(): ImageProcessAction? {
@@ -36,16 +38,4 @@ class ImageProcessCallFailedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESP
         this.error = error
     }
 
-    @Override
-    fun toString(): String? {
-        return "ImageProcessCallFailedEvent{" +
-                "type='" + getType() + '\'' +
-                ", sequenceNumber=" + getSequenceNumber() +
-                ", itemId='" + getItemId() + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", action=" + action +
-                ", arguments=" + arguments +
-                ", error=" + error +
-                '}'
-    }
 }

@@ -1,16 +1,14 @@
 package com.volcengine.ark.runtime.model.responses.content
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
-@JsonSubTypes(
-    [JsonSubTypes.Type(value = InputContentItemText::class, name = ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_TEXT), JsonSubTypes.Type(
-        value = InputContentItemImage::class,
-        name = ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_IMAGE
-    ), JsonSubTypes.Type(value = InputContentItemVideo::class, name = ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_VIDEO), JsonSubTypes.Type(
-        value = InputContentItemFile::class,
-        name = ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_FILE
-    )]
-)
-abstract class InputContentItem(@field:JsonProperty("type") var type: String?) 
+// ===================== 抽象父类：InputContentItem =====================
+@Serializable(with = InputContentItemPolymorphicSerializer::class)
+abstract class InputContentItem(
+    @SerialName("type")
+    open val type: String
+) {
+    // 空构造函数（兼容序列化）
+    constructor() : this("")
+}

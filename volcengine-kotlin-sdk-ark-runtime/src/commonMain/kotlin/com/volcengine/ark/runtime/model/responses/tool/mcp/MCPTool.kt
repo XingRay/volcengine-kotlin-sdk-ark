@@ -1,16 +1,17 @@
 package com.volcengine.ark.runtime.model.responses.tool.mcp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class MCPTool {
-    @JsonProperty("name")
+    @SerialName("name")
     var name: String? = null
 
-    @JsonProperty("description")
+    @SerialName("description")
     var description: String? = null
 
-    @JsonProperty("input_schema")
+    @SerialName("input_schema")
     private var inputSchema: Map<String?, Object?>? = null
 
     fun getInputSchema(): Map<String?, Object?>? {
@@ -21,14 +22,6 @@ class MCPTool {
         this.inputSchema = inputSchema
     }
 
-    @Override
-    fun toString(): String? {
-        return "MCPTool{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", inputSchema=" + inputSchema +
-                '}'
-    }
 
     class Builder private constructor() {
         private var name: String? = null

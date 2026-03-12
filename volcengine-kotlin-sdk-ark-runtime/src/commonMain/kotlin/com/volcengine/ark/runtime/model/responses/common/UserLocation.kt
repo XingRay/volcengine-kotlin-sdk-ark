@@ -1,80 +1,23 @@
 package com.volcengine.ark.runtime.model.responses.common
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-class UserLocation {
-    @JsonProperty("type")
-    var type: String? = null
 
-    @JsonProperty("city")
-    var city: String? = null
+@Serializable
+data class UserLocation(
+    @SerialName("type")
+    val type: String? = null,
 
-    @JsonProperty("country")
-    var country: String? = null
+    @SerialName("city")
+    val city: String? = null,
 
-    @JsonProperty("region")
-    var region: String? = null
+    @SerialName("country")
+    val country: String? = null,
 
-    @JsonProperty("timezone")
-    var timezone: String? = null
+    @SerialName("region")
+    val region: String? = null,
 
-    @Override
-    fun toString(): String? {
-        return "UserLocation{" +
-                "type='" + type + '\'' +
-                ", city='" + city + '\'' +
-                ", country='" + country + '\'' +
-                ", region='" + region + '\'' +
-                ", timezone='" + timezone + '\'' +
-                '}'
-    }
-
-    class Builder {
-        private var type: String? = null
-        private var city: String? = null
-        private var country: String? = null
-        private var region: String? = null
-        private var timezone: String? = null
-
-        fun type(type: String?): Builder {
-            this.type = type
-            return this
-        }
-
-        fun city(city: String?): Builder {
-            this.city = city
-            return this
-        }
-
-        fun country(country: String?): Builder {
-            this.country = country
-            return this
-        }
-
-        fun region(region: String?): Builder {
-            this.region = region
-            return this
-        }
-
-        fun timezone(timezone: String?): Builder {
-            this.timezone = timezone
-            return this
-        }
-
-        fun build(): UserLocation {
-            val userLocation: UserLocation = com.volcengine.ark.runtime.model.responses.common.UserLocation()
-            userLocation.type = type
-            userLocation.city = city
-            userLocation.country = country
-            userLocation.region = region
-            userLocation.timezone = timezone
-            return userLocation
-        }
-    }
-
-    companion object {
-        fun builder(): Builder {
-            return com.volcengine.ark.runtime.model.responses.common.UserLocation.Builder()
-        }
-    }
-}
+    @SerialName("timezone")
+    val timezone: String? = null
+)

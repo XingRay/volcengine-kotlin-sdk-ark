@@ -1,26 +1,20 @@
 package com.volcengine.ark.runtime.model.responses.response
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DeleteResponseResponse {
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @JsonProperty("object")
+    @SerialName("object")
     var `object`: String? = null
         set(object) {
             field = this.`object`
         }
 
-    @JsonProperty("deleted")
+    @SerialName("deleted")
     var deleted: Boolean? = null
 
-    @Override
-    fun toString(): String? {
-        return "DeleteResponseResponse{" +
-                "id='" + id + '\'' +
-                ", object='" + this.`object` + '\'' +
-                ", deleted=" + deleted +
-                '}'
-    }
 }

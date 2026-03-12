@@ -1,25 +1,16 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DoubaoAppCallSearchSearchingEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_SEARCH_SEARCHING) {
-    @JsonProperty("block_index")
+    @SerialName("block_index")
     var blockIndex: Long? = null
 
-    @JsonProperty("searching_state")
+    @SerialName("searching_state")
     var searchingState: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppCallSearchSearchingEvent{" +
-                "type='" + getType() + '\'' +
-                ", blockIndex=" + blockIndex +
-                ", searchingState='" + searchingState + '\'' +
-                ", itemId='" + getItemId() + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", sequenceNumber=" + getSequenceNumber() +
-                '}'
-    }
 
     class Builder {
         private val event: DoubaoAppCallSearchSearchingEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallSearchSearchingEvent()

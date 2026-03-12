@@ -1,23 +1,14 @@
 package com.volcengine.ark.runtime.model.responses.event.outputtext
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class OutputTextDoneEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_OUTPUT_TEXT_DONE) {
-    @JsonProperty("content_index")
+    @SerialName("content_index")
     var contentIndex: Long? = null
 
-    @JsonProperty("text")
+    @SerialName("text")
     var text: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "OutputTextDoneEvent{" +
-                "contentIndex=" + contentIndex +
-                ", text='" + text + '\'' +
-                ", itemId='" + itemId + '\'' +
-                ", outputIndex=" + outputIndex +
-                ", type='" + type + '\'' +
-                ", sequenceNumber=" + sequenceNumber +
-                '}'
-    }
 }

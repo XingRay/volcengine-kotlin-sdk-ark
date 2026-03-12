@@ -1,39 +1,21 @@
 package com.volcengine.ark.runtime.model.multimodalembeddings
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class MultimodalEmbedding {
+
+@Serializable
+data class MultimodalEmbedding(
     /**
      * The type of object returned, should be "embedding"
      */
-    var `object`: String? = null
-        set(object) {
-            field = this.`object`
-        }
+    val `object`: String? = null,
 
     /**
      * The embedding vector
      */
-    var embedding: List<Double?>? = null
+    val embedding: List<Double?>? = null,
 
-    @JsonProperty("sparse_embedding")
-    private var sparseEmbedding: List<SparseEmbedding?>? = null
-
-    fun getSparseEmbedding(): List<SparseEmbedding?>? {
-        return sparseEmbedding
-    }
-
-    fun setSparseEmbedding(sparseEmbedding: List<SparseEmbedding?>?) {
-        this.sparseEmbedding = sparseEmbedding
-    }
-
-    @Override
-    fun toString(): String? {
-        return "Embedding{" +
-                "object='" + this.`object` + '\'' +
-                ", embedding=" + embedding +
-                ", sparseEmbedding=" + sparseEmbedding +
-                '}'
-    }
-}
+    @SerialName("sparse_embedding")
+    val sparseEmbedding: List<SparseEmbedding?>? = null
+)

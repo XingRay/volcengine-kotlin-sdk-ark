@@ -1,37 +1,17 @@
 package com.volcengine.ark.runtime.model.tokenization
+import kotlinx.serialization.Serializable
 
-class TokenizationRequest {
-    var model: String? = null
+@Serializable
+data class TokenizationRequest(
+    val model: String? = null,
 
-    var text: List<String?>? = null
+    val text: List<String?>? = null,
 
     /**
      * A unique identifier representing your end-user, which will help OpenAI to monitor and detect abuse.
      */
-    var user: String? = null
-
-    constructor(model: String?, text: List<String?>?) {
-        this.model = model
-        this.text = text
-    }
-
-    constructor(model: String?, text: List<String?>?, user: String?) {
-        this.model = model
-        this.text = text
-        this.user = user
-    }
-
-    constructor()
-
-    @Override
-    fun toString(): String? {
-        return "TokenizationRequest{" +
-                "model='" + model + '\'' +
-                ", text=" + text +
-                ", user='" + user + '\'' +
-                '}'
-    }
-
+    val user: String? = null
+) {
     class Builder private constructor() {
         private var model: String? = null
         private var text: List<String?>? = null

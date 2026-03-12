@@ -1,12 +1,14 @@
 package com.volcengine.ark.runtime.model.responses.event.imageprocess
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ImageProcessCallProcessingEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_IMAGE_PROCESS_CALL_PROGRESSING) {
-    @JsonProperty("action")
+    @SerialName("action")
     private var action: ImageProcessAction? = null
 
-    @JsonProperty("arguments")
+    @SerialName("arguments")
     private var arguments: ImageProcessArguments? = null
 
     fun getAction(): ImageProcessAction? {
@@ -25,15 +27,4 @@ class ImageProcessCallProcessingEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_
         this.arguments = arguments
     }
 
-    @Override
-    fun toString(): String? {
-        return "ImageProcessCallProcessingEvent{" +
-                "type='" + getType() + '\'' +
-                ", sequenceNumber=" + getSequenceNumber() +
-                ", itemId='" + getItemId() + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", action=" + action +
-                ", arguments=" + arguments +
-                '}'
-    }
 }

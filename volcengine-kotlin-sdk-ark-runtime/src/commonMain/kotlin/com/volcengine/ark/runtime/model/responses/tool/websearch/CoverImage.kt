@@ -1,25 +1,19 @@
 package com.volcengine.ark.runtime.model.responses.tool.websearch
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class CoverImage {
-    @JsonProperty("url")
+    @SerialName("url")
     var url: String? = null
 
-    @JsonProperty("width")
+    @SerialName("width")
     var width: Long? = null
 
-    @JsonProperty("height")
+    @SerialName("height")
     var height: Long? = null
 
-    @Override
-    fun toString(): String? {
-        return "CoverImage{" +
-                "url='" + url + '\'' +
-                ", width=" + width +
-                ", height=" + height +
-                '}'
-    }
 
     class Builder {
         private var url: String? = null

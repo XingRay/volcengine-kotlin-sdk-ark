@@ -1,9 +1,11 @@
 package com.volcengine.ark.runtime.model.responses.item.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DoubaoAppSearchResult {
-    @JsonProperty("text_card")
+    @SerialName("text_card")
     private var textCard: DoubaoAppSearchTextItem? = null
 
     fun getTextCard(): DoubaoAppSearchTextItem? {
@@ -29,12 +31,6 @@ class DoubaoAppSearchResult {
         }
     }
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppSearchResult{" +
-                "textCard=" + textCard +
-                '}'
-    }
 
     companion object {
         fun builder(): Builder {

@@ -1,15 +1,17 @@
 package com.volcengine.ark.runtime.model.responses.tool
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ToolWebSearch : ResponsesTool(ResponsesConstants.TOOL_TYPE_WEB_SEARCH) {
-    @JsonProperty("limit")
+    @SerialName("limit")
     var limit: Long? = null
 
-    @JsonProperty("user_location")
+    @SerialName("user_location")
     private var userLocation: UserLocation? = null
 
-    @JsonProperty("sources")
+    @SerialName("sources")
     var sources: List<String?>? = null
 
     fun getUserLocation(): UserLocation? {
@@ -20,15 +22,6 @@ class ToolWebSearch : ResponsesTool(ResponsesConstants.TOOL_TYPE_WEB_SEARCH) {
         this.userLocation = userLocation
     }
 
-    @Override
-    fun toString(): String? {
-        return "ToolWebSearch{" +
-                "type='" + getType() + '\'' +
-                ", limit=" + limit +
-                ", userLocation=" + userLocation +
-                ", sources=" + sources +
-                '}'
-    }
 
     class Builder {
         private var limit: Long? = null

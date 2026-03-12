@@ -1,42 +1,31 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class ItemMCPCall : BaseItem(ResponsesConstants.ITEM_TYPE_MCP_CALL), InputItem, OutputItem {
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @JsonProperty("server_label")
+    @SerialName("server_label")
     var serverLabel: String? = null
 
-    @JsonProperty("approval_request_id")
+    @SerialName("approval_request_id")
     var approvalRequestId: String? = null
 
-    @JsonProperty("arguments")
+    @SerialName("arguments")
     var arguments: String? = null
 
-    @JsonProperty("error")
+    @SerialName("error")
     var error: String? = null
 
-    @JsonProperty("name")
+    @SerialName("name")
     var name: String? = null
 
-    @JsonProperty("output")
+    @SerialName("output")
     var output: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "ItemMCPCall{" +
-                "id='" + id + '\'' +
-                ", serverLabel='" + serverLabel + '\'' +
-                ", approvalRequestId='" + approvalRequestId + '\'' +
-                ", arguments='" + arguments + '\'' +
-                ", error='" + error + '\'' +
-                ", name='" + name + '\'' +
-                ", output='" + output + '\'' +
-                '}'
-    }
 
     class Builder private constructor() {
         private var output: String? = null

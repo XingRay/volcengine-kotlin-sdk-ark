@@ -1,8 +1,13 @@
 package com.volcengine.ark.runtime.model.responses.content
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
-@JsonSubTypes([JsonSubTypes.Type(value = OutputContentItemText::class, name = ResponsesConstants.CONTENT_ITEM_TYPE_OUTPUT_TEXT)])
-abstract class OutputContentItem(@field:JsonProperty("type") var type: String?) 
+@Serializable(with = OutputContentItemPolymorphicSerializer::class)
+abstract class OutputContentItem(
+    @SerialName("type")
+    open val type: String
+) {
+    // 空构造函数（兼容序列化/反序列化）
+    constructor() : this("")
+}

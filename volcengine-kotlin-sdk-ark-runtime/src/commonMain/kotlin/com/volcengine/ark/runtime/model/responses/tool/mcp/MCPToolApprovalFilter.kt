@@ -1,13 +1,14 @@
 package com.volcengine.ark.runtime.model.responses.tool.mcp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class MCPToolApprovalFilter {
-    @JsonProperty("always")
+    @SerialName("always")
     private var always: MCPToolFilter? = null
 
-    @JsonProperty("never")
+    @SerialName("never")
     private var never: MCPToolFilter? = null
 
     fun getAlways(): MCPToolFilter? {
@@ -26,13 +27,6 @@ class MCPToolApprovalFilter {
         this.never = never
     }
 
-    @Override
-    fun toString(): String? {
-        return "MCPToolApprovalFilter{" +
-                "always=" + always +
-                ", never=" + never +
-                '}'
-    }
 
     class Builder private constructor() {
         private var always: MCPToolFilter? = null

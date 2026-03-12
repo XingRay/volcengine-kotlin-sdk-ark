@@ -1,8 +1,10 @@
 package com.volcengine.ark.runtime.model.responses.event
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ItemEvent(type: String?) : OutputEvent(type) {
-    @JsonProperty("item_id")
+    @SerialName("item_id")
     var itemId: String? = null
 }

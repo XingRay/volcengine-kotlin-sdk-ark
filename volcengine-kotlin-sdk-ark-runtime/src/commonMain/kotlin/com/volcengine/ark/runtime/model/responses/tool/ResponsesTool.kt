@@ -1,8 +1,8 @@
 package com.volcengine.ark.runtime.model.responses.tool
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes(
     [JsonSubTypes.Type(value = ToolFunction::class, name = "function"), JsonSubTypes.Type(
@@ -13,8 +13,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
         name = "doubao_app"
     )]
 )
+@Serializable
 abstract class ResponsesTool {
-    @JsonProperty("type")
+    @SerialName("type")
     var type: String? = null
 
     constructor()

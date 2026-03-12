@@ -1,12 +1,14 @@
 package com.volcengine.ark.runtime.model.responses.tool.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DoubaoAppFeatureItem {
-    @JsonProperty("type")
+    @SerialName("type")
     var type: String? = null
 
-    @JsonProperty("role_description")
+    @SerialName("role_description")
     var roleDescription: String? = null
 
     class Builder {
@@ -31,13 +33,6 @@ class DoubaoAppFeatureItem {
         }
     }
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppFeatureItem{" +
-                "type='" + type + '\'' +
-                ", roleDescription='" + roleDescription + '\'' +
-                '}'
-    }
 
     companion object {
         fun builder(): Builder {

@@ -1,53 +1,31 @@
 package com.volcengine.ark.runtime.model.tokenization
+import kotlinx.serialization.Serializable
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class TokenizationResult {
+@Serializable
+data class TokenizationResult(
     /**
      * Unique id assigned to this tokenization
      */
-    var id: String? = null
+    val id: String? = null,
 
     /**
      * The creation time in epoch seconds.
      */
-    var created: String? = null
+    val created: String? = null,
 
     /**
      * The model used for generating tokenization
      */
-    var model: String? = null
+    val model: String? = null,
 
     /**
      * The type of object returned, should be "list"
      */
-    var `object`: String? = null
-        set(object) {
-            field = this.`object`
-        }
+    val `object`: String? = null,
 
     /**
      * A list of the calculated tokenization
      */
-    var data: List<Tokenization?>? = null
-
-    fun getData(): List<Tokenization?>? {
-        return data
-    }
-
-    fun setData(data: List<Tokenization?>?) {
-        this.data = data
-    }
-
-    @Override
-    fun toString(): String? {
-        return "TokenizationResult{" +
-                "id='" + id + '\'' +
-                ", created='" + created + '\'' +
-                ", model='" + model + '\'' +
-                ", object='" + this.`object` + '\'' +
-                ", data=" + data +
-                '}'
-    }
-}
+    val data: List<Tokenization?>? = null
+)

@@ -1,51 +1,22 @@
 package com.volcengine.ark.runtime.model.multimodalembeddings
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class MultimodalEmbeddingUsage {
+@Serializable
+data class MultimodalEmbeddingUsage(
     /**
      * The number of prompt tokens used.
      */
-    @JsonProperty("prompt_tokens")
-    var promptTokens: Long = 0
+    @SerialName("prompt_tokens")
+    val promptTokens: Long = 0,
 
     /**
      * The number of total tokens used
      */
-    @JsonProperty("total_tokens")
-    var totalTokens: Long = 0
+    @SerialName("total_tokens")
+    val totalTokens: Long = 0,
 
-    @JsonProperty("prompt_tokens_details")
-    private var promptTokensDetails: MultimodalEmbeddingPromptTokensDetails? = null
-
-    constructor(promptTokens: Long, completionTokens: Long, totalTokens: Long) {
-        this.promptTokens = promptTokens
-        this.totalTokens = totalTokens
-    }
-
-    constructor(promptTokens: Long, completionTokens: Long, totalTokens: Long, promptTokensDetails: MultimodalEmbeddingPromptTokensDetails?) {
-        this.promptTokens = promptTokens
-        this.totalTokens = totalTokens
-        this.promptTokensDetails = promptTokensDetails
-    }
-
-    constructor()
-
-    fun getPromptTokensDetails(): MultimodalEmbeddingPromptTokensDetails? {
-        return promptTokensDetails
-    }
-
-    fun setPromptTokensDetails(promptTokensDetails: MultimodalEmbeddingPromptTokensDetails?) {
-        this.promptTokensDetails = promptTokensDetails
-    }
-
-    @Override
-    fun toString(): String? {
-        return "Usage{" +
-                "promptTokens=" + promptTokens +
-                ", totalTokens=" + totalTokens +
-                ", promptTokensDetails=" + promptTokensDetails +
-                '}'
-    }
-}
+    @SerialName("prompt_tokens_details")
+    val promptTokensDetails: MultimodalEmbeddingPromptTokensDetails? = null
+)

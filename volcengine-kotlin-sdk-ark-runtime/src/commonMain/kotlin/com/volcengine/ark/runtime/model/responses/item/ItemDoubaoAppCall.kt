@@ -1,19 +1,20 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class ItemDoubaoAppCall : BaseItem(ResponsesConstants.ITEM_TYPE_DOUBAO_APP_CALL), OutputItem {
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @JsonProperty("feature")
+    @SerialName("feature")
     var feature: String? = null
 
-    @JsonProperty("blocks")
+    @SerialName("blocks")
     private var blocks: List<DoubaoAppCallBlock?>? = null
 
-    @JsonProperty("status")
+    @SerialName("status")
     var status: String? = null
 
     fun getBlocks(): List<DoubaoAppCallBlock?>? {
@@ -24,16 +25,6 @@ class ItemDoubaoAppCall : BaseItem(ResponsesConstants.ITEM_TYPE_DOUBAO_APP_CALL)
         this.blocks = blocks
     }
 
-    @Override
-    fun toString(): String? {
-        return "ItemDoubaoAppCall{" +
-                "type='" + getType() + '\'' +
-                ", id='" + id + '\'' +
-                ", feature='" + feature + '\'' +
-                ", blocks=" + blocks +
-                ", status='" + status + '\'' +
-                '}'
-    }
 
     class Builder {
         private var id: String? = null

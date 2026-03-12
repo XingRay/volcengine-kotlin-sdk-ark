@@ -1,25 +1,17 @@
 package com.volcengine.ark.runtime.model.responses.event
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ErrorEvent : StreamEvent(ResponsesConstants.EVENT_TYPE_ERROR) {
-    @JsonProperty("code")
+    @SerialName("code")
     var code: String? = null
 
-    @JsonProperty("message")
+    @SerialName("message")
     var message: String? = null
 
-    @JsonProperty("param")
+    @SerialName("param")
     var param: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "ErrorEvent{" +
-                "type='" + getType() + '\'' +
-                ", sequenceNumber=" + getSequenceNumber() +
-                ", code='" + code + '\'' +
-                ", message='" + message + '\'' +
-                ", param='" + param + '\'' +
-                '}'
-    }
 }

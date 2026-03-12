@@ -1,16 +1,17 @@
 package com.volcengine.ark.runtime.model.responses.item.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class DoubaoAppSearchTextItem {
-    @JsonProperty("title")
+    @SerialName("title")
     var title: String? = null
 
-    @JsonProperty("sitename")
+    @SerialName("sitename")
     var siteName: String? = null
 
-    @JsonProperty("url")
+    @SerialName("url")
     var url: String? = null
 
     class Builder {
@@ -42,14 +43,6 @@ class DoubaoAppSearchTextItem {
         }
     }
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppSearchTextItem{" +
-                "title='" + title + '\'' +
-                ", siteName='" + siteName + '\'' +
-                ", url='" + url + '\'' +
-                '}'
-    }
 
     companion object {
         fun builder(): Builder {

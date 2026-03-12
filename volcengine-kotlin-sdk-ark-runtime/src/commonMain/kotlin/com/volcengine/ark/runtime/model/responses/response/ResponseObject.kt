@@ -1,84 +1,86 @@
 package com.volcengine.ark.runtime.model.responses.response
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ResponseObject {
-    @JsonProperty("created_at")
+    @SerialName("created_at")
     var createdAt: Long? = null
 
-    @JsonProperty("error")
+    @SerialName("error")
     var error: Error? = null
 
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @JsonProperty("incomplete_details")
+    @SerialName("incomplete_details")
     private var incompleteDetails: IncompleteDetails? = null
 
-    @JsonProperty("max_output_tokens")
+    @SerialName("max_output_tokens")
     var maxOutputTokens: Long? = null
 
-    @JsonProperty("model")
+    @SerialName("model")
     var model: String? = null
 
-    @JsonProperty("object")
+    @SerialName("object")
     var `object`: String? = null
         set(object) {
             field = this.`object`
         }
 
-    @JsonProperty("output")
+    @SerialName("output")
     private var output: List<BaseItem?>? = null
 
-    @JsonProperty("previous_response_id")
+    @SerialName("previous_response_id")
     var previousResponseId: String? = null
 
-    @JsonProperty("thinking")
+    @SerialName("thinking")
     private var thinking: ResponsesThinking? = null
 
-    @JsonProperty("reasoning")
+    @SerialName("reasoning")
     private var reasoning: ResponsesReasoning? = null
 
-    @JsonProperty("service_tier")
+    @SerialName("service_tier")
     var serviceTier: String? = null
 
-    @JsonProperty("status")
+    @SerialName("status")
     var status: String? = null
 
-    @JsonProperty("temperature")
+    @SerialName("temperature")
     var temperature: Double? = null
 
-    @JsonProperty("tools")
+    @SerialName("tools")
     private var tools: List<ResponsesTool?>? = null
 
-    @JsonProperty("top_p")
+    @SerialName("top_p")
     var topP: Double? = null
 
-    @JsonProperty("usage")
+    @SerialName("usage")
     private var usage: Usage? = null
 
-    @JsonProperty("caching")
+    @SerialName("caching")
     private var caching: ResponsesCaching? = null
 
-    @JsonProperty("text")
+    @SerialName("text")
     private var text: ResponsesText? = null
 
-    @JsonProperty("instructions")
+    @SerialName("instructions")
     var instructions: String? = null
 
-    @JsonProperty("store")
+    @SerialName("store")
     var store: Boolean? = null
 
-    @JsonProperty("expire_at")
+    @SerialName("expire_at")
     var expireAt: Long? = null
 
-    @JsonProperty("tool_choice")
+    @SerialName("tool_choice")
     private var toolChoice: ResponsesToolChoice? = null
 
-    @JsonProperty("parallel_tool_calls")
+    @SerialName("parallel_tool_calls")
     var parallelToolCalls: Boolean? = null
 
-    @JsonProperty("max_tool_calls")
+    @SerialName("max_tool_calls")
     var maxToolCalls: Long? = null
 
     fun getIncompleteDetails(): IncompleteDetails? {
@@ -153,34 +155,4 @@ class ResponseObject {
         this.toolChoice = toolChoice
     }
 
-    @Override
-    fun toString(): String? {
-        return "ResponseObject{" +
-                "createdAt=" + createdAt +
-                ", error=" + error +
-                ", id='" + id + '\'' +
-                ", incompleteDetails=" + incompleteDetails +
-                ", maxOutputTokens=" + maxOutputTokens +
-                ", model='" + model + '\'' +
-                ", object='" + this.`object` + '\'' +
-                ", output=" + output +
-                ", previousResponseId='" + previousResponseId + '\'' +
-                ", thinking=" + thinking +
-                ", reasoning=" + reasoning +
-                ", serviceTier='" + serviceTier + '\'' +
-                ", status='" + status + '\'' +
-                ", temperature=" + temperature +
-                ", tools=" + tools +
-                ", topP=" + topP +
-                ", usage=" + usage +
-                ", caching=" + caching +
-                ", text=" + text +
-                ", instructions='" + instructions + '\'' +
-                ", store=" + store +
-                ", expireAt=" + expireAt +
-                ", toolChoice=" + toolChoice +
-                ", parallelToolCalls=" + parallelToolCalls +
-                ", maxToolCalls=" + maxToolCalls +
-                '}'
-    }
 }

@@ -1,16 +1,17 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class ItemMCPListTools : BaseItem(ResponsesConstants.ITEM_TYPE_MCP_LIST_TOOLS), InputItem, OutputItem {
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @JsonProperty("server_label")
+    @SerialName("server_label")
     var serverLabel: String? = null
 
-    @JsonProperty("tools")
+    @SerialName("tools")
     private var tools: List<MCPTool?>? = null
 
     fun getTools(): List<MCPTool?>? {
@@ -21,14 +22,6 @@ class ItemMCPListTools : BaseItem(ResponsesConstants.ITEM_TYPE_MCP_LIST_TOOLS), 
         this.tools = tools
     }
 
-    @Override
-    fun toString(): String? {
-        return "ItemMCPListTools{" +
-                "id='" + id + '\'' +
-                ", serverLabel='" + serverLabel + '\'' +
-                ", tools=" + tools +
-                '}'
-    }
 
     class Builder private constructor() {
         private var id: String? = null

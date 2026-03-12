@@ -1,22 +1,14 @@
 package com.volcengine.ark.runtime.model.responses.event.mcp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class MCPCallArgumentsDeltaEvent : OutputEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_MCP_CALL_ARGUMENTS_DELTA) {
-    @JsonProperty("item_id")
+    @SerialName("item_id")
     var itemId: String? = null
 
-    @JsonProperty("delta")
+    @SerialName("delta")
     var delta: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "MCPCallArgumentsDeltaEvent{" +
-                "itemId='" + itemId + '\'' +
-                ", delta='" + delta + '\'' +
-                ", outputIndex=" + outputIndex +
-                ", type='" + type + '\'' +
-                ", sequenceNumber=" + sequenceNumber +
-                '}'
-    }
 }

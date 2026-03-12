@@ -1,24 +1,26 @@
 package com.volcengine.ark.runtime.model.responses.response
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ListInputItemsResponse {
-    @JsonProperty("object")
+    @SerialName("object")
     var `object`: String? = null
         set(object) {
             field = this.`object`
         }
 
-    @JsonProperty("data")
+    @SerialName("data")
     private var data: List<BaseItem?>? = null
 
-    @JsonProperty("first_id")
+    @SerialName("first_id")
     var firstId: String? = null
 
-    @JsonProperty("last_id")
+    @SerialName("last_id")
     var lastId: String? = null
 
-    @JsonProperty("has_more")
+    @SerialName("has_more")
     var hasMore: Boolean? = null
 
     fun getData(): List<BaseItem?>? {
@@ -29,14 +31,4 @@ class ListInputItemsResponse {
         this.data = data
     }
 
-    @Override
-    fun toString(): String? {
-        return "ListInputItemsResponse{" +
-                "object='" + this.`object` + '\'' +
-                ", data=" + data +
-                ", firstId='" + firstId + '\'' +
-                ", lastId='" + lastId + '\'' +
-                ", hasMore=" + hasMore +
-                '}'
-    }
 }

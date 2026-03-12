@@ -1,51 +1,42 @@
 package com.volcengine.ark.runtime.model.responses.request
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ListInputItemsRequest {
-    @JsonProperty("response_id")
+    @SerialName("response_id")
     var responseId: String? = null
 
-    @JsonProperty("after")
+    @SerialName("after")
     var after: String? = null
 
-    @JsonProperty("before")
+    @SerialName("before")
     var before: String? = null
 
-    @JsonProperty("limit")
-    private var limit: Integer? = null
+    @SerialName("limit")
+    private var limit: Int? = null
 
-    @JsonProperty("order")
+    @SerialName("order")
     var order: String? = null
 
-    @JsonProperty("include")
+    @SerialName("include")
     var include: List<String?>? = null
 
-    fun getLimit(): Integer? {
+    fun getLimit(): Int? {
         return limit
     }
 
-    fun setLimit(limit: Integer?) {
+    fun setLimit(limit: Int?) {
         this.limit = limit
     }
 
-    @Override
-    fun toString(): String? {
-        return "ListInputItemsRequest{" +
-                "responseId='" + responseId + '\'' +
-                ", after='" + after + '\'' +
-                ", before='" + before + '\'' +
-                ", limit=" + limit +
-                ", order='" + order + '\'' +
-                ", include=" + include +
-                '}'
-    }
 
     class Builder {
         private var responseId: String? = null
         private var after: String? = null
         private var before: String? = null
-        private var limit: Integer? = null
+        private var limit: Int? = null
         private var order: String? = null
         private var include: List<String?>? = null
 
@@ -64,7 +55,7 @@ class ListInputItemsRequest {
             return this
         }
 
-        fun limit(limit: Integer?): Builder {
+        fun limit(limit: Int?): Builder {
             this.limit = limit
             return this
         }

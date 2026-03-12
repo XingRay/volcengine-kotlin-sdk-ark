@@ -1,39 +1,31 @@
 package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnore
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class ChatFunctionProperty {
-    @JsonIgnore
-    var name: String? = null
 
-    var type: String? = null
+@Serializable
+data class ChatFunctionProperty(
+    @Transient
+    val name: String? = null,
 
-    @JsonIgnore
-    var required: Boolean? = null
+    val type: String? = null,
 
-    var description: String? = null
+    @Transient
+    val required: Boolean? = null,
 
-    var items: ChatFunctionProperty? = null
+    val description: String? = null,
 
-    @JsonProperty("enum")
-    var enumValues: Set<*>? = null
+    val items: ChatFunctionProperty? = null,
 
+    @SerialName("enum")
+    val enumValues: Set<*>? = null
+) {
     fun builder(): Builder {
-        return com.volcengine.ark.runtime.model.completion.chat.ChatFunctionProperty.Builder()
+        return Builder()
     }
 
-    @Override
-    fun toString(): String? {
-        return "ChatFunctionProperty{" +
-                "name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", required=" + required +
-                ", description='" + description + '\'' +
-                ", items=" + items +
-                ", enumValues=" + enumValues +
-                '}'
-    }
 
     class Builder {
         private var name: String? = null
@@ -74,14 +66,14 @@ class ChatFunctionProperty {
         }
 
         fun build(): ChatFunctionProperty {
-            val chatFunctionProperty: ChatFunctionProperty = com.volcengine.ark.runtime.model.completion.chat.ChatFunctionProperty()
-            chatFunctionProperty.name = name
-            chatFunctionProperty.type = type
-            chatFunctionProperty.required = required
-            chatFunctionProperty.description = description
-            chatFunctionProperty.items = items
-            chatFunctionProperty.enumValues = enumValues
-            return chatFunctionProperty
+            return ChatFunctionProperty(
+                name = name,
+                type = type,
+                required = required,
+                description = description,
+                items = items,
+                enumValues = enumValues,
+            )
         }
     }
 }

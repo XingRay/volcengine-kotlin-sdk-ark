@@ -1,8 +1,8 @@
 package com.volcengine.ark.runtime.model.responses.event
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes(
     [JsonSubTypes.Type(value = ResponseCreatedEvent::class, name = ResponsesConstants.EVENT_TYPE_RESPONSE_CREATED), JsonSubTypes.Type(
@@ -112,15 +112,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
         name = ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_SEARCHING
     ), JsonSubTypes.Type(value = DoubaoAppCallReasoningSearchCompletedEvent::class, name = ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_SEARCH_COMPLETED)]
 )
+@Serializable
 abstract class StreamEvent(@field:JsonProperty("type") var type: String?) {
-    @JsonProperty("sequence_number")
+    @SerialName("sequence_number")
     var sequenceNumber: Long? = null
 
-    @Override
-    fun toString(): String? {
-        return getClass().getSimpleName() + "{" +
-                "type='" + type + '\'' +
-                ", sequenceNumber=" + sequenceNumber +
-                '}'
-    }
 }

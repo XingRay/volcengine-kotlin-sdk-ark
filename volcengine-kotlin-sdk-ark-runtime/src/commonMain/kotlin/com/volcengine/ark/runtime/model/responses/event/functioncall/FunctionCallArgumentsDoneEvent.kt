@@ -1,19 +1,11 @@
 package com.volcengine.ark.runtime.model.responses.event.functioncall
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class FunctionCallArgumentsDoneEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_FUNCTION_CALL_ARGUMENTS_DONE) {
-    @JsonProperty("arguments")
+    @SerialName("arguments")
     var arguments: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "FunctionCallArgumentsDoneEvent{" +
-                "arguments='" + arguments + '\'' +
-                ", itemId='" + itemId + '\'' +
-                ", outputIndex=" + outputIndex +
-                ", type='" + type + '\'' +
-                ", sequenceNumber=" + sequenceNumber +
-                '}'
-    }
 }

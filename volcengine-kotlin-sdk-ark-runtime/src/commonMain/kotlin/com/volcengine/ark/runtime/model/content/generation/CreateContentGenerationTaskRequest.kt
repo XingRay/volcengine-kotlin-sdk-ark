@@ -1,126 +1,59 @@
 package com.volcengine.ark.runtime.model.content.generation
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class CreateContentGenerationTaskRequest {
-    @JsonProperty("model")
-    var model: String? = null
 
-    @JsonProperty("content")
-    var content: List<Content?>? = null
+@Serializable
+data class CreateContentGenerationTaskRequest(
+    @SerialName("model")
+    val model: String? = null,
 
-    @JsonProperty("callback_url")
-    var callbackUrl: String? = null
+    @SerialName("content")
+    val content: List<Content>? = null,
 
-    @JsonProperty("return_last_frame")
-    var returnLastFrame: Boolean? = null
+    @SerialName("callback_url")
+    val callbackUrl: String? = null,
 
-    @JsonProperty("service_tier")
-    var serviceTier: String? = null
+    @SerialName("return_last_frame")
+    val returnLastFrame: Boolean? = null,
 
-    @JsonProperty("execution_expires_after")
-    var executionExpiresAfter: Long? = null
+    @SerialName("service_tier")
+    val serviceTier: String? = null,
 
-    @JsonProperty("generate_audio")
-    var generateAudio: Boolean? = null
+    @SerialName("execution_expires_after")
+    val executionExpiresAfter: Long? = null,
 
-    @JsonProperty("camera_fixed")
-    var cameraFixed: Boolean? = null
+    @SerialName("generate_audio")
+    val generateAudio: Boolean? = null,
 
-    @JsonProperty("watermark")
-    var watermark: Boolean? = null
+    @SerialName("camera_fixed")
+    val cameraFixed: Boolean? = null,
 
-    @JsonProperty("seed")
-    var seed: Long? = null
+    @SerialName("watermark")
+    val watermark: Boolean? = null,
 
-    @JsonProperty("resolution")
-    var resolution: String? = null
+    @SerialName("seed")
+    val seed: Long? = null,
 
-    @JsonProperty("ratio")
-    var ratio: String? = null
+    @SerialName("resolution")
+    val resolution: String? = null,
 
-    @JsonProperty("duration")
-    var duration: Long? = null
+    @SerialName("ratio")
+    val ratio: String? = null,
 
-    @JsonProperty("frames")
-    var frames: Long? = null
+    @SerialName("duration")
+    val duration: Long? = null,
 
-    @JsonProperty("draft")
-    var draft: Boolean? = null
+    @SerialName("frames")
+    val frames: Long? = null,
 
-    constructor()
-
-    constructor(model: String?, content: List<Content?>?) {
-        this.model = model
-        this.content = content
-    }
-
-    constructor(model: String?, content: List<Content?>?, callbackUrl: String?, returnLastFrame: Boolean?) {
-        this.model = model
-        this.content = content
-        this.callbackUrl = callbackUrl
-        this.returnLastFrame = returnLastFrame
-    }
-
-    constructor(
-        model: String?,
-        content: List<Content?>?,
-        callbackUrl: String?,
-        returnLastFrame: Boolean?,
-        serviceTier: String?,
-        executionExpiresAfter: Long?,
-        generateAudio: Boolean?,
-        cameraFixed: Boolean?,
-        watermark: Boolean?,
-        seed: Long?,
-        resolution: String?,
-        ratio: String?,
-        duration: Long?,
-        frames: Long?,
-        draft: Boolean?
-    ) {
-        this.model = model
-        this.content = content
-        this.callbackUrl = callbackUrl
-        this.returnLastFrame = returnLastFrame
-        this.serviceTier = serviceTier
-        this.executionExpiresAfter = executionExpiresAfter
-        this.generateAudio = generateAudio
-        this.cameraFixed = cameraFixed
-        this.watermark = watermark
-        this.seed = seed
-        this.resolution = resolution
-        this.ratio = ratio
-        this.duration = duration
-        this.frames = frames
-        this.draft = draft
-    }
-
-    @Override
-    fun toString(): String? {
-        return "CreateContentGenerationTaskRequest{" +
-                "model='" + model + '\'' +
-                ", content=" + content +
-                ", callbackUrl='" + callbackUrl + '\'' +
-                ", returnLastFrame=" + returnLastFrame +
-                ", serviceTier='" + serviceTier + '\'' +
-                ", executionExpiresAfter=" + executionExpiresAfter +
-                ", generateAudio=" + generateAudio +
-                ", cameraFixed=" + cameraFixed +
-                ", watermark=" + watermark +
-                ", seed=" + seed +
-                ", resolution='" + resolution + '\'' +
-                ", ratio='" + ratio + '\'' +
-                ", duration=" + duration +
-                ", frames=" + frames +
-                ", draft=" + draft +
-                '}'
-    }
-
+    @SerialName("draft")
+    val draft: Boolean? = null
+) {
     class Builder private constructor() {
         private var model: String? = null
-        private var content: List<Content?>? = null
+        private var content: List<Content>? = null
         private var callbackUrl: String? = null
         private var returnLastFrame: Boolean? = null
         private var serviceTier: String? = null
@@ -140,7 +73,7 @@ class CreateContentGenerationTaskRequest {
             return this
         }
 
-        fun content(content: List<Content?>?): Builder {
+        fun content(content: List<Content>?): Builder {
             this.content = content
             return this
         }
@@ -211,197 +144,92 @@ class CreateContentGenerationTaskRequest {
         }
 
         fun build(): CreateContentGenerationTaskRequest {
-            val createContentGenerationTaskRequest: CreateContentGenerationTaskRequest = com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest()
-            createContentGenerationTaskRequest.model = model
-            createContentGenerationTaskRequest.content = content
-            createContentGenerationTaskRequest.callbackUrl = callbackUrl
-            createContentGenerationTaskRequest.returnLastFrame = returnLastFrame
-            createContentGenerationTaskRequest.serviceTier = serviceTier
-            createContentGenerationTaskRequest.executionExpiresAfter = executionExpiresAfter
-            createContentGenerationTaskRequest.generateAudio = generateAudio
-            createContentGenerationTaskRequest.cameraFixed = cameraFixed
-            createContentGenerationTaskRequest.watermark = watermark
-            createContentGenerationTaskRequest.seed = seed
-            createContentGenerationTaskRequest.resolution = resolution
-            createContentGenerationTaskRequest.ratio = ratio
-            createContentGenerationTaskRequest.duration = duration
-            createContentGenerationTaskRequest.frames = frames
-            createContentGenerationTaskRequest.draft = draft
-            return createContentGenerationTaskRequest
+            return CreateContentGenerationTaskRequest(
+                model = model,
+                content = content,
+                callbackUrl = callbackUrl,
+                returnLastFrame = returnLastFrame,
+                serviceTier = serviceTier,
+                executionExpiresAfter = executionExpiresAfter,
+                generateAudio = generateAudio,
+                cameraFixed = cameraFixed,
+                watermark = watermark,
+                seed = seed,
+                resolution = resolution,
+                ratio = ratio,
+                duration = duration,
+                frames = frames,
+                draft = draft,
+            )
         }
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    class Content {
-        @JsonProperty("type")
-        var type: String? = null
+    @Serializable
+    data class Content(
+        @SerialName("type")
+        val type: String? = null,
 
-        @JsonProperty("text")
-        var text: String? = null
+        @SerialName("text")
+        val text: String? = null,
 
-        @JsonProperty("image_url")
-        var imageUrl: ImageUrl? = null
+        @SerialName("image_url")
+        val imageUrl: ImageUrl? = null,
 
-        @JsonProperty("role")
-        var role: String? = null
+        @SerialName("role")
+        val role: String? = null,
 
-        @JsonProperty("draft_task")
-        var draftTask: DraftTask? = null
-
-        constructor()
-
-        constructor(type: String?, text: String?, imageUrl: ImageUrl?, role: String?, draftTask: DraftTask?) {
-            this.type = type
-            this.text = text
-            this.imageUrl = imageUrl
-            this.role = role
-            this.draftTask = draftTask
-        }
-
-        @Override
-        fun toString(): String? {
-            return "Content{" +
-                    "type='" + type + '\'' +
-                    ", text='" + text + '\'' +
-                    ", imageUrl=" + imageUrl +
-                    ", role=" + role +
-                    ", draftTask=" + draftTask +
-                    '}'
-        }
-
-        class Builder private constructor() {
-            private var type: String? = null
-            private var text: String? = null
-            private var imageUrl: ImageUrl? = null
-            private var role: String? = null
-            private var draftTask: DraftTask? = null
-
-            fun type(type: String?): Builder {
-                this.type = type
-                return this
-            }
-
-            fun text(text: String?): Builder {
-                this.text = text
-                return this
-            }
-
-            fun imageUrl(imageUrl: ImageUrl?): Builder {
-                this.imageUrl = imageUrl
-                return this
-            }
-
-            fun role(role: String?): Builder {
-                this.role = role
-                return this
-            }
-
-            fun draftTask(draftTask: DraftTask?): Builder {
-                this.draftTask = draftTask
-                return this
-            }
-
-            fun build(): Content {
-                val content: Content = com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.Content()
-                content.type = type
-                content.text = text
-                content.imageUrl = imageUrl
-                content.role = role
-                content.draftTask = draftTask
-                return content
-            }
-        }
-
+        @SerialName("draft_task")
+        val draftTask: DraftTask? = null
+    ) {
         companion object {
+
+            class Builder {
+                private var type: String? = null
+                private var text: String? = null
+                private var imageUrl: ImageUrl? = null
+                private var role: String? = null
+                private var draftTask: DraftTask? = null
+
+                fun type(type: String?): Builder {
+                    this.type = type
+                    return this
+                }
+
+                fun text(text: String?): Builder {
+                    this.text = text
+                    return this
+                }
+
+                fun imageUrl(imageUrl: ImageUrl?): Builder {
+                    this.imageUrl = imageUrl
+                    return this
+                }
+
+                fun role(role: String?): Builder {
+                    this.role = role
+                    return this
+                }
+
+                fun draftTask(draftTask: DraftTask?): Builder {
+                    this.draftTask = draftTask
+                    return this
+                }
+
+                fun build(): Content {
+                    return Content(
+                        type = type,
+                        text = text,
+                        imageUrl = imageUrl,
+                        role = role,
+                        draftTask = draftTask,
+                    )
+                }
+            }
+
             fun builder(): Builder {
-                return com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.Content.Builder()
-            }
-        }
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    class ImageUrl {
-        @JsonProperty("url")
-        var url: String? = null
-
-        constructor()
-
-        constructor(url: String?) {
-            this.url = url
-        }
-
-        @Override
-        fun toString(): String? {
-            return "ImageUrl{" +
-                    "url='" + url + '\'' +
-                    '}'
-        }
-
-        class Builder private constructor() {
-            private var url: String? = null
-
-            fun url(url: String?): Builder {
-                this.url = url
-                return this
-            }
-
-            fun build(): ImageUrl {
-                val imageUrl: ImageUrl = com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.ImageUrl()
-                imageUrl.url = url
-                return imageUrl
+                return Builder()
             }
         }
 
-        companion object {
-            fun builder(): Builder {
-                return com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.ImageUrl.Builder()
-            }
-        }
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    class DraftTask {
-        @JsonProperty("id")
-        var id: String? = null
-
-        constructor()
-
-        constructor(id: String?) {
-            this.id = id
-        }
-
-        @Override
-        fun toString(): String? {
-            return "DraftTask{" +
-                    "id='" + id + '\'' +
-                    '}'
-        }
-
-        class Builder private constructor() {
-            private var id: String? = null
-
-            fun id(id: String?): Builder {
-                this.id = id
-                return this
-            }
-
-            fun build(): DraftTask {
-                val draftTask: DraftTask = com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.DraftTask()
-                draftTask.id = id
-                return draftTask
-            }
-        }
-
-        companion object {
-            fun builder(): Builder {
-                return com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.DraftTask.Builder()
-            }
-        }
-    }
-
-    companion object {
-        fun builder(): Builder {
-            return com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.Builder()
-        }
     }
 }

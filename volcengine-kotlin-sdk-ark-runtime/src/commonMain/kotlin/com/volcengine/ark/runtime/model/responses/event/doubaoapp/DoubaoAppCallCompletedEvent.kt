@@ -1,12 +1,14 @@
 package com.volcengine.ark.runtime.model.responses.event.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class DoubaoAppCallCompletedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_COMPLETED) {
-    @JsonProperty("feature")
+    @SerialName("feature")
     var feature: String? = null
 
-    @JsonProperty("blocks")
+    @SerialName("blocks")
     private var blocks: List<DoubaoAppCallBlock?>? = null
 
     fun getBlocks(): List<DoubaoAppCallBlock?>? {
@@ -17,17 +19,6 @@ class DoubaoAppCallCompletedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESP
         this.blocks = blocks
     }
 
-    @Override
-    fun toString(): String? {
-        return "DoubaoAppCallCompletedEvent{" +
-                "type='" + getType() + '\'' +
-                ", feature='" + feature + '\'' +
-                ", blocks=" + blocks +
-                ", itemId='" + getItemId() + '\'' +
-                ", outputIndex=" + getOutputIndex() +
-                ", sequenceNumber=" + getSequenceNumber() +
-                '}'
-    }
 
     class Builder {
         private val event: DoubaoAppCallCompletedEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallCompletedEvent()

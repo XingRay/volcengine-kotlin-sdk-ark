@@ -1,21 +1,16 @@
 package com.volcengine.ark.runtime.model.responses.tool
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class FunctionToolChoice {
-    @JsonProperty("type")
+    @SerialName("type")
     var type: String? = null
 
-    @JsonProperty("name")
+    @SerialName("name")
     var name: String? = null
 
-    @Override
-    fun toString(): String? {
-        return "FunctionToolChoice{" +
-                "type='" + type + '\'' +
-                ", name='" + name + '\'' +
-                '}'
-    }
 
     class Builder {
         private var type: String? = null

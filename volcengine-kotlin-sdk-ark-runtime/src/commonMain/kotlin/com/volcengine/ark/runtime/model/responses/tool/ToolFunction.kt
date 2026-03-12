@@ -1,18 +1,20 @@
 package com.volcengine.ark.runtime.model.responses.tool
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ToolFunction : ResponsesTool(ResponsesConstants.TOOL_TYPE_FUNCTION) {
-    @JsonProperty("name")
+    @SerialName("name")
     var name: String? = null
 
-    @JsonProperty("strict")
+    @SerialName("strict")
     var strict: Boolean? = null
 
-    @JsonProperty("description")
+    @SerialName("description")
     var description: String? = null
 
-    @JsonProperty("parameters")
+    @SerialName("parameters")
     private var parameters: JsonNode? = null
 
     fun getParameters(): JsonNode? {
@@ -23,16 +25,6 @@ class ToolFunction : ResponsesTool(ResponsesConstants.TOOL_TYPE_FUNCTION) {
         this.parameters = parameters
     }
 
-    @Override
-    fun toString(): String? {
-        return "ToolFunction{" +
-                "name='" + name + '\'' +
-                ", strict=" + strict +
-                ", type='" + getType() + '\'' +
-                ", description='" + description + '\'' +
-                ", parameters=" + parameters +
-                '}'
-    }
 
     class Builder {
         private var name: String? = null

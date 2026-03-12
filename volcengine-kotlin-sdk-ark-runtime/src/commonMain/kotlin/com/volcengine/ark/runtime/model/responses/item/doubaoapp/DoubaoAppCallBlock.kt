@@ -1,8 +1,8 @@
 package com.volcengine.ark.runtime.model.responses.item.doubaoapp
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes(
     [JsonSubTypes.Type(value = DoubaoAppCallBlockOutputText::class, name = "output_text"), JsonSubTypes.Type(
@@ -10,8 +10,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
         name = "reasoning_text"
     ), JsonSubTypes.Type(value = DoubaoAppCallBlockSearch::class, name = "search"), JsonSubTypes.Type(value = DoubaoAppCallBlockReasoningSearch::class, name = "reasoning_search")]
 )
+@Serializable
 abstract class DoubaoAppCallBlock {
-    @JsonProperty("type")
+    @SerialName("type")
     var type: String? = null
 
     constructor()

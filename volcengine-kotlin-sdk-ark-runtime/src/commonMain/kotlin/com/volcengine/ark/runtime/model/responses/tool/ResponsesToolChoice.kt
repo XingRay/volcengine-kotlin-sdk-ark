@@ -1,10 +1,10 @@
 package com.volcengine.ark.runtime.model.responses.tool
+import kotlinx.serialization.Serializable
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(using = com.volcengine.ark.runtime.model.responses.tool.ResponsesToolChoice.ResponsesToolChoiceSerializer::class)
 @JsonDeserialize(using = com.volcengine.ark.runtime.model.responses.tool.ResponsesToolChoice.ResponsesToolChoiceDeserializer::class)
+@Serializable
 class ResponsesToolChoice {
     var mode: String? = null
     private var functionToolChoice: FunctionToolChoice? = null
@@ -17,13 +17,6 @@ class ResponsesToolChoice {
         this.functionToolChoice = functionToolChoice
     }
 
-    @Override
-    fun toString(): String? {
-        return "ResponsesToolChoice{" +
-                "mode='" + mode + '\'' +
-                ", functionToolChoice=" + functionToolChoice +
-                '}'
-    }
 
     class ResponsesToolChoiceSerializer : JsonSerializer<ResponsesToolChoice?>() {
         @Override

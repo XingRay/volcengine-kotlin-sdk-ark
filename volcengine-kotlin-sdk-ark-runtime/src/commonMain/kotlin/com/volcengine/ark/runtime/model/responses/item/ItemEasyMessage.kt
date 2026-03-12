@@ -1,15 +1,16 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
+@Serializable
 class ItemEasyMessage : BaseMessageItem(), InputItem {
-    @JsonProperty("content")
+    @SerialName("content")
     private var content: MessageContent? = null
 
-    @JsonProperty("partial")
+    @SerialName("partial")
     var partial: Boolean? = null
 
     fun getContent(): MessageContent? {
@@ -20,16 +21,6 @@ class ItemEasyMessage : BaseMessageItem(), InputItem {
         this.content = content
     }
 
-    @Override
-    fun toString(): String? {
-        return "ItemEasyMessage{" +
-                "type='" + getType() + '\'' +
-                ", role='" + getRole() + '\'' +
-                ", content=" + content +
-                ", id='" + getId() + '\'' +
-                ", partial=" + partial +
-                '}'
-    }
 
     class Builder {
         private var role: String? = null

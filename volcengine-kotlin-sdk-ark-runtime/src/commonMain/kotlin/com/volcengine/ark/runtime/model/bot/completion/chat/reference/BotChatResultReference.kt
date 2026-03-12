@@ -1,158 +1,137 @@
 package com.volcengine.ark.runtime.model.bot.completion.chat.reference
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class BotChatResultReference {
+
+@Serializable
+data class BotChatResultReference(
     /**
      * Search: Url
      */
-    var url: String? = null
+    val url: String? = null,
 
     /**
      * Search: Logo Url
      */
-    @JsonProperty("logo_url")
-    var logoUrl: String? = null
+    @SerialName("logo_url")
+    val logoUrl: String? = null,
 
     /**
      * Search: Mobile Url
      */
-    @JsonProperty("mobile_url")
-    var mobileUrl: String? = null
+    @SerialName("mobile_url")
+    val mobileUrl: String? = null,
 
     /**
      * Search: Site Name
      */
-    @JsonProperty("site_name")
-    var siteName: String? = null
+    @SerialName("site_name")
+    val siteName: String? = null,
 
     /**
      * Search: Title
      */
-    var title: String? = null
+    val title: String? = null,
 
     /**
      * Search: CoverImage
      */
-    @JsonProperty("cover_image")
-    private var coverImage: BotCoverImage? = null
+    @SerialName("cover_image")
+    val coverImage: BotCoverImage? = null,
 
     /**
      * Search: Summary
      */
-    var summary: String? = null
+    val summary: String? = null,
 
     /**
      * Search: Publish Time
      */
-    @JsonProperty("publish_time")
-    var publishTime: String? = null
+    @SerialName("publish_time")
+    val publishTime: String? = null,
 
     /**
      * KnowledgeBase: Collection Name
      */
-    @JsonProperty("collection_name")
-    var collectionName: String? = null
+    @SerialName("collection_name")
+    val collectionName: String? = null,
 
     /**
      * KnowledgeBase: Project Name
      */
-    var project: String? = null
+    val project: String? = null,
 
     /**
      * KnowledgeBase: Doc Id
      */
-    @JsonProperty("doc_id")
-    var docId: String? = null
+    @SerialName("doc_id")
+    val docId: String? = null,
 
     /**
      * KnowledgeBase: Doc Name
      */
-    @JsonProperty("doc_name")
-    var docName: String? = null
+    @SerialName("doc_name")
+    val docName: String? = null,
 
     /**
      * KnowledgeBase: Doc Type
      */
-    @JsonProperty("doc_type")
-    var docType: String? = null
+    @SerialName("doc_type")
+    val docType: String? = null,
 
     /**
      * KnowledgeBase: Doc Title
      */
-    @JsonProperty("doc_title")
-    var docTitle: String? = null
+    @SerialName("doc_title")
+    val docTitle: String? = null,
 
     /**
      * KnowledgeBase: Chunk Id
      */
-    @JsonProperty("chunk_id")
-    var chunkId: String? = null
+    @SerialName("chunk_id")
+    val chunkId: String? = null,
 
     /**
      * KnowledgeBase: Chunk Title
      */
-    @JsonProperty("chunk_title")
-    var chunkTitle: String? = null
+    @SerialName("chunk_title")
+    val chunkTitle: String? = null,
 
     /**
      * Page Nums
-     * 
-     * 
-     * 
-     * 
+     *
+     *
+     *
+     *
      */
-    @JsonProperty("page_nums")
-    var pageNums: String? = null
+    @SerialName("page_nums")
+    val pageNums: String? = null,
 
     /**
      * Origin Text Token Len
-     * 
-     * 
-     * 
-     * 
+     *
+     *
+     *
+     *
      */
-    @JsonProperty("origin_text_token_len")
-    private var originTextTokenLen: Integer? = null
+    @SerialName("origin_text_token_len")
+    val originTextTokenLen: Int? = null,
 
     /**
      * File Name
-     * 
-     * 
-     * 
-     * 
+     *
+     *
+     *
+     *
      */
-    @JsonProperty("file_name")
-    var fileName: String? = null
+    @SerialName("file_name")
+    val fileName: String? = null,
 
     /**
      * Extra
      */
-    @JsonProperty("extra")
-    private var extra: Map<String?, Object?>? = null
-
-    fun getCoverImage(): BotCoverImage? {
-        return coverImage
-    }
-
-    fun setCoverImage(coverImage: BotCoverImage?) {
-        this.coverImage = coverImage
-    }
-
-    fun getOriginTextTokenLen(): Integer? {
-        return originTextTokenLen
-    }
-
-    fun setOriginTextTokenLen(originTextTokenLen: Integer?) {
-        this.originTextTokenLen = originTextTokenLen
-    }
-
-    fun getExtra(): Map<String?, Object?>? {
-        return extra
-    }
-
-    fun setExtra(extra: Map<String?, Object?>?) {
-        this.extra = extra
-    }
-}
+    @SerialName("extra")
+    val extra: JsonObject? = null,
+)

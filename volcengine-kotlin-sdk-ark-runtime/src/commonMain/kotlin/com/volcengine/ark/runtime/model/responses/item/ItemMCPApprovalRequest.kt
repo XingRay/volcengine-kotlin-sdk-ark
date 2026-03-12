@@ -1,31 +1,23 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class ItemMCPApprovalRequest : BaseItem(ResponsesConstants.ITEM_TYPE_MCP_APPROVAL_REQUEST), InputItem, OutputItem {
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @JsonProperty("name")
+    @SerialName("name")
     var name: String? = null
 
-    @JsonProperty("arguments")
+    @SerialName("arguments")
     var arguments: String? = null
 
-    @JsonProperty("server_label")
+    @SerialName("server_label")
     var serverLabel: String? = null
 
 
-    @Override
-    fun toString(): String? {
-        return "ItemMCPApprovalRequest{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", arguments='" + arguments + '\'' +
-                ", serverLabel='" + serverLabel + '\'' +
-                '}'
-    }
 
     class Builder private constructor() {
         private var id: String? = null

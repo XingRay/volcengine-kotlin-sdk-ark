@@ -1,43 +1,44 @@
 package com.volcengine.ark.runtime.model.responses.tool.imageprocess
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class ImageProcessArguments {
-    @JsonProperty("image_index")
-    private var imageIndex: Integer? = null
+    @SerialName("image_index")
+    private var imageIndex: Int? = null
 
-    @JsonProperty("points")
+    @SerialName("points")
     var points: String? = null
 
-    @JsonProperty("draw_line")
+    @SerialName("draw_line")
     var drawLine: Boolean? = null
 
-    @JsonProperty("bbox_str")
+    @SerialName("bbox_str")
     var bboxStr: String? = null
 
-    @JsonProperty("crop")
+    @SerialName("crop")
     var crop: Boolean? = null
 
-    @JsonProperty("degree")
-    private var degree: Integer? = null
+    @SerialName("degree")
+    private var degree: Int? = null
 
-    @JsonProperty("scale")
+    @SerialName("scale")
     var scale: Double? = null
 
-    fun getImageIndex(): Integer? {
+    fun getImageIndex(): Int? {
         return imageIndex
     }
 
-    fun setImageIndex(imageIndex: Integer?) {
+    fun setImageIndex(imageIndex: Int?) {
         this.imageIndex = imageIndex
     }
 
-    fun getDegree(): Integer? {
+    fun getDegree(): Int? {
         return degree
     }
 
-    fun setDegree(degree: Integer?) {
+    fun setDegree(degree: Int?) {
         this.degree = degree
     }
 }

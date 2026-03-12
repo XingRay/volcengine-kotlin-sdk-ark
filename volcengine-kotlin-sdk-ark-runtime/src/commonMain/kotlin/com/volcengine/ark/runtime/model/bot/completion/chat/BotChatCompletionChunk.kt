@@ -1,46 +1,28 @@
 package com.volcengine.ark.runtime.model.bot.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.volcengine.ark.runtime.model.bot.completion.chat.reference.BotChatResultReference
+import com.volcengine.ark.runtime.model.bot.completion.chat.usage.BotUsage
+import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionChunk
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class BotChatCompletionChunk : ChatCompletionChunk() {
+
+@Serializable
+data class BotChatCompletionChunk(
     /**
      * Same as BotChaCompletionRequest.metadata
      */
-    private var metadata: Map<String?, Object?>? = null
+    val metadata: JsonObject? = null,
 
     /**
      * In bot chat completion, the bot_usage will be returned instead of usage
      */
-    @JsonProperty("bot_usage")
-    private var botUsage: BotUsage? = null
+    @SerialName("bot_usage")
+    val botUsage: BotUsage? = null,
 
     /**
      * The references returned by Search Actions.
      */
-    private var references: List<BotChatResultReference?>? = null
-
-    fun getMetadata(): Map<String?, Object?>? {
-        return metadata
-    }
-
-    fun setMetadata(metadata: Map<String?, Object?>?) {
-        this.metadata = metadata
-    }
-
-    fun getBotUsage(): BotUsage? {
-        return botUsage
-    }
-
-    fun setBotUsage(botUsage: BotUsage?) {
-        this.botUsage = botUsage
-    }
-
-    fun getReferences(): List<BotChatResultReference?>? {
-        return references
-    }
-
-    fun setReferences(references: List<BotChatResultReference?>?) {
-        this.references = references
-    }
-}
+    val references: List<BotChatResultReference>? = null,
+) : ChatCompletionChunk()

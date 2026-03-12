@@ -1,16 +1,17 @@
 package com.volcengine.ark.runtime.model.responses.item
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 class ItemReasoning : BaseItem(ResponsesConstants.ITEM_TYPE_REASONING), OutputItem {
-    @JsonProperty("id")
+    @SerialName("id")
     var id: String? = null
 
-    @JsonProperty("summary")
+    @SerialName("summary")
     private var summary: List<ReasoningSummaryPart?>? = null
 
-    @JsonProperty("status")
+    @SerialName("status")
     var status: String? = null
 
     fun getSummary(): List<ReasoningSummaryPart?>? {
@@ -21,15 +22,6 @@ class ItemReasoning : BaseItem(ResponsesConstants.ITEM_TYPE_REASONING), OutputIt
         this.summary = summary
     }
 
-    @Override
-    fun toString(): String? {
-        return "ItemReasoning{" +
-                "id='" + id + '\'' +
-                ", type='" + getType() + '\'' +
-                ", summary=" + summary +
-                ", status='" + status + '\'' +
-                '}'
-    }
 
     class Builder {
         private var id: String? = null

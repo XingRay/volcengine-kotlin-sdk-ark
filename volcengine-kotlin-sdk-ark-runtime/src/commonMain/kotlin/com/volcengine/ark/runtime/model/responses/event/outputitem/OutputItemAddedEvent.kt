@@ -1,9 +1,11 @@
 package com.volcengine.ark.runtime.model.responses.event.outputitem
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class OutputItemAddedEvent : OutputEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_OUTPUT_ITEM_ADDED) {
-    @JsonProperty("item")
+    @SerialName("item")
     protected var item: BaseItem? = null
 
     fun getItem(): BaseItem? {
@@ -15,13 +17,4 @@ class OutputItemAddedEvent : OutputEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_
     }
 
 
-    @Override
-    fun toString(): String? {
-        return "OutputItemAddedEvent{" +
-                "item=" + item +
-                ", outputIndex=" + outputIndex +
-                ", type='" + type + '\'' +
-                ", sequenceNumber=" + sequenceNumber +
-                '}'
-    }
 }

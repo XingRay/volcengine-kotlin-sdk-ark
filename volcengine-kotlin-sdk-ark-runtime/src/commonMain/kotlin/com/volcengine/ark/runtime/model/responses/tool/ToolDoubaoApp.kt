@@ -1,12 +1,14 @@
 package com.volcengine.ark.runtime.model.responses.tool
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
+@Serializable
 class ToolDoubaoApp : ResponsesTool(ResponsesConstants.TOOL_TYPE_DOUBAO_APP) {
-    @JsonProperty("feature")
+    @SerialName("feature")
     private var feature: DoubaoAppFeature? = null
 
-    @JsonProperty("user_location")
+    @SerialName("user_location")
     private var userLocation: UserLocation? = null
 
     fun getFeature(): DoubaoAppFeature? {
@@ -47,14 +49,6 @@ class ToolDoubaoApp : ResponsesTool(ResponsesConstants.TOOL_TYPE_DOUBAO_APP) {
         }
     }
 
-    @Override
-    fun toString(): String? {
-        return "ToolDoubaoApp{" +
-                "type='" + getType() + '\'' +
-                ", feature=" + feature +
-                ", userLocation=" + userLocation +
-                '}'
-    }
 
     companion object {
         fun builder(): Builder {
