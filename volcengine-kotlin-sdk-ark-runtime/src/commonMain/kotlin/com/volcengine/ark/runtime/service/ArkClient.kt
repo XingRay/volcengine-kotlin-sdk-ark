@@ -20,6 +20,7 @@ import com.volcengine.ark.runtime.model.tokenization.TokenizationRequest
 import com.volcengine.ark.runtime.model.tokenization.TokenizationResult
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.plugins.sse.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -27,6 +28,8 @@ import io.ktor.utils.io.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
+
+internal expect fun getCurrentTimestamp(): String
 
 /**
  * Ark API 客户端
@@ -86,19 +89,39 @@ class ArkClient(
         apiKey: String? = defaultApiKey,
         baseUrl: String = defaultBaseUrl
     ): Flow<ChatCompletionChunk> = flow {
-        val response: HttpResponse = httpClient.post("$baseUrl/api/v3/chat/completions") {
-            apiKey?.let { bearerAuth(it) }
-            contentType(ContentType.Application.Json)
-            setBody(request.copy(stream = true))
-        }
-
-        // 解析 SSE 流
-        response.bodyAsChannel().readUTF8Line()?.let { line ->
-            if (line.startsWith("data: ") && line != "data: [DONE]") {
-                val jsonData = line.substring(6)
-                val chunk = json.decodeFromString<ChatCompletionChunk>(jsonData)
-                emit(chunk)
+        println("[${getCurrentTimestamp()}] Starting stream request")
+        try {
+            httpClient.sse(
+                request = {
+                    url("$baseUrl/api/v3/chat/completions")
+                    apiKey?.let { bearerAuth(it) }
+                    contentType(ContentType.Application.Json)
+                    setBody(request.copy(stream = true))
+                    method = HttpMethod.Post
+                }
+            ) {
+                println("[${getCurrentTimestamp()}] SSE connection established")
+                incoming.collect { event ->
+                    println("[${getCurrentTimestamp()}] Received SSE event: ${event.event}, data: ${event.data}")
+                    event.data?.let { data ->
+                        if (data != "[DONE]") {
+                            try {
+                                val chunk = json.decodeFromString<ChatCompletionChunk>(data)
+                                println("[${getCurrentTimestamp()}] Parsed chunk successfully, emitting")
+                                emit(chunk)
+                                println("[${getCurrentTimestamp()}] Chunk emitted")
+                            } catch (e: Exception) {
+                                println("[${getCurrentTimestamp()}] Failed to parse SSE chunk: ${e.message}")
+                                println("[${getCurrentTimestamp()}] Raw data: $data")
+                            }
+                        }
+                    }
+                }
+                println("[${getCurrentTimestamp()}] SSE stream completed")
             }
+        } catch (e: Exception) {
+            println("[${getCurrentTimestamp()}] SSE stream error: ${e.message}")
+            throw e
         }
     }
 
@@ -127,19 +150,33 @@ class ArkClient(
         apiKey: String? = defaultApiKey,
         baseUrl: String = defaultBaseUrl
     ): Flow<BotChatCompletionChunk> = flow {
-        val response: HttpResponse = httpClient.post("$baseUrl/api/v3/bots/chat/completions") {
-            apiKey?.let { bearerAuth(it) }
-            contentType(ContentType.Application.Json)
-            setBody(request.copy(stream = true))
-        }
-
-        // 解析 SSE 流
-        response.bodyAsChannel().readUTF8Line()?.let { line ->
-            if (line.startsWith("data: ") && line != "data: [DONE]") {
-                val jsonData = line.substring(6)
-                val chunk = json.decodeFromString<BotChatCompletionChunk>(jsonData)
-                emit(chunk)
+        try {
+            httpClient.sse(
+                request = {
+                    url("$baseUrl/api/v3/bots/chat/completions")
+                    apiKey?.let { bearerAuth(it) }
+                    contentType(ContentType.Application.Json)
+                    setBody(request.copy(stream = true))
+                    method = HttpMethod.Post
+                }
+            ) {
+                incoming.collect { event ->
+                    event.data?.let { data ->
+                        if (data != "[DONE]") {
+                            try {
+                                val chunk = json.decodeFromString<BotChatCompletionChunk>(data)
+                                emit(chunk)
+                            } catch (e: Exception) {
+                                println("Failed to parse SSE chunk: ${e.message}")
+                                println("Raw data: $data")
+                            }
+                        }
+                    }
+                }
             }
+        } catch (e: Exception) {
+            println("SSE stream error: ${e.message}")
+            throw e
         }
     }
 
@@ -183,19 +220,33 @@ class ArkClient(
         apiKey: String? = defaultApiKey,
         baseUrl: String = defaultBaseUrl
     ): Flow<ChatCompletionChunk> = flow {
-        val response: HttpResponse = httpClient.post("$baseUrl/api/v3/context/chat/completions") {
-            apiKey?.let { bearerAuth(it) }
-            contentType(ContentType.Application.Json)
-            setBody(request.copy(stream = true))
-        }
-
-        // 解析 SSE 流
-        response.bodyAsChannel().readUTF8Line()?.let { line ->
-            if (line.startsWith("data: ") && line != "data: [DONE]") {
-                val jsonData = line.substring(6)
-                val chunk = json.decodeFromString<ChatCompletionChunk>(jsonData)
-                emit(chunk)
+        try {
+            httpClient.sse(
+                request = {
+                    url("$baseUrl/api/v3/context/chat/completions")
+                    apiKey?.let { bearerAuth(it) }
+                    contentType(ContentType.Application.Json)
+                    setBody(request.copy(stream = true))
+                    method = HttpMethod.Post
+                }
+            ) {
+                incoming.collect { event ->
+                    event.data?.let { data ->
+                        if (data != "[DONE]") {
+                            try {
+                                val chunk = json.decodeFromString<ChatCompletionChunk>(data)
+                                emit(chunk)
+                            } catch (e: Exception) {
+                                println("Failed to parse SSE chunk: ${e.message}")
+                                println("Raw data: $data")
+                            }
+                        }
+                    }
+                }
             }
+        } catch (e: Exception) {
+            println("SSE stream error: ${e.message}")
+            throw e
         }
     }
 
@@ -273,19 +324,33 @@ class ArkClient(
         apiKey: String? = defaultApiKey,
         baseUrl: String = defaultBaseUrl
     ): Flow<ImageGenStreamEvent> = flow {
-        val response: HttpResponse = httpClient.post("$baseUrl/api/v3/images/generations") {
-            apiKey?.let { bearerAuth(it) }
-            contentType(ContentType.Application.Json)
-            setBody(request.copy(stream = true))
-        }
-
-        // 解析 SSE 流
-        response.bodyAsChannel().readUTF8Line()?.let { line ->
-            if (line.startsWith("data: ") && line != "data: [DONE]") {
-                val jsonData = line.substring(6)
-                val event = json.decodeFromString<ImageGenStreamEvent>(jsonData)
-                emit(event)
+        try {
+            httpClient.sse(
+                request = {
+                    url("$baseUrl/api/v3/images/generations")
+                    apiKey?.let { bearerAuth(it) }
+                    contentType(ContentType.Application.Json)
+                    setBody(request.copy(stream = true))
+                    method = HttpMethod.Post
+                }
+            ) {
+                incoming.collect { event ->
+                    event.data?.let { data ->
+                        if (data != "[DONE]") {
+                            try {
+                                val streamEvent = json.decodeFromString<ImageGenStreamEvent>(data)
+                                emit(streamEvent)
+                            } catch (e: Exception) {
+                                println("Failed to parse SSE chunk: ${e.message}")
+                                println("Raw data: $data")
+                            }
+                        }
+                    }
+                }
             }
+        } catch (e: Exception) {
+            println("SSE stream error: ${e.message}")
+            throw e
         }
     }
 
