@@ -3,77 +3,90 @@ package io.github.xingray.volcengine_kotlin_sdk_ark
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
     val uiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(uiState.errorMessage) {
+        uiState.errorMessage?.let { message ->
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short
+            )
+            viewModel.clearErrorMessage()
+        }
+    }
 
     MaterialTheme {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            // Left panel - Parameters
-            ParametersPanel(
-                apiKey = uiState.apiKey,
-                model = uiState.model,
-                temperature = uiState.temperature,
-                topP = uiState.topP,
-                maxTokens = uiState.maxTokens,
-                streamEnabled = uiState.streamEnabled,
-                deepThinkingEnabled = uiState.deepThinkingEnabled,
-                onApiKeyChange = viewModel::updateApiKey,
-                onModelChange = viewModel::updateModel,
-                onTemperatureChange = viewModel::updateTemperature,
-                onTopPChange = viewModel::updateTopP,
-                onMaxTokensChange = viewModel::updateMaxTokens,
-                onStreamEnabledChange = viewModel::updateStreamEnabled,
-                onDeepThinkingEnabledChange = viewModel::updateDeepThinkingEnabled,
-                onAddSystemMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.SYSTEM) },
-                onAddAssistantMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.ASSISTANT) },
-                onAddUserMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.USER) },
-                modifier = Modifier.weight(0.3f)
-            )
+        Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) }
+        ) { paddingValues ->
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                // Left panel - Parameters
+                ParametersPanel(
+                    apiKey = uiState.apiKey,
+                    model = uiState.model,
+                    temperature = uiState.temperature,
+                    topP = uiState.topP,
+                    maxTokens = uiState.maxTokens,
+                    streamEnabled = uiState.streamEnabled,
+                    deepThinkingEnabled = uiState.deepThinkingEnabled,
+                    onApiKeyChange = viewModel::updateApiKey,
+                    onModelChange = viewModel::updateModel,
+                    onTemperatureChange = viewModel::updateTemperature,
+                    onTopPChange = viewModel::updateTopP,
+                    onMaxTokensChange = viewModel::updateMaxTokens,
+                    onStreamEnabledChange = viewModel::updateStreamEnabled,
+                    onDeepThinkingEnabledChange = viewModel::updateDeepThinkingEnabled,
+                    onAddSystemMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.SYSTEM) },
+                    onAddAssistantMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.ASSISTANT) },
+                    onAddUserMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.USER) },
+                    modifier = Modifier.weight(0.3f).widthIn(min = 280.dp)
+                )
 
-            // Right panel - Chat
-            ChatPanel(
-                messages = uiState.messages,
-                inputText = uiState.inputText,
-                isLoading = uiState.isLoading,
-                editingMessageIndex = uiState.editingMessageIndex,
-                editingMessageText = uiState.editingMessageText,
-                onInputChange = viewModel::updateInputText,
-                onSendClick = viewModel::sendMessage,
-                onDeleteMessage = viewModel::deleteMessage,
-                onEditMessage = viewModel::startEditMessage,
-                onEditingTextChange = viewModel::updateEditingMessageText,
-                onConfirmEdit = viewModel::confirmEditMessage,
-                onCancelEdit = viewModel::cancelEditMessage,
-                modifier = Modifier.weight(0.7f)
-            )
-        }
+                // Right panel - Chat
+                ChatPanel(
+                    messages = uiState.messages,
+                    inputText = uiState.inputText,
+                    isLoading = uiState.isLoading,
+                    editingMessageIndex = uiState.editingMessageIndex,
+                    editingMessageText = uiState.editingMessageText,
+                    onInputChange = viewModel::updateInputText,
+                    onSendClick = viewModel::sendMessage,
+                    onDeleteMessage = viewModel::deleteMessage,
+                    onEditMessage = viewModel::startEditMessage,
+                    onEditingTextChange = viewModel::updateEditingMessageText,
+                    onConfirmEdit = viewModel::confirmEditMessage,
+                    onCancelEdit = viewModel::cancelEditMessage,
+                    modifier = Modifier.weight(0.7f)
+                )
+            }
 
-        // Add message dialog
-        if (uiState.showAddMessageDialog) {
-            AddMessageDialog(
-                role = uiState.addMessageRole,
-                text = uiState.addMessageText,
-                onTextChange = viewModel::updateAddMessageText,
-                onConfirm = viewModel::confirmAddMessage,
-                onDismiss = viewModel::hideAddMessageDialog
-            )
+            // Add message dialog
+            if (uiState.showAddMessageDialog) {
+                AddMessageDialog(
+                    role = uiState.addMessageRole,
+                    text = uiState.addMessageText,
+                    onTextChange = viewModel::updateAddMessageText,
+                    onConfirm = viewModel::confirmAddMessage,
+                    onDismiss = viewModel::hideAddMessageDialog
+                )
+            }
         }
     }
 }
@@ -122,21 +135,39 @@ fun ParametersPanel(
             ) {
                 Button(
                     onClick = onAddSystemMessage,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues.Zero,
                 ) {
-                    Text("System", style = MaterialTheme.typography.labelSmall)
+                    Text(
+                        text = "System",
+                        style = MaterialTheme.typography.labelMedium,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
                 }
                 Button(
                     onClick = onAddAssistantMessage,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues.Zero,
                 ) {
-                    Text("Assistant", style = MaterialTheme.typography.labelSmall)
+                    Text(
+                        text = "Assistant",
+                        style = MaterialTheme.typography.labelMedium,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
                 }
                 Button(
                     onClick = onAddUserMessage,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues.Zero,
                 ) {
-                    Text("User", style = MaterialTheme.typography.labelSmall)
+                    Text(
+                        text = "User",
+                        style = MaterialTheme.typography.labelMedium,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
                 }
             }
 
@@ -302,7 +333,11 @@ fun ChatPanel(
                 enabled = !isLoading && inputText.isNotBlank(),
                 modifier = Modifier.height(56.dp)
             ) {
-                Text("Send")
+                Text(
+                    text = "Send",
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                )
             }
         }
     }
@@ -338,6 +373,7 @@ fun MessageBubble(
                 }
             }
         }
+
         null -> ""
     }
 
@@ -363,10 +399,20 @@ fun MessageBubble(
                     )
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         TextButton(onClick = onEdit) {
-                            Text("编辑", style = MaterialTheme.typography.labelSmall)
+                            Text(
+                                text = "编辑",
+                                style = MaterialTheme.typography.labelSmall,
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            )
                         }
                         TextButton(onClick = onDelete) {
-                            Text("删除", style = MaterialTheme.typography.labelSmall)
+                            Text(
+                                text = "删除",
+                                style = MaterialTheme.typography.labelSmall,
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            )
                         }
                     }
                 }
@@ -387,7 +433,7 @@ fun MessageBubble(
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = message.reasoningContent?:"",
+                                text = message.reasoningContent ?: "",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = textColor.copy(alpha = 0.8f)
                             )
@@ -448,14 +494,22 @@ fun AddMessageDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("取消")
+                        Text(
+                            text = "取消",
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                        )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
                         onClick = onConfirm,
                         enabled = text.isNotBlank()
                     ) {
-                        Text("确认")
+                        Text(
+                            text = "确认",
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                        )
                     }
                 }
             }
@@ -497,14 +551,22 @@ fun EditMessageCard(
                 horizontalArrangement = Arrangement.End
             ) {
                 TextButton(onClick = onCancel) {
-                    Text("取消")
+                    Text(
+                        text = "取消",
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(
                     onClick = onConfirm,
                     enabled = text.isNotBlank()
                 ) {
-                    Text("确认")
+                    Text(
+                        text = "确认",
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
                 }
             }
         }

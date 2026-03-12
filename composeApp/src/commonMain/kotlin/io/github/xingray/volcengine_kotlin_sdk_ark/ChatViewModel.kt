@@ -31,7 +31,8 @@ data class ChatUiState(
     val addMessageRole: ChatMessageRole? = null,
     val addMessageText: String = "",
     val editingMessageIndex: Int? = null,
-    val editingMessageText: String = ""
+    val editingMessageText: String = "",
+    val errorMessage: String? = null
 )
 
 class ChatViewModel : ViewModel() {
@@ -162,31 +163,23 @@ class ChatViewModel : ViewModel() {
         )
     }
 
+    fun clearErrorMessage() {
+        _uiState.value = _uiState.value.copy(errorMessage = null)
+    }
+
     fun sendMessage() {
         val currentState = _uiState.value
 
         // 验证输入
         if (currentState.inputText.isBlank()) {
             println("[${getCurrentTimestamp()}] === Validation failed: Input text is blank ===")
-            val errorMessage = ChatMessage(
-                role = ChatMessageRole.ASSISTANT,
-                content = ChatMessageContent.TextContent("请输入消息内容")
-            )
-            _uiState.value = _uiState.value.copy(
-                messages = _uiState.value.messages + errorMessage
-            )
+            _uiState.value = _uiState.value.copy(errorMessage = "请输入消息内容")
             return
         }
 
         if (currentState.apiKey.isBlank()) {
             println("[${getCurrentTimestamp()}] === Validation failed: API Key is blank ===")
-            val errorMessage = ChatMessage(
-                role = ChatMessageRole.ASSISTANT,
-                content = ChatMessageContent.TextContent("请先输入 API Key")
-            )
-            _uiState.value = _uiState.value.copy(
-                messages = _uiState.value.messages + errorMessage
-            )
+            _uiState.value = _uiState.value.copy(errorMessage = "请先输入 API Key")
             return
         }
 
@@ -306,12 +299,8 @@ class ChatViewModel : ViewModel() {
                         )
                     } else {
                         println("[${getCurrentTimestamp()}] No assistant message in response")
-                        val errorMessage = ChatMessage(
-                            role = ChatMessageRole.ASSISTANT,
-                            content = ChatMessageContent.TextContent("服务器返回了空响应，请检查模型名称是否正确")
-                        )
                         _uiState.value = _uiState.value.copy(
-                            messages = updatedMessages + errorMessage,
+                            errorMessage = "服务器返回了空响应，请检查模型名称是否正确",
                             isLoading = false
                         )
                     }
@@ -324,12 +313,8 @@ class ChatViewModel : ViewModel() {
                 println("[${getCurrentTimestamp()}] Error type: ${e::class.simpleName}")
                 println("[${getCurrentTimestamp()}] Error message: ${e.message}")
 
-                val errorMessage = ChatMessage(
-                    role = ChatMessageRole.ASSISTANT,
-                    content = ChatMessageContent.TextContent("错误: ${e.message}")
-                )
                 _uiState.value = _uiState.value.copy(
-                    messages = updatedMessages + errorMessage,
+                    errorMessage = "错误: ${e.message}",
                     isLoading = false
                 )
             }
