@@ -1,78 +1,60 @@
-package com.volcengine.ark.runtime.model.completion.chat;
+package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChatToolCall {
-
+class ChatToolCall {
     /**
      * The ID of the tool call
      */
-    String id;
+    var id: String? = null
 
     /**
      * The type of the tool. Currently, only function is supported
      */
-    String type;
+    var type: String? = null
 
     /**
      * The function that the model called
      */
-    ChatFunctionCall function;
+    var function: ChatFunctionCall? = null
 
     /**
      * The index of the tool call in the list of tool calls
      */
-    Integer index;
+    var index: Integer? = null
 
-    public ChatToolCall(String id, String type, ChatFunctionCall function) {
-        this.id = id;
-        this.type = type;
-        this.function = function;
+    constructor(id: String?, type: String?, function: ChatFunctionCall?) {
+        this.id = id
+        this.type = type
+        this.function = function
     }
 
-    public ChatToolCall() {
+    constructor()
+
+    fun getFunction(): ChatFunctionCall? {
+        return function
     }
 
-    public String getId() {
-        return id;
+    fun setFunction(function: ChatFunctionCall?) {
+        this.function = function
     }
 
-    public void setId(String id) {
-        this.id = id;
+    fun getIndex(): Integer? {
+        return index
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public ChatFunctionCall getFunction() {
-        return function;
-    }
-
-    public void setFunction(ChatFunctionCall function) {
-        this.function = function;
-    }
-
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(Integer index) {
-        this.index = index;
+    fun setIndex(index: Integer?) {
+        this.index = index
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ChatToolCall{" +
                 "id='" + id + '\'' +
                 ", type='" + type + '\'' +
                 ", function=" + function +
                 ", index=" + index +
-                '}';
+                '}'
     }
 }

@@ -1,109 +1,93 @@
-package com.volcengine.ark.runtime.model.responses.tool.mcp;
+package com.volcengine.ark.runtime.model.responses.tool.mcp
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonSerialize(using = MCPAllowedTools.MCPAllowedToolsSerializer.class)
-@JsonDeserialize(using = MCPAllowedTools.MCPAllowedToolsDeserializer.class)
-public class MCPAllowedTools {
+@JsonSerialize(using = com.volcengine.ark.runtime.model.responses.tool.mcp.MCPAllowedTools.MCPAllowedToolsSerializer::class)
+@JsonDeserialize(using = com.volcengine.ark.runtime.model.responses.tool.mcp.MCPAllowedTools.MCPAllowedToolsDeserializer::class)
+class MCPAllowedTools {
+    var allowedTools: List<String?>? = null
 
-    private List<String> allowedTools;
+    private var filter: MCPToolFilter? = null
 
-    private MCPToolFilter filter;
-
-    public List<String> getAllowedTools() {
-        return allowedTools;
+    fun getFilter(): MCPToolFilter? {
+        return filter
     }
 
-    public void setAllowedTools(List<String> allowedTools) {
-        this.allowedTools = allowedTools;
-    }
-
-    public MCPToolFilter getFilter() {
-        return filter;
-    }
-
-    public void setFilter(MCPToolFilter filter) {
-        this.filter = filter;
+    fun setFilter(filter: MCPToolFilter?) {
+        this.filter = filter
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "MCPAllowedTools{" +
                 "allowedTools=" + allowedTools +
                 ", toolFilter=" + filter +
-                '}';
+                '}'
     }
 
-    static class MCPAllowedToolsSerializer extends JsonSerializer<MCPAllowedTools> {
+    internal class MCPAllowedToolsSerializer : JsonSerializer<MCPAllowedTools?>() {
         @Override
-        public void serialize(MCPAllowedTools value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        @Throws(IOException::class)
+        fun serialize(value: MCPAllowedTools, gen: JsonGenerator, serializers: SerializerProvider?) {
             if (value.allowedTools != null) {
-                gen.writeArray(value.allowedTools.toArray(new String[0]), 0, value.allowedTools.size());
+                gen.writeArray(value.allowedTools.toArray(arrayOfNulls<String>(0)), 0, value.allowedTools.size())
             } else if (value.filter != null) {
-                gen.writeObject(value.filter);
+                gen.writeObject(value.filter)
             } else {
-                gen.writeNull();
+                gen.writeNull()
             }
         }
     }
 
-    static class MCPAllowedToolsDeserializer extends JsonDeserializer<MCPAllowedTools> {
+    internal class MCPAllowedToolsDeserializer : JsonDeserializer<MCPAllowedTools?>() {
         @Override
-        public MCPAllowedTools deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-            JsonNode node = p.getCodec().readTree(p);
+        @Throws(IOException::class, JsonProcessingException::class)
+        fun deserialize(p: JsonParser, ctxt: DeserializationContext?): MCPAllowedTools {
+            val node: JsonNode = p.getCodec().readTree(p)
             if (node.isArray()) {
-                List<String> allowedTools = Arrays.asList(p.getCodec().treeToValue(node, String[].class));
-                return MCPAllowedTools.builder().allowedTools(allowedTools).build();
+                val allowedTools: List<String?>? = Arrays.asList(p.getCodec().treeToValue(node, Array<String>::class.java))
+                return com.volcengine.ark.runtime.model.responses.tool.mcp.MCPAllowedTools.Companion.builder().allowedTools(allowedTools).build()
             } else if (node.isObject()) {
-                MCPToolFilter toolFilter = p.getCodec().treeToValue(node, MCPToolFilter.class);
-                return MCPAllowedTools.builder().toolFilter(toolFilter).build();
+                val toolFilter: MCPToolFilter? = p.getCodec().treeToValue(node, MCPToolFilter::class.java)
+                return com.volcengine.ark.runtime.model.responses.tool.mcp.MCPAllowedTools.Companion.builder().toolFilter(toolFilter).build()
             } else {
-                throw new IOException("Unexpected JSON type for MCPAllowedTools");
+                throw IOException("Unexpected JSON type for MCPAllowedTools")
             }
         }
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder private constructor() {
+        private var allowedTools: List<String?>? = null
+        private var toolFilter: MCPToolFilter? = null
+
+        fun allowedTools(allowedTools: List<String?>?): Builder {
+            this.allowedTools = allowedTools
+            return this
+        }
+
+        fun toolFilter(toolFilter: MCPToolFilter?): Builder {
+            this.toolFilter = toolFilter
+            return this
+        }
+
+        fun build(): MCPAllowedTools {
+            val mCPAllowedTools: MCPAllowedTools = com.volcengine.ark.runtime.model.responses.tool.mcp.MCPAllowedTools()
+            mCPAllowedTools.allowedTools = allowedTools
+            mCPAllowedTools.setFilter(toolFilter)
+            return mCPAllowedTools
+        }
+
+        companion object {
+            fun aMCPAllowedTools(): Builder {
+                return com.volcengine.ark.runtime.model.responses.tool.mcp.MCPAllowedTools.Builder()
+            }
+        }
     }
 
-    public static final class Builder {
-        private List<String> allowedTools;
-        private MCPToolFilter toolFilter;
-
-        private Builder() {
-        }
-
-        public static Builder aMCPAllowedTools() {
-            return new Builder();
-        }
-
-        public Builder allowedTools(List<String> allowedTools) {
-            this.allowedTools = allowedTools;
-            return this;
-        }
-
-        public Builder toolFilter(MCPToolFilter toolFilter) {
-            this.toolFilter = toolFilter;
-            return this;
-        }
-
-        public MCPAllowedTools build() {
-            MCPAllowedTools mCPAllowedTools = new MCPAllowedTools();
-            mCPAllowedTools.setAllowedTools(allowedTools);
-            mCPAllowedTools.setFilter(toolFilter);
-            return mCPAllowedTools;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.mcp.MCPAllowedTools.Builder()
         }
     }
 }

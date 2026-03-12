@@ -1,4 +1,3 @@
-package com.volcengine.ark.runtime.model.content.generation;
+package com.volcengine.ark.runtime.model.content.generation
 
-public class DeleteContentGenerationTaskResponse {
-}
+class DeleteContentGenerationTaskResponse 

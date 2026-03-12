@@ -1,30 +1,17 @@
-package com.volcengine.ark.runtime.model.responses.event;
+package com.volcengine.ark.runtime.model.responses.event
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class OutputEvent extends StreamEvent {
-
+class OutputEvent(type: String?) : StreamEvent(type) {
     @JsonProperty("output_index")
-    protected Long outputIndex;
-
-    public Long getOutputIndex() {
-        return outputIndex;
-    }
-
-    public void setOutputIndex(Long outputIndex) {
-        this.outputIndex = outputIndex;
-    }
-
-    public OutputEvent(String type) {
-        super(type);
-    }
+    var outputIndex: Long? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "OutputEvent{" +
                 "type='" + getType() + '\'' +
                 ", sequenceNumber=" + getSequenceNumber() +
                 ", outputIndex=" + outputIndex +
-                '}';
+                '}'
     }
 }

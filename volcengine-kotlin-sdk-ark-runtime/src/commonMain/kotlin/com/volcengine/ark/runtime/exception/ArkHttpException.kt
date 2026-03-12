@@ -1,33 +1,23 @@
-package com.volcengine.ark.runtime.exception;
+package com.volcengine.ark.runtime.exception
 
-public class ArkHttpException extends RuntimeException {
-    public static Integer INTERNAL_SERVICE_CODE = 500;
+class ArkHttpException(error: ArkAPIError, parent: Exception?, val statusCode: Int, val requestId: String?) : RuntimeException(error.error!!.message, parent) {
+    val code: String?
 
-    public final int statusCode;
+    val param: String?
 
-    public final String code;
+    val type: String?
 
-    public final String param;
-
-    public final String type;
-
-    public final String requestId;
-
-    public ArkHttpException(ArkAPIError error, Exception parent, int statusCode, String requestId) {
-        super(error.error.message, parent);
-        this.statusCode = statusCode;
-        this.code = error.error.code;
-        this.param = error.error.param;
-        this.type = error.error.type;
-        this.requestId = requestId;
+    init {
+        this.code = error.error!!.code
+        this.param = error.error!!.param
+        this.type = error.error!!.type
     }
 
-    public String getMessage() {
-        return this.toString();
-    }
+    val message: String?
+        get() = this.toString()
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ArkHttpException{" +
                 "statusCode=" + statusCode +
                 ", message='" + super.getMessage() + '\'' +
@@ -35,6 +25,10 @@ public class ArkHttpException extends RuntimeException {
                 ", param='" + param + '\'' +
                 ", type='" + type + '\'' +
                 ", requestId='" + requestId + '\'' +
-                '}';
+                '}'
+    }
+
+    companion object {
+        var INTERNAL_SERVICE_CODE: Integer = 500
     }
 }

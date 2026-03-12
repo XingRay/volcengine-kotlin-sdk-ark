@@ -1,39 +1,24 @@
-package com.volcengine.ark.runtime.model.responses.event.contentpart;
+package com.volcengine.ark.runtime.model.responses.event.contentpart
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.content.OutputContentItem;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ContentPartAddedEvent extends ItemEvent {
+class ContentPartAddedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_CONTENT_PART_ADDED) {
     @JsonProperty("content_index")
-    private Long contentIndex;
+    var contentIndex: Long? = null
 
     @JsonProperty("part")
-    private OutputContentItem part;
+    private var part: OutputContentItem? = null
 
-    public Long getContentIndex() {
-        return contentIndex;
+    fun getPart(): OutputContentItem? {
+        return part
     }
 
-    public void setContentIndex(Long contentIndex) {
-        this.contentIndex = contentIndex;
-    }
-
-    public OutputContentItem getPart() {
-        return part;
-    }
-
-    public void setPart(OutputContentItem part) {
-        this.part = part;
-    }
-
-    public ContentPartAddedEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_CONTENT_PART_ADDED);
+    fun setPart(part: OutputContentItem?) {
+        this.part = part
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ContentPartAddedEvent{" +
                 "type='" + getType() + '\'' +
                 ", sequenceNumber=" + getSequenceNumber() +
@@ -41,8 +26,6 @@ public class ContentPartAddedEvent extends ItemEvent {
                 ", outputIndex=" + getOutputIndex() +
                 ", contentIndex=" + contentIndex +
                 ", part=" + part +
-                '}';
+                '}'
     }
-
-
 }

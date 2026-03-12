@@ -1,65 +1,47 @@
-package com.volcengine.ark.runtime.model.responses.tool.doubaoapp;
+package com.volcengine.ark.runtime.model.responses.tool.doubaoapp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class DoubaoAppFeatureItem {
-
+class DoubaoAppFeatureItem {
     @JsonProperty("type")
-    private String type;
+    var type: String? = null
 
     @JsonProperty("role_description")
-    private String roleDescription;
+    var roleDescription: String? = null
 
-    public String getType() {
-        return type;
-    }
+    class Builder {
+        private var type: String? = null
+        private var roleDescription: String? = null
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getRoleDescription() {
-        return roleDescription;
-    }
-
-    public void setRoleDescription(String roleDescription) {
-        this.roleDescription = roleDescription;
-    }
-
-    public DoubaoAppFeatureItem() {
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private String type;
-        private String roleDescription;
-
-        public Builder type(String type) {
-            this.type = type;
-            return this;
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
         }
 
-        public Builder roleDescription(String roleDescription) {
-            this.roleDescription = roleDescription;
-            return this;
+        fun roleDescription(roleDescription: String?): Builder {
+            this.roleDescription = roleDescription
+            return this
         }
 
-        public DoubaoAppFeatureItem build() {
-            DoubaoAppFeatureItem featureItem = new DoubaoAppFeatureItem();
-            featureItem.setType(type);
-            featureItem.setRoleDescription(roleDescription);
-            return featureItem;
+        fun build(): DoubaoAppFeatureItem {
+            val featureItem: DoubaoAppFeatureItem = com.volcengine.ark.runtime.model.responses.tool.doubaoapp.DoubaoAppFeatureItem()
+            featureItem.type = type
+            featureItem.roleDescription = roleDescription
+            return featureItem
         }
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DoubaoAppFeatureItem{" +
                 "type='" + type + '\'' +
                 ", roleDescription='" + roleDescription + '\'' +
-                '}';
+                '}'
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.doubaoapp.DoubaoAppFeatureItem.Builder()
+        }
     }
 }

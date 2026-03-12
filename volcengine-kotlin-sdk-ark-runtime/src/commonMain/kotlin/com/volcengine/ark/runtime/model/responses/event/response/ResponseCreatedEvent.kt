@@ -1,34 +1,25 @@
-package com.volcengine.ark.runtime.model.responses.event.response;
+package com.volcengine.ark.runtime.model.responses.event.response
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.StreamEvent;
-import com.volcengine.ark.runtime.model.responses.response.ResponseObject;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ResponseCreatedEvent extends StreamEvent {
+class ResponseCreatedEvent : StreamEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_CREATED) {
     @JsonProperty("response")
-    private ResponseObject response;
+    private var response: ResponseObject? = null
 
-    public ResponseObject getResponse() {
-        return response;
+    fun getResponse(): ResponseObject? {
+        return response
     }
 
-    public void setResponse(ResponseObject response) {
-        this.response = response;
-    }
-
-    public ResponseCreatedEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_CREATED);
+    fun setResponse(response: ResponseObject?) {
+        this.response = response
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ResponseCreatedEvent{" +
                 "type='" + getType() + '\'' +
                 ", sequenceNumber=" + getSequenceNumber() +
                 ", response=" + response +
-                '}';
+                '}'
     }
-
-
 }

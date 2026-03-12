@@ -1,80 +1,58 @@
-package com.volcengine.ark.runtime.model.responses.tool.websearch;
+package com.volcengine.ark.runtime.model.responses.tool.websearch
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class CoverImage {
+class CoverImage {
     @JsonProperty("url")
-    private String url;
+    var url: String? = null
 
     @JsonProperty("width")
-    private Long width;
+    var width: Long? = null
 
     @JsonProperty("height")
-    private Long height;
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Long getWidth() {
-        return width;
-    }
-
-    public void setWidth(Long width) {
-        this.width = width;
-    }
-
-    public Long getHeight() {
-        return height;
-    }
-
-    public void setHeight(Long height) {
-        this.height = height;
-    }
+    var height: Long? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "CoverImage{" +
                 "url='" + url + '\'' +
                 ", width=" + width +
                 ", height=" + height +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var url: String? = null
+        private var width: Long? = null
+        private var height: Long? = null
+
+        fun url(url: String?): Builder {
+            this.url = url
+            return this
+        }
+
+        fun width(width: Long?): Builder {
+            this.width = width
+            return this
+        }
+
+        fun height(height: Long?): Builder {
+            this.height = height
+            return this
+        }
+
+        fun build(): CoverImage {
+            val coverImage: CoverImage = com.volcengine.ark.runtime.model.responses.tool.websearch.CoverImage()
+            coverImage.url = url
+            coverImage.width = width
+            coverImage.height = height
+            return coverImage
+        }
     }
 
-    public static class Builder {
-        private String url;
-        private Long width;
-        private Long height;
-
-        public Builder url(String url) {
-            this.url = url;
-            return this;
-        }
-
-        public Builder width(Long width) {
-            this.width = width;
-            return this;
-        }
-
-        public Builder height(Long height) {
-            this.height = height;
-            return this;
-        }
-
-        public CoverImage build() {
-            CoverImage coverImage = new CoverImage();
-            coverImage.setUrl(url);
-            coverImage.setWidth(width);
-            coverImage.setHeight(height);
-            return coverImage;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.websearch.CoverImage.Builder()
         }
     }
 }

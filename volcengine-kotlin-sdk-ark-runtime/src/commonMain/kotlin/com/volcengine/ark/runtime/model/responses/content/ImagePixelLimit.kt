@@ -1,61 +1,47 @@
-package com.volcengine.ark.runtime.model.responses.content;
+package com.volcengine.ark.runtime.model.responses.content
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ImagePixelLimit {
+class ImagePixelLimit {
     @JsonProperty("max_pixels")
-    private Long maxPixels;
+    var maxPixels: Long? = null
 
     @JsonProperty("min_pixels")
-    private Long minPixels;
-
-    public Long getMaxPixels() {
-        return maxPixels;
-    }
-
-    public void setMaxPixels(Long maxPixels) {
-        this.maxPixels = maxPixels;
-    }
-
-    public Long getMinPixels() {
-        return minPixels;
-    }
-
-    public void setMinPixels(Long minPixels) {
-        this.minPixels = minPixels;
-    }
+    var minPixels: Long? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ImagePixelLimit{" +
                 "maxPixels=" + maxPixels +
                 ", minPixels=" + minPixels +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var maxPixels: Long? = null
+        private var minPixels: Long? = null
+
+        fun maxPixels(maxPixels: Long?): Builder {
+            this.maxPixels = maxPixels
+            return this
+        }
+
+        fun minPixels(minPixels: Long?): Builder {
+            this.minPixels = minPixels
+            return this
+        }
+
+        fun build(): ImagePixelLimit {
+            val imagePixelLimit: ImagePixelLimit = com.volcengine.ark.runtime.model.responses.content.ImagePixelLimit()
+            imagePixelLimit.maxPixels = maxPixels
+            imagePixelLimit.minPixels = minPixels
+            return imagePixelLimit
+        }
     }
 
-    public static class Builder {
-        private Long maxPixels;
-        private Long minPixels;
-
-        public Builder maxPixels(Long maxPixels) {
-            this.maxPixels = maxPixels;
-            return this;
-        }
-
-        public Builder minPixels(Long minPixels) {
-            this.minPixels = minPixels;
-            return this;
-        }
-
-        public ImagePixelLimit build() {
-            ImagePixelLimit imagePixelLimit = new ImagePixelLimit();
-            imagePixelLimit.setMaxPixels(maxPixels);
-            imagePixelLimit.setMinPixels(minPixels);
-            return imagePixelLimit;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.content.ImagePixelLimit.Builder()
         }
     }
 }

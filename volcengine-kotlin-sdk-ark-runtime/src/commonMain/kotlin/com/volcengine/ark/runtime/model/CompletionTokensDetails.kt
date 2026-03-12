@@ -1,37 +1,36 @@
-package com.volcengine.ark.runtime.model;
+package com.volcengine.ark.runtime.model
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompletionTokensDetails {
+class CompletionTokensDetails {
     @JsonProperty("reasoning_tokens")
-    private Integer reasoningTokens;
+    private var reasoningTokens: Integer? = null
 
     @JsonProperty("provisioned_tokens")
-    private Integer provisionedTokens;
+    private var provisionedTokens: Integer? = null
 
-    public Integer getReasoningTokens() {
-        return reasoningTokens;
+    fun getReasoningTokens(): Integer? {
+        return reasoningTokens
     }
 
-    public void setReasoningTokens(Integer reasoningTokens) {
-        this.reasoningTokens = reasoningTokens;
+    fun setReasoningTokens(reasoningTokens: Integer?) {
+        this.reasoningTokens = reasoningTokens
     }
 
-    public Integer getProvisionedTokens() {
-        return provisionedTokens;
+    fun getProvisionedTokens(): Integer? {
+        return provisionedTokens
     }
 
-    public void setProvisionedTokens(Integer provisionedTokens) {
-        this.provisionedTokens = provisionedTokens;
+    fun setProvisionedTokens(provisionedTokens: Integer?) {
+        this.provisionedTokens = provisionedTokens
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "CompletionTokensDetails{" +
                 "reasoningTokens=" + reasoningTokens +
                 ", provisionedTokens=" + provisionedTokens +
-                '}';
+                '}'
     }
 }

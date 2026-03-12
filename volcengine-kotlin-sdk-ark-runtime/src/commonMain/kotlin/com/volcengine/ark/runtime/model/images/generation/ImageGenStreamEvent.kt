@@ -1,9 +1,6 @@
-package com.volcengine.ark.runtime.model.images.generation;
+package com.volcengine.ark.runtime.model.images.generation
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 /**
  * Emitted when streaming image generation events.
@@ -12,142 +9,69 @@ import java.util.List;
  * - completed
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ImageGenStreamEvent {
+class ImageGenStreamEvent {
+    // Getters and setters
     /**
      * The type of image generating event.
      */
-    private String type;
+    var type: String? = null
 
     /**
      * The model used to generate the images.
      */
-    private String model;
+    var model: String? = null
 
     /**
      * The URL of the generated image.
      */
-    private String url;
+    var url: String? = null
 
     /**
      * The Base 64 encoded string of the generated image.
      */
     @JsonProperty("b64_json")
-    private String b64Json;
+    var b64Json: String? = null
 
     /**
      * The size of the generated image.
      */
-    private String size;
+    var size: String? = null
 
     /**
      * The error body, if applicable.
      */
-    private Error error;
+    var error: Error? = null
 
     /**
      * The usage information for the generation of images.
      */
-    private Usage usage;
+    var usage: Usage? = null
 
     /**
      * The index of the image.
      */
     @JsonProperty("image_index")
-    private int imageIndex;
+    var imageIndex: Int = 0
 
     /**
      * The Unix timestamp when the image was generated.
      */
     @JsonProperty("created")
-    private long created;
+    var created: Long = 0
 
     @JsonProperty("tools")
-    private List<GenerateImagesRequest.ContentGenerationTool> tools;
+    private var tools: List<GenerateImagesRequest.ContentGenerationTool?>? = null
 
-    // Getters and setters
-
-    public String getType() {
-        return type;
+    fun getTools(): List<GenerateImagesRequest.ContentGenerationTool?>? {
+        return this.tools
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getB64Json() {
-        return b64Json;
-    }
-
-    public void setB64Json(String b64Json) {
-        this.b64Json = b64Json;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public Error getError() {
-        return error;
-    }
-
-    public void setError(Error error) {
-        this.error = error;
-    }
-
-    public Usage getUsage() {
-        return usage;
-    }
-
-    public void setUsage(Usage usage) {
-        this.usage = usage;
-    }
-
-    public int getImageIndex() {
-        return imageIndex;
-    }
-
-    public void setImageIndex(int imageIndex) {
-        this.imageIndex = imageIndex;
-    }
-
-    public long getCreated() {
-        return created;
-    }
-
-    public void setCreated(long created) {
-        this.created = created;
-    }
-
-    public List<GenerateImagesRequest.ContentGenerationTool> getTools() {
-        return this.tools;
-    }
-
-    public void setTools(List<GenerateImagesRequest.ContentGenerationTool> tools) {
-        this.tools = tools;
+    fun setTools(tools: List<GenerateImagesRequest.ContentGenerationTool?>?) {
+        this.tools = tools
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ImageGenGeneratingEvent{" +
                 "type='" + type + '\'' +
                 ", model='" + model + '\'' +
@@ -159,106 +83,66 @@ public class ImageGenStreamEvent {
                 ", imageIndex=" + imageIndex +
                 ", created=" + created +
                 ", tools=" + tools +
-                '}';
+                '}'
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Usage {
+    class Usage {
         /**
          * The number of images generated.
          */
-        private int generatedImages;
+        var generatedImages: Int = 0
 
         /**
          * The number of output tokens.
          */
-        private int outputTokens;
+        var outputTokens: Int = 0
 
         /**
          * The total number of tokens.
          */
-        private int totalTokens;
-
-        public int getGeneratedImages() {
-            return generatedImages;
-        }
-
-        public void setGeneratedImages(int generatedImages) {
-            this.generatedImages = generatedImages;
-        }
-
-        public int getOutputTokens() {
-            return outputTokens;
-        }
-
-        public void setOutputTokens(int outputTokens) {
-            this.outputTokens = outputTokens;
-        }
-
-        public int getTotalTokens() {
-            return totalTokens;
-        }
-
-        public void setTotalTokens(int totalTokens) {
-            this.totalTokens = totalTokens;
-        }
+        var totalTokens: Int = 0
 
         @JsonProperty("tool_usage")
-        private ImagesResponse.Usage.ToolUsage toolUsage;
+        private var toolUsage: ImagesResponse.Usage.ToolUsage? = null
 
-        public ImagesResponse.Usage.ToolUsage getToolUsage() {
-            return toolUsage;
+        fun getToolUsage(): ImagesResponse.Usage.ToolUsage? {
+            return toolUsage
         }
 
-        public void setToolUsage(ImagesResponse.Usage.ToolUsage toolUsage) {
-            this.toolUsage = toolUsage;
+        fun setToolUsage(toolUsage: ImagesResponse.Usage.ToolUsage?) {
+            this.toolUsage = toolUsage
         }
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "Usage{" +
                     "generatedImages=" + generatedImages +
                     "outputTokens=" + outputTokens +
                     "totalTokens=" + totalTokens +
                     "toolUsage=" + toolUsage +
-                    '}';
+                    '}'
         }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Error {
+    class Error {
         /**
          * The reason for failed image generation.
          */
-        private String message;
+        var message: String? = null
 
         /**
          * The error code for failed image generation.
          */
-        private String code;
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public String getCode() {
-            return code;
-        }
-
-        public void setCode(String code) {
-            this.code = code;
-        }
+        var code: String? = null
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "Error{" +
                     "message='" + message + '\'' +
                     ", code='" + code + '\'' +
-                    '}';
+                    '}'
         }
     }
 }

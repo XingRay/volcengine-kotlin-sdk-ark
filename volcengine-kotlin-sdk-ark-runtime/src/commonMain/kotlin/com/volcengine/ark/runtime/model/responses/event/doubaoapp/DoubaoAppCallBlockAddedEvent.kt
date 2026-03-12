@@ -1,53 +1,46 @@
-package com.volcengine.ark.runtime.model.responses.event.doubaoapp;
+package com.volcengine.ark.runtime.model.responses.event.doubaoapp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
-import com.volcengine.ark.runtime.model.responses.item.doubaoapp.DoubaoAppCallBlock;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class DoubaoAppCallBlockAddedEvent extends ItemEvent {
-
+class DoubaoAppCallBlockAddedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_BLOCK_ADDED) {
     @JsonProperty("block")
-    private DoubaoAppCallBlock block;
+    private var block: DoubaoAppCallBlock? = null
 
-    public DoubaoAppCallBlockAddedEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_BLOCK_ADDED);
+    fun getBlock(): DoubaoAppCallBlock? {
+        return block
     }
 
-    public DoubaoAppCallBlock getBlock() {
-        return block;
-    }
-
-    public void setBlock(DoubaoAppCallBlock block) {
-        this.block = block;
+    fun setBlock(block: DoubaoAppCallBlock?) {
+        this.block = block
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DoubaoAppCallBlockAddedEvent{" +
                 "type='" + getType() + '\'' +
                 ", block=" + block +
                 ", itemId='" + getItemId() + '\'' +
                 ", outputIndex=" + getOutputIndex() +
                 ", sequenceNumber=" + getSequenceNumber() +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    class Builder {
+        private val event: DoubaoAppCallBlockAddedEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallBlockAddedEvent()
 
-    public static class Builder {
-
-        private DoubaoAppCallBlockAddedEvent event = new DoubaoAppCallBlockAddedEvent();
-
-        public Builder block(DoubaoAppCallBlock block) {
-            event.setBlock(block);
-            return this;
+        fun block(block: DoubaoAppCallBlock?): Builder {
+            event.setBlock(block)
+            return this
         }
 
-        public DoubaoAppCallBlockAddedEvent build() {
-            return event;
+        fun build(): DoubaoAppCallBlockAddedEvent {
+            return event
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallBlockAddedEvent.Builder()
         }
     }
 }

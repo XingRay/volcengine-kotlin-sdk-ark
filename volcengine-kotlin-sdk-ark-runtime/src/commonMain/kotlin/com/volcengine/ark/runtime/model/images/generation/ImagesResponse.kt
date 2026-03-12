@@ -1,240 +1,152 @@
-package com.volcengine.ark.runtime.model.images.generation;
+package com.volcengine.ark.runtime.model.images.generation
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
-import java.util.List;
-
-public class ImagesResponse {
-
+class ImagesResponse {
     @JsonProperty("model")
-    private String model;
+    var model: String? = null
 
     @JsonProperty("created")
-    private Integer created;
+    private var created: Integer? = null
 
     @JsonProperty("data")
-    private List<Image> data;
+    var data: List<Image?>? = null
 
     @JsonProperty("usage")
-    private Usage usage;
+    var usage: Usage? = null
 
     @JsonProperty("error")
-    private Error error;
+    var error: Error? = null
 
     @JsonProperty("tools")
-    private List<GenerateImagesRequest.ContentGenerationTool> tools;
+    private var tools: List<GenerateImagesRequest.ContentGenerationTool?>? = null
 
-    public String getModel() {
-        return model;
+    fun getCreated(): Integer? {
+        return created
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    fun setCreated(created: Integer?) {
+        this.created = created
     }
 
-    public Integer getCreated() {
-        return created;
+    fun getTools(): List<GenerateImagesRequest.ContentGenerationTool?>? {
+        return this.tools
     }
 
-    public void setCreated(Integer created) {
-        this.created = created;
-    }
-
-    public List<Image> getData() {
-        return data;
-    }
-
-    public void setData(List<Image> data) {
-        this.data = data;
-    }
-
-    public Usage getUsage() {
-        return usage;
-    }
-
-    public void setUsage(Usage usage) {
-        this.usage = usage;
-    }
-
-    public Error getError() {
-        return error;
-    }
-
-    public void setError(Error error) {
-        this.error = error;
-    }
-
-    public List<GenerateImagesRequest.ContentGenerationTool> getTools() {
-        return this.tools;
-    }
-
-    public void setTools(List<GenerateImagesRequest.ContentGenerationTool> tools) {
-        this.tools = tools;
+    fun setTools(tools: List<GenerateImagesRequest.ContentGenerationTool?>?) {
+        this.tools = tools
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Image {
-
+    class Image {
         @JsonProperty("url")
-        private String url;
+        var url: String? = null
 
         @JsonProperty("b64_json")
-        private String b64Json;
+        var b64Json: String? = null
 
         @JsonProperty("size")
-        private String size;
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public String getB64Json() {
-            return b64Json;
-        }
-
-        public void setB64Json(String b64Json) {
-            this.b64Json = b64Json;
-        }
-
-        public String getSize() {
-            return size;
-        }
-
-        public void setSize(String size) {
-            this.size = size;
-        }
+        var size: String? = null
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "Image{" +
                     "url=" + url +
                     "b64Json=" + b64Json +
                     "size=" + size +
-                    '}';
+                    '}'
         }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Usage {
-
+    class Usage {
         @JsonIgnoreProperties(ignoreUnknown = true)
-        public static class ToolUsage {
-
+        class ToolUsage {
             @JsonProperty("web_search")
-            private Integer webSearch;
+            private var webSearch: Integer? = null
 
-            public Integer getWebSearch() {
-                return webSearch;
+            fun getWebSearch(): Integer? {
+                return webSearch
             }
 
-            public void setWebSearch(Integer webSearch) {
-                this.webSearch = webSearch;
+            fun setWebSearch(webSearch: Integer?) {
+                this.webSearch = webSearch
             }
 
             @Override
-            public String toString() {
+            fun toString(): String? {
                 return "ToolUsage{" +
                         "webSearch=" + webSearch +
-                        '}';
+                        '}'
             }
         }
 
         @JsonProperty("generated_images")
-        private Integer generatedImages;
+        private var generatedImages: Integer? = null
 
-        public Integer getGeneratedImages() {
-            return generatedImages;
+        fun getGeneratedImages(): Integer? {
+            return generatedImages
         }
 
-        public void setGeneratedImages(Integer generatedImages) {
-            this.generatedImages = generatedImages;
+        fun setGeneratedImages(generatedImages: Integer?) {
+            this.generatedImages = generatedImages
         }
 
         @JsonProperty("output_tokens")
-        private Integer outputTokens;
+        private var outputTokens: Integer? = null
 
-        public Integer getOutputTokens() {
-            return outputTokens;
+        fun getOutputTokens(): Integer? {
+            return outputTokens
         }
 
-        public void setOutputTokens(Integer outputTokens) {
-            this.outputTokens = outputTokens;
+        fun setOutputTokens(outputTokens: Integer?) {
+            this.outputTokens = outputTokens
         }
 
         @JsonProperty("total_tokens")
-        private Integer totalTokens;
+        private var totalTokens: Integer? = null
 
-        public Integer getTotalTokens() {
-            return totalTokens;
+        fun getTotalTokens(): Integer? {
+            return totalTokens
         }
 
-        public void setTotalTokens(Integer totalTokens) {
-            this.totalTokens = totalTokens;
+        fun setTotalTokens(totalTokens: Integer?) {
+            this.totalTokens = totalTokens
         }
 
         @JsonProperty("tool_usage")
-        private ToolUsage toolUsage;
-
-        public ToolUsage getToolUsage() {
-            return toolUsage;
-        }
-
-        public void setToolUsage(ToolUsage toolUsage) {
-            this.toolUsage = toolUsage;
-        }
+        var toolUsage: ToolUsage? = null
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "Usage{" +
                     "generatedImages=" + generatedImages +
                     "outputTokens=" + outputTokens +
                     "totalTokens=" + totalTokens +
                     "toolUsage=" + toolUsage +
-                    '}';
+                    '}'
         }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Error {
-
+    class Error {
         @JsonProperty("code")
-        private String code;
+        var code: String? = null
 
         @JsonProperty("message")
-        private String message;
-
-        public String getCode() {
-            return code;
-        }
-
-        public void setCode(String code) {
-            this.code = code;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
+        var message: String? = null
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "Error{" +
                     "code=" + code +
                     "message=" + message +
-                    '}';
+                    '}'
         }
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ImagesResponse{" +
                 "model='" + model + '\'' +
                 "created=" + created +
@@ -242,59 +154,56 @@ public class ImagesResponse {
                 "usage=" + usage +
                 "error=" + error +
                 "tools=" + tools +
-                '}';
+                '}'
     }
 
-    public static class Builder {
-        private String model;
-        private Integer created;
-        private List<Image> data;
-        private Usage usage;
-        private Error error;
-        private List<GenerateImagesRequest.ContentGenerationTool> tools;
+    class Builder private constructor() {
+        private var model: String? = null
+        private var created: Integer? = null
+        private var data: List<Image?>? = null
+        private var usage: Usage? = null
+        private var error: Error? = null
+        private var tools: List<GenerateImagesRequest.ContentGenerationTool?>? = null
 
-        private Builder() {
+        fun model(model: String?): Builder {
+            this.model = model
+            return this
         }
 
-        public ImagesResponse.Builder model(String model) {
-            this.model = model;
-            return this;
+        fun created(created: Integer?): Builder {
+            this.created = created
+            return this
         }
 
-        public ImagesResponse.Builder created(Integer created) {
-            this.created = created;
-            return this;
+        fun data(data: List<Image?>?): Builder {
+            this.data = data
+            return this
         }
 
-        public ImagesResponse.Builder data(List<Image> data) {
-            this.data = data;
-            return this;
+        fun usage(usage: Usage?): Builder {
+            this.usage = usage
+            return this
         }
 
-        public ImagesResponse.Builder usage(Usage usage) {
-            this.usage = usage;
-            return this;
+        fun error(error: Error?): Builder {
+            this.error = error
+            return this
         }
 
-        public ImagesResponse.Builder error(Error error) {
-            this.error = error;
-            return this;
+        fun tools(tools: List<GenerateImagesRequest.ContentGenerationTool?>?): Builder {
+            this.tools = tools
+            return this
         }
 
-        public ImagesResponse.Builder tools(List<GenerateImagesRequest.ContentGenerationTool> tools) {
-            this.tools = tools;
-            return this;
-        }
-
-        public ImagesResponse build() {
-            ImagesResponse imagesResponse = new ImagesResponse();
-            imagesResponse.setModel(model);
-            imagesResponse.setCreated(created);
-            imagesResponse.setData(data);
-            imagesResponse.setUsage(usage);
-            imagesResponse.setError(error);
-            imagesResponse.setTools(tools);
-            return imagesResponse;
+        fun build(): ImagesResponse {
+            val imagesResponse: ImagesResponse = com.volcengine.ark.runtime.model.images.generation.ImagesResponse()
+            imagesResponse.model = model
+            imagesResponse.setCreated(created)
+            imagesResponse.data = data
+            imagesResponse.usage = usage
+            imagesResponse.error = error
+            imagesResponse.setTools(tools)
+            return imagesResponse
         }
     }
 }

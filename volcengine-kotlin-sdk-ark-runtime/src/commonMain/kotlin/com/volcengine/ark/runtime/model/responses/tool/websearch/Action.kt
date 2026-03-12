@@ -1,61 +1,47 @@
-package com.volcengine.ark.runtime.model.responses.tool.websearch;
+package com.volcengine.ark.runtime.model.responses.tool.websearch
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class Action {
+class Action {
     @JsonProperty("query")
-    private String query;
+    var query: String? = null
 
     @JsonProperty("type")
-    private String type;
-
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+    var type: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "Action{" +
                 "query='" + query + '\'' +
                 ", type='" + type + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var query: String? = null
+        private var type: String? = null
+
+        fun query(query: String?): Builder {
+            this.query = query
+            return this
+        }
+
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
+        }
+
+        fun build(): Action {
+            val action: Action = com.volcengine.ark.runtime.model.responses.tool.websearch.Action()
+            action.query = query
+            action.type = type
+            return action
+        }
     }
 
-    public static class Builder {
-        private String query;
-        private String type;
-
-        public Builder query(String query) {
-            this.query = query;
-            return this;
-        }
-
-        public Builder type(String type) {
-            this.type = type;
-            return this;
-        }
-
-        public Action build() {
-            Action action = new Action();
-            action.setQuery(query);
-            action.setType(type);
-            return action;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.websearch.Action.Builder()
         }
     }
 }

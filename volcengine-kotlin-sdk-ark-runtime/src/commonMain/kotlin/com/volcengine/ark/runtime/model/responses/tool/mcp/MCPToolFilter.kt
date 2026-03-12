@@ -1,50 +1,37 @@
-package com.volcengine.ark.runtime.model.responses.tool.mcp;
+package com.volcengine.ark.runtime.model.responses.tool.mcp
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties
-public class MCPToolFilter {
-
+class MCPToolFilter {
     @JsonProperty("tool_names")
-    private List<String> toolNames;
-
-    public List<String> getToolNames() {
-        return toolNames;
-    }
-
-    public void setToolNames(List<String> toolNames) {
-        this.toolNames = toolNames;
-    }
+    var toolNames: List<String?>? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "MCPToolFilter{" +
                 "toolNames=" + toolNames +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder private constructor() {
+        private var toolNames: List<String?>? = null
+
+        fun toolNames(toolNames: List<String?>?): Builder {
+            this.toolNames = toolNames
+            return this
+        }
+
+        fun build(): MCPToolFilter {
+            val mCPToolFilter: MCPToolFilter = com.volcengine.ark.runtime.model.responses.tool.mcp.MCPToolFilter()
+            mCPToolFilter.toolNames = toolNames
+            return mCPToolFilter
+        }
     }
 
-    public static final class Builder {
-        private List<String> toolNames;
-
-        private Builder() {
-        }
-
-        public Builder toolNames(List<String> toolNames) {
-            this.toolNames = toolNames;
-            return this;
-        }
-
-        public MCPToolFilter build() {
-            MCPToolFilter mCPToolFilter = new MCPToolFilter();
-            mCPToolFilter.setToolNames(toolNames);
-            return mCPToolFilter;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.mcp.MCPToolFilter.Builder()
         }
     }
 }

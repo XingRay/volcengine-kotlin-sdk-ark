@@ -1,97 +1,73 @@
-package com.volcengine.ark.runtime.model;
+package com.volcengine.ark.runtime.model
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Usage {
+class Usage {
     /**
      * The number of prompt tokens used.
      */
     @JsonProperty("prompt_tokens")
-    long promptTokens;
+    var promptTokens: Long = 0
 
     /**
      * The number of completion tokens used.
      */
     @JsonProperty("completion_tokens")
-    long completionTokens;
+    var completionTokens: Long = 0
 
     /**
      * The number of total tokens used
      */
     @JsonProperty("total_tokens")
-    long totalTokens;
+    var totalTokens: Long = 0
 
     @JsonProperty("prompt_tokens_details")
-    private PromptTokensDetails promptTokensDetails;
+    private var promptTokensDetails: PromptTokensDetails? = null
 
     @JsonProperty("completion_tokens_details")
-    private CompletionTokensDetails completionTokensDetails;
+    private var completionTokensDetails: CompletionTokensDetails? = null
 
-    public Usage(long promptTokens, long completionTokens, long totalTokens) {
-        this.promptTokens = promptTokens;
-        this.completionTokens = completionTokens;
-        this.totalTokens = totalTokens;
+    constructor(promptTokens: Long, completionTokens: Long, totalTokens: Long) {
+        this.promptTokens = promptTokens
+        this.completionTokens = completionTokens
+        this.totalTokens = totalTokens
     }
 
-    public Usage(long promptTokens, long completionTokens, long totalTokens, PromptTokensDetails promptTokensDetails, CompletionTokensDetails completionTokensDetails) {
-        this.promptTokens = promptTokens;
-        this.completionTokens = completionTokens;
-        this.totalTokens = totalTokens;
-        this.promptTokensDetails = promptTokensDetails;
-        this.completionTokensDetails = completionTokensDetails;
+    constructor(promptTokens: Long, completionTokens: Long, totalTokens: Long, promptTokensDetails: PromptTokensDetails?, completionTokensDetails: CompletionTokensDetails?) {
+        this.promptTokens = promptTokens
+        this.completionTokens = completionTokens
+        this.totalTokens = totalTokens
+        this.promptTokensDetails = promptTokensDetails
+        this.completionTokensDetails = completionTokensDetails
     }
 
-    public Usage() {}
+    constructor()
 
-    public long getPromptTokens() {
-        return promptTokens;
+    fun getPromptTokensDetails(): PromptTokensDetails? {
+        return promptTokensDetails
     }
 
-    public void setPromptTokens(long promptTokens) {
-        this.promptTokens = promptTokens;
+    fun setPromptTokensDetails(promptTokensDetails: PromptTokensDetails?) {
+        this.promptTokensDetails = promptTokensDetails
     }
 
-    public long getCompletionTokens() {
-        return completionTokens;
+    fun getCompletionTokensDetails(): CompletionTokensDetails? {
+        return completionTokensDetails
     }
 
-    public void setCompletionTokens(long completionTokens) {
-        this.completionTokens = completionTokens;
-    }
-
-    public long getTotalTokens() {
-        return totalTokens;
-    }
-
-    public void setTotalTokens(long totalTokens) {
-        this.totalTokens = totalTokens;
-    }
-
-    public PromptTokensDetails getPromptTokensDetails() {
-        return promptTokensDetails;
-    }
-
-    public void setPromptTokensDetails(PromptTokensDetails promptTokensDetails) {
-        this.promptTokensDetails = promptTokensDetails;
-    }
-
-    public CompletionTokensDetails getCompletionTokensDetails() {
-        return completionTokensDetails;
-    }
-    public void setCompletionTokensDetails(CompletionTokensDetails completionTokensDetails) {
-        this.completionTokensDetails = completionTokensDetails;
+    fun setCompletionTokensDetails(completionTokensDetails: CompletionTokensDetails?) {
+        this.completionTokensDetails = completionTokensDetails
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "Usage{" +
                 "promptTokens=" + promptTokens +
                 ", completionTokens=" + completionTokens +
                 ", totalTokens=" + totalTokens +
                 ", promptTokensDetails=" + promptTokensDetails +
                 ", completionTokensDetails=" + completionTokensDetails +
-                '}';
+                '}'
     }
 }

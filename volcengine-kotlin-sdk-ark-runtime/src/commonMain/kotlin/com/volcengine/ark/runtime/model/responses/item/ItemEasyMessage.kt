@@ -1,85 +1,76 @@
-package com.volcengine.ark.runtime.model.responses.item;
+package com.volcengine.ark.runtime.model.responses.item
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize()
+@JsonDeserialize
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
-public class ItemEasyMessage extends BaseMessageItem implements InputItem {
+class ItemEasyMessage : BaseMessageItem(), InputItem {
     @JsonProperty("content")
-    private MessageContent content;
+    private var content: MessageContent? = null
 
     @JsonProperty("partial")
-    private Boolean partial;
+    var partial: Boolean? = null
 
-    public MessageContent getContent() {
-        return content;
+    fun getContent(): MessageContent? {
+        return content
     }
 
-    public void setContent(MessageContent content) {
-        this.content = content;
-    }
-
-    public Boolean getPartial() {
-        return partial;
-    }
-
-    public void setPartial(Boolean partial) {
-        this.partial = partial;
+    fun setContent(content: MessageContent?) {
+        this.content = content
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ItemEasyMessage{" +
                 "type='" + getType() + '\'' +
                 ", role='" + getRole() + '\'' +
                 ", content=" + content +
                 ", id='" + getId() + '\'' +
                 ", partial=" + partial +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var role: String? = null
+        private var content: MessageContent? = null
+        private var id: String? = null
+
+        private var partial: Boolean? = null
+
+        fun role(role: String?): Builder {
+            this.role = role
+            return this
+        }
+
+        fun content(content: MessageContent?): Builder {
+            this.content = content
+            return this
+        }
+
+        fun id(id: String?): Builder {
+            this.id = id
+            return this
+        }
+
+        fun partial(partial: Boolean?): Builder {
+            this.partial = partial
+            return this
+        }
+
+        fun build(): ItemEasyMessage {
+            val itemEasyMessage: ItemEasyMessage = com.volcengine.ark.runtime.model.responses.item.ItemEasyMessage()
+            itemEasyMessage.setRole(role)
+            itemEasyMessage.setContent(content)
+            itemEasyMessage.setId(id)
+            itemEasyMessage.partial = partial
+            return itemEasyMessage
+        }
     }
 
-    public static class Builder {
-        private String role;
-        private MessageContent content;
-        private String id;
-
-        private Boolean partial;
-
-        public Builder role(String role) {
-            this.role = role;
-            return this;
-        }
-
-        public Builder content(MessageContent content) {
-            this.content = content;
-            return this;
-        }
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder partial(Boolean partial) {
-            this.partial = partial;
-            return this;
-        }
-
-        public ItemEasyMessage build() {
-            ItemEasyMessage itemEasyMessage = new ItemEasyMessage();
-            itemEasyMessage.setRole(role);
-            itemEasyMessage.setContent(content);
-            itemEasyMessage.setId(id);
-            itemEasyMessage.setPartial(partial);
-            return itemEasyMessage;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.ItemEasyMessage.Builder()
         }
     }
 }

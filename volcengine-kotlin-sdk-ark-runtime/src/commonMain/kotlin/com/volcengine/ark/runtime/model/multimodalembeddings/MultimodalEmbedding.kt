@@ -1,55 +1,39 @@
-package com.volcengine.ark.runtime.model.multimodalembeddings;
+package com.volcengine.ark.runtime.model.multimodalembeddings
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MultimodalEmbedding {
+class MultimodalEmbedding {
     /**
      * The type of object returned, should be "embedding"
      */
-    private String object;
+    var `object`: String? = null
+        set(object) {
+            field = this.`object`
+        }
 
     /**
      * The embedding vector
      */
-    private List<Double> embedding;
+    var embedding: List<Double?>? = null
 
     @JsonProperty("sparse_embedding")
-    private List<SparseEmbedding> sparseEmbedding;
+    private var sparseEmbedding: List<SparseEmbedding?>? = null
 
-    public List<SparseEmbedding> getSparseEmbedding() {
-        return sparseEmbedding;
+    fun getSparseEmbedding(): List<SparseEmbedding?>? {
+        return sparseEmbedding
     }
 
-    public void setSparseEmbedding(List<SparseEmbedding> sparseEmbedding) {
-        this.sparseEmbedding = sparseEmbedding;
-    }
-
-    public String getObject() {
-        return object;
-    }
-
-    public void setObject(String object) {
-        this.object = object;
-    }
-
-    public List<Double> getEmbedding() {
-        return embedding;
-    }
-
-    public void setEmbedding(List<Double> embedding) {
-        this.embedding = embedding;
+    fun setSparseEmbedding(sparseEmbedding: List<SparseEmbedding?>?) {
+        this.sparseEmbedding = sparseEmbedding
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "Embedding{" +
-                "object='" + object + '\'' +
+                "object='" + this.`object` + '\'' +
                 ", embedding=" + embedding +
                 ", sparseEmbedding=" + sparseEmbedding +
-                '}';
+                '}'
     }
 }

@@ -1,55 +1,43 @@
-package com.volcengine.ark.runtime.model.content.generation;
+package com.volcengine.ark.runtime.model.content.generation
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CreateContentGenerationTaskResult {
-
+class CreateContentGenerationTaskResult {
     @JsonProperty("id")
-    private String id;
+    var id: String? = null
 
-    public CreateContentGenerationTaskResult() {
-    }
+    constructor()
 
-    public CreateContentGenerationTaskResult(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    constructor(id: String?) {
+        this.id = id
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "CreateContentGenerationTaskResult{" +
                 "id='" + id + '\'' +
-                '}';
+                '}'
     }
 
-    public static CreateContentGenerationTaskResult.Builder builder() {
-        return new Builder();
+    class Builder private constructor() {
+        private var id: String? = null
+
+        fun id(id: String?): Builder {
+            this.id = id
+            return this
+        }
+
+        fun build(): CreateContentGenerationTaskResult {
+            val createContentGenerationTaskResult: CreateContentGenerationTaskResult = com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskResult()
+            createContentGenerationTaskResult.id = id
+            return createContentGenerationTaskResult
+        }
     }
 
-    public static class Builder {
-        private String id;
-
-        private Builder() {
-        }
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public CreateContentGenerationTaskResult build() {
-            CreateContentGenerationTaskResult createContentGenerationTaskResult = new CreateContentGenerationTaskResult();
-            createContentGenerationTaskResult.setId(id);
-            return createContentGenerationTaskResult;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskResult.Builder()
         }
     }
 }

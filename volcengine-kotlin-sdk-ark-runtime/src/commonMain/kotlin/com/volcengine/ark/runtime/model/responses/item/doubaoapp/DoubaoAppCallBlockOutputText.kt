@@ -1,116 +1,73 @@
-package com.volcengine.ark.runtime.model.responses.item.doubaoapp;
+package com.volcengine.ark.runtime.model.responses.item.doubaoapp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class DoubaoAppCallBlockOutputText extends DoubaoAppCallBlock {
-
+class DoubaoAppCallBlockOutputText : DoubaoAppCallBlock() {
     @JsonProperty("id")
-    private String id;
+    var id: String? = null
 
     @JsonProperty("type")
-    private String type = ResponsesConstants.DOBAO_APP_BLOCK_TYPE_OUTPUT_TEXT;
+    var type: String? = ResponsesConstants.DOBAO_APP_BLOCK_TYPE_OUTPUT_TEXT
 
     @JsonProperty("text")
-    private String text;
+    var text: String? = null
 
     @JsonProperty("status")
-    private String status;
+    var status: String? = null
 
     @JsonProperty("parent_id")
-    private String parentId;
+    var parentId: String? = null
 
-    public String getId() {
-        return id;
-    }
+    class Builder {
+        private var id: String? = null
+        private var text: String? = null
+        private var status: String? = null
+        private var parentId: String? = null
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    public DoubaoAppCallBlockOutputText() {
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private String id;
-        private String text;
-        private String status;
-        private String parentId;
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
+        fun id(id: String?): Builder {
+            this.id = id
+            return this
         }
 
-        public Builder text(String text) {
-            this.text = text;
-            return this;
+        fun text(text: String?): Builder {
+            this.text = text
+            return this
         }
 
-        public Builder status(String status) {
-            this.status = status;
-            return this;
+        fun status(status: String?): Builder {
+            this.status = status
+            return this
         }
 
-        public Builder parentId(String parentId) {
-            this.parentId = parentId;
-            return this;
+        fun parentId(parentId: String?): Builder {
+            this.parentId = parentId
+            return this
         }
 
-        public DoubaoAppCallBlockOutputText build() {
-            DoubaoAppCallBlockOutputText outputText = new DoubaoAppCallBlockOutputText();
-            outputText.setId(id);
-            outputText.setText(text);
-            outputText.setStatus(status);
-            outputText.setParentId(parentId);
-            return outputText;
+        fun build(): DoubaoAppCallBlockOutputText {
+            val outputText: DoubaoAppCallBlockOutputText = com.volcengine.ark.runtime.model.responses.item.doubaoapp.DoubaoAppCallBlockOutputText()
+            outputText.id = id
+            outputText.text = text
+            outputText.status = status
+            outputText.parentId = parentId
+            return outputText
         }
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DoubaoAppCallBlockOutputText{" +
                 "id='" + id + '\'' +
                 ", type='" + type + '\'' +
                 ", text='" + text + '\'' +
                 ", status='" + status + '\'' +
                 ", parentId='" + parentId + '\'' +
-                '}';
+                '}'
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.doubaoapp.DoubaoAppCallBlockOutputText.Builder()
+        }
     }
 }

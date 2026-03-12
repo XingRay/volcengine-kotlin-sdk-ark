@@ -1,42 +1,36 @@
-package com.volcengine.ark.runtime.model.responses.tool.imageprocess;
+package com.volcengine.ark.runtime.model.responses.tool.imageprocess
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ImageProcessPointOptions {
+class ImageProcessPointOptions {
     @JsonProperty("type")
-    private String type;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+    var type: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ImageProcessPointOptions{" +
                 "type='" + type + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    class Builder {
+        private var type: String? = null
 
-    public static class Builder {
-        private String type;
-
-        public Builder type(String type) {
-            this.type = type;
-            return this;
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
         }
 
-        public ImageProcessPointOptions build() {
-            ImageProcessPointOptions imageProcessPointOptions = new ImageProcessPointOptions();
-            imageProcessPointOptions.setType(type);
-            return imageProcessPointOptions;
+        fun build(): ImageProcessPointOptions {
+            val imageProcessPointOptions: ImageProcessPointOptions = com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessPointOptions()
+            imageProcessPointOptions.type = type
+            return imageProcessPointOptions
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessPointOptions.Builder()
         }
     }
 }

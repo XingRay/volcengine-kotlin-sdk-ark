@@ -1,293 +1,160 @@
-package com.volcengine.ark.runtime.model.responses.response;
+package com.volcengine.ark.runtime.model.responses.response
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.common.*;
-import com.volcengine.ark.runtime.model.responses.item.BaseItem;
-import com.volcengine.ark.runtime.model.responses.tool.ResponsesTool;
-import com.volcengine.ark.runtime.model.responses.tool.ResponsesToolChoice;
-import com.volcengine.ark.runtime.model.responses.usage.IncompleteDetails;
-import com.volcengine.ark.runtime.model.responses.usage.Usage;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.List;
-
-public class ResponseObject {
+class ResponseObject {
     @JsonProperty("created_at")
-    private Long createdAt;
+    var createdAt: Long? = null
 
     @JsonProperty("error")
-    private Error error;
+    var error: Error? = null
 
     @JsonProperty("id")
-    private String id;
+    var id: String? = null
 
     @JsonProperty("incomplete_details")
-    private IncompleteDetails incompleteDetails;
+    private var incompleteDetails: IncompleteDetails? = null
 
     @JsonProperty("max_output_tokens")
-    private Long maxOutputTokens;
+    var maxOutputTokens: Long? = null
 
     @JsonProperty("model")
-    private String model;
+    var model: String? = null
 
     @JsonProperty("object")
-    private String object;
+    var `object`: String? = null
+        set(object) {
+            field = this.`object`
+        }
 
     @JsonProperty("output")
-    private List<BaseItem> output;
+    private var output: List<BaseItem?>? = null
 
     @JsonProperty("previous_response_id")
-    private String previousResponseId;
+    var previousResponseId: String? = null
 
     @JsonProperty("thinking")
-    private ResponsesThinking thinking;
+    private var thinking: ResponsesThinking? = null
 
     @JsonProperty("reasoning")
-    private ResponsesReasoning reasoning;
+    private var reasoning: ResponsesReasoning? = null
 
     @JsonProperty("service_tier")
-    private String serviceTier;
+    var serviceTier: String? = null
 
     @JsonProperty("status")
-    private String status;
+    var status: String? = null
 
     @JsonProperty("temperature")
-    private Double temperature;
+    var temperature: Double? = null
 
     @JsonProperty("tools")
-    private List<ResponsesTool> tools;
+    private var tools: List<ResponsesTool?>? = null
 
     @JsonProperty("top_p")
-    private Double topP;
+    var topP: Double? = null
 
     @JsonProperty("usage")
-    private Usage usage;
+    private var usage: Usage? = null
 
     @JsonProperty("caching")
-    private ResponsesCaching caching;
+    private var caching: ResponsesCaching? = null
 
     @JsonProperty("text")
-    private ResponsesText text;
+    private var text: ResponsesText? = null
 
     @JsonProperty("instructions")
-    private String instructions;
+    var instructions: String? = null
 
     @JsonProperty("store")
-    private Boolean store;
+    var store: Boolean? = null
 
     @JsonProperty("expire_at")
-    private Long expireAt;
+    var expireAt: Long? = null
 
     @JsonProperty("tool_choice")
-    private ResponsesToolChoice toolChoice;
+    private var toolChoice: ResponsesToolChoice? = null
 
     @JsonProperty("parallel_tool_calls")
-    private Boolean parallelToolCalls;
+    var parallelToolCalls: Boolean? = null
 
     @JsonProperty("max_tool_calls")
-    private Long maxToolCalls;
+    var maxToolCalls: Long? = null
 
-    public Long getCreatedAt() {
-        return createdAt;
+    fun getIncompleteDetails(): IncompleteDetails? {
+        return incompleteDetails
     }
 
-    public void setCreatedAt(Long createdAt) {
-        this.createdAt = createdAt;
+    fun setIncompleteDetails(incompleteDetails: IncompleteDetails?) {
+        this.incompleteDetails = incompleteDetails
     }
 
-    public Error getError() {
-        return error;
+    fun getOutput(): List<BaseItem?>? {
+        return output
     }
 
-    public void setError(Error error) {
-        this.error = error;
+    fun setOutput(output: List<BaseItem?>?) {
+        this.output = output
     }
 
-    public String getId() {
-        return id;
+    fun getThinking(): ResponsesThinking? {
+        return thinking
     }
 
-    public void setId(String id) {
-        this.id = id;
+    fun setThinking(thinking: ResponsesThinking?) {
+        this.thinking = thinking
     }
 
-    public IncompleteDetails getIncompleteDetails() {
-        return incompleteDetails;
+    fun getReasoning(): ResponsesReasoning? {
+        return reasoning
     }
 
-    public void setIncompleteDetails(IncompleteDetails incompleteDetails) {
-        this.incompleteDetails = incompleteDetails;
+    fun setReasoning(reasoning: ResponsesReasoning?) {
+        this.reasoning = reasoning
     }
 
-    public Long getMaxOutputTokens() {
-        return maxOutputTokens;
+    fun getTools(): List<ResponsesTool?>? {
+        return tools
     }
 
-    public void setMaxOutputTokens(Long maxOutputTokens) {
-        this.maxOutputTokens = maxOutputTokens;
+    fun setTools(tools: List<ResponsesTool?>?) {
+        this.tools = tools
     }
 
-    public String getModel() {
-        return model;
+    fun getUsage(): Usage? {
+        return usage
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    fun setUsage(usage: Usage?) {
+        this.usage = usage
     }
 
-    public String getObject() {
-        return object;
+    fun getCaching(): ResponsesCaching? {
+        return caching
     }
 
-    public void setObject(String object) {
-        this.object = object;
+    fun setCaching(caching: ResponsesCaching?) {
+        this.caching = caching
     }
 
-    public List<BaseItem> getOutput() {
-        return output;
+    fun getText(): ResponsesText? {
+        return text
     }
 
-    public void setOutput(List<BaseItem> output) {
-        this.output = output;
+    fun setText(text: ResponsesText?) {
+        this.text = text
     }
 
-    public String getPreviousResponseId() {
-        return previousResponseId;
+    fun getToolChoice(): ResponsesToolChoice? {
+        return toolChoice
     }
 
-    public void setPreviousResponseId(String previousResponseId) {
-        this.previousResponseId = previousResponseId;
-    }
-
-    public ResponsesThinking getThinking() {
-        return thinking;
-    }
-
-    public void setThinking(ResponsesThinking thinking) {
-        this.thinking = thinking;
-    }
-
-    public ResponsesReasoning getReasoning() {
-        return reasoning;
-    }
-
-    public void setReasoning(ResponsesReasoning reasoning) {
-        this.reasoning = reasoning;
-    }
-
-    public String getServiceTier() {
-        return serviceTier;
-    }
-
-    public void setServiceTier(String serviceTier) {
-        this.serviceTier = serviceTier;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Double getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(Double temperature) {
-        this.temperature = temperature;
-    }
-
-    public List<ResponsesTool> getTools() {
-        return tools;
-    }
-
-    public void setTools(List<ResponsesTool> tools) {
-        this.tools = tools;
-    }
-
-    public Double getTopP() {
-        return topP;
-    }
-
-    public void setTopP(Double topP) {
-        this.topP = topP;
-    }
-
-    public Usage getUsage() {
-        return usage;
-    }
-
-    public void setUsage(Usage usage) {
-        this.usage = usage;
-    }
-
-    public ResponsesCaching getCaching() {
-        return caching;
-    }
-
-    public void setCaching(ResponsesCaching caching) {
-        this.caching = caching;
-    }
-
-    public ResponsesText getText() {
-        return text;
-    }
-
-    public void setText(ResponsesText text) {
-        this.text = text;
-    }
-
-    public String getInstructions() {
-        return instructions;
-    }
-
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
-    }
-
-    public Boolean getStore() {
-        return store;
-    }
-
-    public void setStore(Boolean store) {
-        this.store = store;
-    }
-
-    public Long getExpireAt() {
-        return expireAt;
-    }
-
-    public void setExpireAt(Long expireAt) {
-        this.expireAt = expireAt;
-    }
-
-    public ResponsesToolChoice getToolChoice() {
-        return toolChoice;
-    }
-
-    public void setToolChoice(ResponsesToolChoice toolChoice) {
-        this.toolChoice = toolChoice;
-    }
-
-    public Boolean getParallelToolCalls() {
-        return parallelToolCalls;
-    }
-
-    public void setParallelToolCalls(Boolean parallelToolCalls) {
-        this.parallelToolCalls = parallelToolCalls;
-    }
-
-    public Long getMaxToolCalls() {
-        return maxToolCalls;
-    }
-
-    public void setMaxToolCalls(Long maxToolCalls) {
-        this.maxToolCalls = maxToolCalls;
+    fun setToolChoice(toolChoice: ResponsesToolChoice?) {
+        this.toolChoice = toolChoice
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ResponseObject{" +
                 "createdAt=" + createdAt +
                 ", error=" + error +
@@ -295,7 +162,7 @@ public class ResponseObject {
                 ", incompleteDetails=" + incompleteDetails +
                 ", maxOutputTokens=" + maxOutputTokens +
                 ", model='" + model + '\'' +
-                ", object='" + object + '\'' +
+                ", object='" + this.`object` + '\'' +
                 ", output=" + output +
                 ", previousResponseId='" + previousResponseId + '\'' +
                 ", thinking=" + thinking +
@@ -314,6 +181,6 @@ public class ResponseObject {
                 ", toolChoice=" + toolChoice +
                 ", parallelToolCalls=" + parallelToolCalls +
                 ", maxToolCalls=" + maxToolCalls +
-                '}';
+                '}'
     }
 }

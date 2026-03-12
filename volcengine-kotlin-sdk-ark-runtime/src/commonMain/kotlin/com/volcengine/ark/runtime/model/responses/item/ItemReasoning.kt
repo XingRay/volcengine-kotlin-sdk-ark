@@ -1,91 +1,68 @@
-package com.volcengine.ark.runtime.model.responses.item;
+package com.volcengine.ark.runtime.model.responses.item
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.content.ReasoningSummaryPart;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemReasoning extends BaseItem implements OutputItem {
+class ItemReasoning : BaseItem(ResponsesConstants.ITEM_TYPE_REASONING), OutputItem {
     @JsonProperty("id")
-    private String id;
+    var id: String? = null
 
     @JsonProperty("summary")
-    private List<ReasoningSummaryPart> summary;
+    private var summary: List<ReasoningSummaryPart?>? = null
 
     @JsonProperty("status")
-    private String status;
+    var status: String? = null
 
-    public ItemReasoning() {
-        super(ResponsesConstants.ITEM_TYPE_REASONING);
+    fun getSummary(): List<ReasoningSummaryPart?>? {
+        return summary
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public List<ReasoningSummaryPart> getSummary() {
-        return summary;
-    }
-
-    public void setSummary(List<ReasoningSummaryPart> summary) {
-        this.summary = summary;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    fun setSummary(summary: List<ReasoningSummaryPart?>?) {
+        this.summary = summary
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ItemReasoning{" +
                 "id='" + id + '\'' +
                 ", type='" + getType() + '\'' +
                 ", summary=" + summary +
                 ", status='" + status + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var id: String? = null
+        private var summary: List<ReasoningSummaryPart?>? = null
+        private var status: String? = null
+
+        fun id(id: String?): Builder {
+            this.id = id
+            return this
+        }
+
+        fun summary(summary: List<ReasoningSummaryPart?>?): Builder {
+            this.summary = summary
+            return this
+        }
+
+        fun status(status: String?): Builder {
+            this.status = status
+            return this
+        }
+
+        fun build(): ItemReasoning {
+            val itemReasoning: ItemReasoning = com.volcengine.ark.runtime.model.responses.item.ItemReasoning()
+            itemReasoning.id = id
+            itemReasoning.setSummary(summary)
+            itemReasoning.status = status
+            return itemReasoning
+        }
     }
 
-    public static class Builder {
-        private String id;
-        private List<ReasoningSummaryPart> summary;
-        private String status;
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder summary(List<ReasoningSummaryPart> summary) {
-            this.summary = summary;
-            return this;
-        }
-
-        public Builder status(String status) {
-            this.status = status;
-            return this;
-        }
-
-        public ItemReasoning build() {
-            ItemReasoning itemReasoning = new ItemReasoning();
-            itemReasoning.setId(id);
-            itemReasoning.setSummary(summary);
-            itemReasoning.setStatus(status);
-            return itemReasoning;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.ItemReasoning.Builder()
         }
     }
 }

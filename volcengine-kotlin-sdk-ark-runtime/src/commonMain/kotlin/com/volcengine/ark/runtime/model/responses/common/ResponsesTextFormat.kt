@@ -1,79 +1,64 @@
-package com.volcengine.ark.runtime.model.responses.common;
+package com.volcengine.ark.runtime.model.responses.common
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ResponsesTextFormat {
+class ResponsesTextFormat {
     @JsonProperty("type")
-    private String type;
+    var type: String? = null
 
     @JsonProperty("name")
-    private String name;
+    var name: String? = null
 
     @JsonProperty("schema")
-    private JsonNode schema;
+    private var schema: JsonNode? = null
 
-    public String getType() {
-        return type;
+    fun getSchema(): JsonNode? {
+        return schema
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public JsonNode getSchema() {
-        return schema;
-    }
-
-    public void setSchema(JsonNode schema) {
-        this.schema = schema;
+    fun setSchema(schema: JsonNode?) {
+        this.schema = schema
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ResponsesTextFormat{" +
                 "type='" + type + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var type: String? = null
+        private var name: String? = null
+        private var schema: JsonNode? = null
+
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
+        }
+
+        fun name(name: String?): Builder {
+            this.name = name
+            return this
+        }
+
+        fun schema(schema: JsonNode?): Builder {
+            this.schema = schema
+            return this
+        }
+
+        fun build(): ResponsesTextFormat {
+            val responsesTextFormat: ResponsesTextFormat = com.volcengine.ark.runtime.model.responses.common.ResponsesTextFormat()
+            responsesTextFormat.type = type
+            responsesTextFormat.name = name
+            responsesTextFormat.setSchema(schema)
+            return responsesTextFormat
+        }
     }
 
-    public static class Builder {
-        private String type;
-        private String name;
-        private JsonNode schema;
-
-        public Builder type(String type) {
-            this.type = type;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder schema(JsonNode schema) {
-            this.schema = schema;
-            return this;
-        }
-
-        public ResponsesTextFormat build() {
-            ResponsesTextFormat responsesTextFormat = new ResponsesTextFormat();
-            responsesTextFormat.setType(type);
-            responsesTextFormat.setName(name);
-            responsesTextFormat.setSchema(schema);
-            return responsesTextFormat;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.common.ResponsesTextFormat.Builder()
         }
     }
 }

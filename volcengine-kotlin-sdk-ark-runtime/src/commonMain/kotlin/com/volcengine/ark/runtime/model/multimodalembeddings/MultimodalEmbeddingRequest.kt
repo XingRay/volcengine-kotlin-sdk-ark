@@ -1,139 +1,117 @@
-package com.volcengine.ark.runtime.model.multimodalembeddings;
+package com.volcengine.ark.runtime.model.multimodalembeddings
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MultimodalEmbeddingRequest {
-
+class MultimodalEmbeddingRequest {
     /**
      * The name of the model to use.
      * Required if using the new v1/embeddings endpoint.
      */
-    private String model;
+    var model: String? = null
 
     /**
      * Input text to get embeddings for, encoded as a string or array of tokens.
      * To get embeddings for multiple inputs in a single request, pass an array of strings or array of token arrays.
      * Each input must not exceed 2048 tokens in length.
-     * <p>
+     * 
+     * 
      * Unless you are embedding code, we suggest replacing newlines (\n) in your input with a single space,
      * as we have observed inferior results when newlines are present.
      */
-    private List<MultimodalEmbeddingInput> input;
+    private var input: List<MultimodalEmbeddingInput?>? = null
 
     @JsonProperty("encoding_format")
-    private String encodingFormat;
+    var encodingFormat: String? = null
 
     @JsonProperty("dimensions")
-    private Integer dimensions;
+    private var dimensions: Integer? = null
 
     @JsonProperty("sparse_embedding")
-    private SparseEmbeddingInput sparseEmbedding;
+    private var sparseEmbedding: SparseEmbeddingInput? = null
 
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "MultimodalEmbeddingRequest{" +
                 "model='" + model + '\'' +
                 ", input=" + input +
                 ", encodingFormat='" + encodingFormat + '\'' +
                 ", dimensions=" + dimensions +
                 ", sparseEmbedding=" + sparseEmbedding +
-                '}';
+                '}'
     }
 
-    public MultimodalEmbeddingRequest() {
+    fun getInput(): List<MultimodalEmbeddingInput?>? {
+        return input
     }
 
-    public String getModel() {
-        return model;
+    fun setInput(input: List<MultimodalEmbeddingInput?>?) {
+        this.input = input
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    fun setDimensions(dimensions: Integer?) {
+        this.dimensions = dimensions
     }
 
-    public List<MultimodalEmbeddingInput> getInput() {
-        return input;
+    fun getDimensions(): Integer? {
+        return dimensions
     }
 
-    public void setInput(List<MultimodalEmbeddingInput> input) {
-        this.input = input;
+    fun setSparseEmbedding(sparseEmbedding: SparseEmbeddingInput?) {
+        this.sparseEmbedding = sparseEmbedding
     }
 
-    public void setEncodingFormat(String encodingFormat) {
-        this.encodingFormat = encodingFormat;
+    fun getSparseEmbedding(): SparseEmbeddingInput? {
+        return sparseEmbedding
     }
 
-    public String getEncodingFormat() {
-        return encodingFormat;
-    }
+    class Builder private constructor() {
+        private var model: String? = null
+        private var input: List<MultimodalEmbeddingInput?>? = null
+        private var encodingFormat: String? = null
+        private var dimensions: Integer? = null
+        private var sparseEmbedding: SparseEmbeddingInput? = null
 
-    public void setDimensions(Integer dimensions) {
-        this.dimensions = dimensions;
-    }
-
-    public Integer getDimensions() {
-        return dimensions;
-    }
-
-    public void setSparseEmbedding(SparseEmbeddingInput sparseEmbedding) {
-        this.sparseEmbedding = sparseEmbedding;
-    }
-    public SparseEmbeddingInput getSparseEmbedding() {
-        return sparseEmbedding;
-    }
-
-    public static MultimodalEmbeddingRequest.Builder builder() {
-        return new MultimodalEmbeddingRequest.Builder();
-    }
-
-    public static final class Builder {
-        private String model;
-        private List<MultimodalEmbeddingInput> input;
-        private String encodingFormat;
-        private Integer dimensions;
-        private SparseEmbeddingInput sparseEmbedding;
-
-        private Builder() {
+        fun model(model: String?): Builder {
+            this.model = model
+            return this
         }
 
-        public MultimodalEmbeddingRequest.Builder model(String model) {
-            this.model = model;
-            return this;
+        fun input(input: List<MultimodalEmbeddingInput?>?): Builder {
+            this.input = input
+            return this
         }
 
-        public MultimodalEmbeddingRequest.Builder input(List<MultimodalEmbeddingInput> input) {
-            this.input = input;
-            return this;
+        fun encodingFormat(encodingFormat: String?): Builder {
+            this.encodingFormat = encodingFormat
+            return this
         }
 
-        public MultimodalEmbeddingRequest.Builder encodingFormat(String encodingFormat) {
-            this.encodingFormat = encodingFormat;
-            return this;
+        fun dimensions(dimensions: Integer?): Builder {
+            this.dimensions = dimensions
+            return this
         }
 
-        public MultimodalEmbeddingRequest.Builder dimensions(Integer dimensions) {
-            this.dimensions = dimensions;
-            return this;
+        fun sparseEmbedding(sparseEmbedding: SparseEmbeddingInput?): Builder {
+            this.sparseEmbedding = sparseEmbedding
+            return this
         }
 
-        public MultimodalEmbeddingRequest.Builder sparseEmbedding(SparseEmbeddingInput sparseEmbedding) {
-            this.sparseEmbedding = sparseEmbedding;
-            return this;
+        fun build(): MultimodalEmbeddingRequest {
+            val embeddingRequest: MultimodalEmbeddingRequest = com.volcengine.ark.runtime.model.multimodalembeddings.MultimodalEmbeddingRequest()
+            embeddingRequest.model = model
+            embeddingRequest.setInput(input)
+            embeddingRequest.encodingFormat = encodingFormat
+            embeddingRequest.setDimensions(dimensions)
+            embeddingRequest.setSparseEmbedding(sparseEmbedding)
+            return embeddingRequest
         }
+    }
 
-        public MultimodalEmbeddingRequest build() {
-            MultimodalEmbeddingRequest embeddingRequest = new MultimodalEmbeddingRequest();
-            embeddingRequest.setModel(model);
-            embeddingRequest.setInput(input);
-            embeddingRequest.setEncodingFormat(encodingFormat);
-            embeddingRequest.setDimensions(dimensions);
-            embeddingRequest.setSparseEmbedding(sparseEmbedding);
-            return embeddingRequest;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.multimodalembeddings.MultimodalEmbeddingRequest.Builder()
         }
     }
 }

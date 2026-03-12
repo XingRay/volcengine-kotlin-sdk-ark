@@ -1,38 +1,34 @@
-package com.volcengine.ark.runtime.model.bot.completion.chat.usage;
+package com.volcengine.ark.runtime.model.bot.completion.chat.usage
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BotUsage {
-
+class BotUsage {
     /**
      * The model usages
      */
     @JsonProperty("model_usage")
-    private List<BotModelUsage> modelUsage;
+    private var modelUsage: List<BotModelUsage?>? = null
 
     /**
      * The action usages
      */
     @JsonProperty("action_usage")
-    private List<BotActionUsage> actionUsage;
+    private var actionUsage: List<BotActionUsage?>? = null
 
-    public List<BotModelUsage> getModelUsage() {
-        return modelUsage;
+    fun getModelUsage(): List<BotModelUsage?>? {
+        return modelUsage
     }
 
-    public void setModelUsage(List<BotModelUsage> modelUsage) {
-        this.modelUsage = modelUsage;
+    fun setModelUsage(modelUsage: List<BotModelUsage?>?) {
+        this.modelUsage = modelUsage
     }
 
-    public List<BotActionUsage> getActionUsage() {
-        return actionUsage;
+    fun getActionUsage(): List<BotActionUsage?>? {
+        return actionUsage
     }
 
-    public void setActionUsage(List<BotActionUsage> actionUsage) {
-        this.actionUsage = actionUsage;
+    fun setActionUsage(actionUsage: List<BotActionUsage?>?) {
+        this.actionUsage = actionUsage
     }
 }

@@ -1,52 +1,38 @@
-package com.volcengine.ark.runtime.model.responses.event.doubaoapp;
+package com.volcengine.ark.runtime.model.responses.event.doubaoapp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class DoubaoAppCallFailedEvent extends ItemEvent {
-
+class DoubaoAppCallFailedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_FAILED) {
     @JsonProperty("error_message")
-    private String errorMessage;
-
-    public DoubaoAppCallFailedEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_FAILED);
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
+    var errorMessage: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DoubaoAppCallFailedEvent{" +
                 "type='" + getType() + '\'' +
                 ", errorMessage='" + errorMessage + '\'' +
                 ", itemId='" + getItemId() + '\'' +
                 ", outputIndex=" + getOutputIndex() +
                 ", sequenceNumber=" + getSequenceNumber() +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    class Builder {
+        private val event: DoubaoAppCallFailedEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallFailedEvent()
 
-    public static class Builder {
-
-        private DoubaoAppCallFailedEvent event = new DoubaoAppCallFailedEvent();
-
-        public Builder errorMessage(String errorMessage) {
-            event.setErrorMessage(errorMessage);
-            return this;
+        fun errorMessage(errorMessage: String?): Builder {
+            event.errorMessage = errorMessage
+            return this
         }
 
-        public DoubaoAppCallFailedEvent build() {
-            return event;
+        fun build(): DoubaoAppCallFailedEvent {
+            return event
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallFailedEvent.Builder()
         }
     }
 }

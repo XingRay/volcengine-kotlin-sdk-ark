@@ -1,72 +1,49 @@
-package com.volcengine.ark.runtime.model.responses.content;
+package com.volcengine.ark.runtime.model.responses.content
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.tool.websearch.Annotation;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.List;
-
-public class OutputContentItemText extends OutputContentItem {
-
+class OutputContentItemText : OutputContentItem(ResponsesConstants.CONTENT_ITEM_TYPE_OUTPUT_TEXT) {
     @JsonProperty("text")
-    private String text;
+    var text: String? = null
 
     @JsonProperty("annotations")
-    private List<Annotation> annotations;
-
-    public OutputContentItemText() {
-        super(ResponsesConstants.CONTENT_ITEM_TYPE_OUTPUT_TEXT);
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public List<Annotation> getAnnotations() {
-        return annotations;
-    }
-
-    public void setAnnotations(List<Annotation> annotations) {
-        this.annotations = annotations;
-    }
+    var annotations: List<Annotation?>? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "OutputContentItemText{" +
                 "type='" + getType() + '\'' +
                 ", text='" + text + '\'' +
                 ", annotations=" + annotations +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var text: String? = null
+        private var annotations: List<Annotation?>? = null
+
+
+        fun text(text: String?): Builder {
+            this.text = text
+            return this
+        }
+
+        fun annotations(annotations: List<Annotation?>?): Builder {
+            this.annotations = annotations
+            return this
+        }
+
+        fun build(): OutputContentItemText {
+            val outputContentItemText: OutputContentItemText = com.volcengine.ark.runtime.model.responses.content.OutputContentItemText()
+            outputContentItemText.text = text
+            outputContentItemText.annotations = annotations
+            return outputContentItemText
+        }
     }
 
-    public static class Builder {
-        private String text;
-        private List<Annotation> annotations;
-
-
-        public Builder text(String text) {
-            this.text = text;
-            return this;
-        }
-
-        public Builder annotations(List<Annotation> annotations) {
-            this.annotations = annotations;
-            return this;
-        }
-
-        public OutputContentItemText build() {
-            OutputContentItemText outputContentItemText = new OutputContentItemText();
-            outputContentItemText.setText(text);
-            outputContentItemText.setAnnotations(annotations);
-            return outputContentItemText;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.content.OutputContentItemText.Builder()
         }
     }
 }

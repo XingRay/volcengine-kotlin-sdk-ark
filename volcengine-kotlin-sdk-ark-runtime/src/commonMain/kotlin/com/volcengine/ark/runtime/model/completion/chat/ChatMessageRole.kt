@@ -1,11 +1,11 @@
-package com.volcengine.ark.runtime.model.completion.chat;
+package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonValue
 
 /**
- * see {@link ChatMessage} documentation.
+ * see [ChatMessage] documentation.
  */
-public enum ChatMessageRole {
+enum class ChatMessageRole(value: String) {
     SYSTEM("system"),
     USER("user"),
     ASSISTANT("assistant"),
@@ -13,13 +13,13 @@ public enum ChatMessageRole {
     TOOL("tool");
 
     @JsonValue
-    private final String value;
+    private val value: String?
 
-    ChatMessageRole(final String value) {
-        this.value = value;
+    init {
+        this.value = value
     }
 
-    public String value() {
-        return value;
+    fun value(): String? {
+        return value
     }
 }

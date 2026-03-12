@@ -1,38 +1,16 @@
-package com.volcengine.ark.runtime.model.responses.event.reasoningsummary;
+package com.volcengine.ark.runtime.model.responses.event.reasoningsummary
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ReasoningSummaryTextDeltaEvent extends ItemEvent {
+class ReasoningSummaryTextDeltaEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_REASONING_SUMMARY_TEXT_DELTA) {
     @JsonProperty("summary_index")
-    private Long summaryIndex;
+    var summaryIndex: Long? = null
 
     @JsonProperty("delta")
-    private String delta;
-
-    public Long getSummaryIndex() {
-        return summaryIndex;
-    }
-
-    public void setSummaryIndex(Long summaryIndex) {
-        this.summaryIndex = summaryIndex;
-    }
-
-    public String getDelta() {
-        return delta;
-    }
-
-    public void setDelta(String delta) {
-        this.delta = delta;
-    }
-
-    public ReasoningSummaryTextDeltaEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_REASONING_SUMMARY_TEXT_DELTA);
-    }
+    var delta: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ReasoningSummaryTextDeltaEvent{" +
                 "summaryIndex=" + summaryIndex +
                 ", delta='" + delta + '\'' +
@@ -40,6 +18,6 @@ public class ReasoningSummaryTextDeltaEvent extends ItemEvent {
                 ", outputIndex=" + getOutputIndex() +
                 ", type='" + getType() + '\'' +
                 ", sequenceNumber=" + getSequenceNumber() +
-                '}';
+                '}'
     }
 }

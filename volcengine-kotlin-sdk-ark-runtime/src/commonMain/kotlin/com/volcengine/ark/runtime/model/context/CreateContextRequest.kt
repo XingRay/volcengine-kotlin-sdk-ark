@@ -1,138 +1,115 @@
-package com.volcengine.ark.runtime.model.context;
+package com.volcengine.ark.runtime.model.context
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.completion.chat.ChatMessage;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CreateContextRequest {
-
+class CreateContextRequest {
     @JsonProperty("model")
-    private String model;
+    var model: String? = null
 
     @JsonProperty("mode")
-    private String mode;
+    var mode: String? = null
 
     @JsonProperty("messages")
-    private List<ChatMessage> messages;
+    private var messages: List<ChatMessage?>? = null
 
     @JsonProperty("ttl")
-    private Integer ttl;
+    private var ttl: Integer? = null
 
     @JsonProperty("truncation_strategy")
-    private TruncationStrategy truncationStrategy;
+    private var truncationStrategy: TruncationStrategy? = null
 
-    public CreateContextRequest() {
+    constructor()
+
+    constructor(model: String?, mode: String?, messages: List<ChatMessage?>?, ttl: Integer?, truncationStrategy: TruncationStrategy?) {
+        this.model = model
+        this.mode = mode
+        this.messages = messages
+        this.ttl = ttl
+        this.truncationStrategy = truncationStrategy
     }
 
-    public CreateContextRequest(String model, String mode, List<ChatMessage> messages, Integer ttl, TruncationStrategy truncationStrategy) {
-        this.model = model;
-        this.mode = mode;
-        this.messages = messages;
-        this.ttl = ttl;
-        this.truncationStrategy = truncationStrategy;
+    fun getMessages(): List<ChatMessage?>? {
+        return messages
     }
 
-    public String getModel() {
-        return model;
+    fun setMessages(messages: List<ChatMessage?>?) {
+        this.messages = messages
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    fun getTtl(): Integer? {
+        return ttl
     }
 
-    public String getMode() {
-        return mode;
+    fun setTtl(ttl: Integer?) {
+        this.ttl = ttl
     }
 
-    public void setMode(String mode) {
-        this.mode = mode;
+    fun getTruncationStrategy(): TruncationStrategy? {
+        return truncationStrategy
     }
 
-    public List<ChatMessage> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(List<ChatMessage> messages) {
-        this.messages = messages;
-    }
-
-    public Integer getTtl() {
-        return ttl;
-    }
-
-    public void setTtl(Integer ttl) {
-        this.ttl = ttl;
-    }
-
-    public TruncationStrategy getTruncationStrategy() {
-        return truncationStrategy;
-    }
-
-    public void setTruncationStrategy(TruncationStrategy truncationStrategy) {
-        this.truncationStrategy = truncationStrategy;
+    fun setTruncationStrategy(truncationStrategy: TruncationStrategy?) {
+        this.truncationStrategy = truncationStrategy
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "CreateContextRequest{" +
                 "model='" + model + '\'' +
                 ", mode='" + mode + '\'' +
                 ", messages=" + messages +
                 ", ttl=" + ttl +
                 ", truncationStrategy=" + truncationStrategy +
-                '}';
+                '}'
     }
 
-    public static CreateContextRequest.Builder builder() {
-        return new Builder();
+    class Builder private constructor() {
+        private var model: String? = null
+        private var mode: String? = null
+        private var messages: List<ChatMessage?>? = null
+        private var ttl: Integer? = null
+        private var truncationStrategy: TruncationStrategy? = null
+
+        fun model(model: String?): Builder {
+            this.model = model
+            return this
+        }
+
+        fun mode(mode: String?): Builder {
+            this.mode = mode
+            return this
+        }
+
+        fun messages(messages: List<ChatMessage?>?): Builder {
+            this.messages = messages
+            return this
+        }
+
+        fun ttl(ttl: Integer?): Builder {
+            this.ttl = ttl
+            return this
+        }
+
+        fun truncationStrategy(truncationStrategy: TruncationStrategy?): Builder {
+            this.truncationStrategy = truncationStrategy
+            return this
+        }
+
+        fun build(): CreateContextRequest {
+            val createContextRequest: CreateContextRequest = com.volcengine.ark.runtime.model.context.CreateContextRequest()
+            createContextRequest.model = model
+            createContextRequest.mode = mode
+            createContextRequest.setMessages(messages)
+            createContextRequest.setTtl(ttl)
+            createContextRequest.setTruncationStrategy(truncationStrategy)
+            return createContextRequest
+        }
     }
 
-    public static class Builder {
-        private String model;
-        private String mode;
-        private List<ChatMessage> messages;
-        private Integer ttl;
-        private TruncationStrategy truncationStrategy;
-
-        private Builder() {
-        }
-
-        public Builder model(String model) {
-            this.model = model;
-            return this;
-        }
-
-        public Builder mode(String mode) {
-            this.mode = mode;
-            return this;
-        }
-
-        public Builder messages(List<ChatMessage> messages) {
-            this.messages = messages;
-            return this;
-        }
-
-        public Builder ttl(Integer ttl) {
-            this.ttl = ttl;
-            return this;
-        }
-
-        public Builder truncationStrategy(TruncationStrategy truncationStrategy) {
-            this.truncationStrategy = truncationStrategy;
-            return this;
-        }
-
-        public CreateContextRequest build() {
-            CreateContextRequest createContextRequest = new CreateContextRequest();
-            createContextRequest.setModel(model);
-            createContextRequest.setMode(mode);
-            createContextRequest.setMessages(messages);
-            createContextRequest.setTtl(ttl);
-            createContextRequest.setTruncationStrategy(truncationStrategy);
-            return createContextRequest;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.context.CreateContextRequest.Builder()
         }
     }
 }

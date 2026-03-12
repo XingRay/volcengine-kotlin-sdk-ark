@@ -1,8 +1,3 @@
-package com.volcengine.ark.runtime.exception;
+package com.volcengine.ark.runtime.exception
 
-public class ArkException extends RuntimeException {
-    public ArkException(String msg) {
-        super(msg);
-    }
-
-}
+class ArkException(msg: String?) : RuntimeException(msg)

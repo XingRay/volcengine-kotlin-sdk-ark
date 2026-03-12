@@ -1,81 +1,69 @@
-package com.volcengine.ark.runtime.interceptor;
+package com.volcengine.ark.runtime.interceptor
 
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.Interceptor
 
-import java.io.InterruptedIOException;
-
-import static com.volcengine.ark.runtime.Const.*;
-import static java.lang.Math.random;
-
-public class RetryInterceptor implements Interceptor {
-
-    private final int retryTimes;
-    private final double INITIAL_RETRY_DELAY = 0.5;
-    private final double MAX_RETRY_DELAY = 8.0;
-
-    public RetryInterceptor(int retryTimes) {
-        this.retryTimes = retryTimes;
-    }
+class RetryInterceptor(private val retryTimes: Int) : Interceptor {
+    private val INITIAL_RETRY_DELAY = 0.5
+    private val MAX_RETRY_DELAY = 8.0
 
     @Override
-    public Response intercept(Chain chain) throws RuntimeException, InterruptedIOException {
-        Request request = chain.request();
+    @Throws(RuntimeException::class, InterruptedIOException::class)
+    fun intercept(chain: Chain): Response? {
+        val request: Request = chain.request()
 
-        int requestRetryTimes = getRetryTimes(request);
+        val requestRetryTimes = getRetryTimes(request)
 
-        Response response = null;
-        int tryCount = 0;
-        boolean shouldRetry;
-        Exception exception;
+        var response: Response? = null
+        var tryCount = 0
+        var shouldRetry: Boolean
+        var exception: Exception?
         do {
             if (response != null) {
-                response.close();
+                response.close()
             }
-            exception = null;
+            exception = null
 
             try {
-                response = chain.proceed(request);
-                shouldRetry = response.code() >= 500 || response.code() == 429;
-            } catch (Exception e) {
-                shouldRetry = true;
-                exception = e;
+                response = chain.proceed(request)
+                shouldRetry = response.code() >= 500 || response.code() === 429
+            } catch (e: Exception) {
+                shouldRetry = true
+                exception = e
             }
 
-            tryCount++;
+            tryCount++
             if (!(shouldRetry && tryCount <= requestRetryTimes)) {
-                break;
+                break
             }
 
             try {
-                double interval = retryInterval(requestRetryTimes, requestRetryTimes - tryCount) * 1000;
-                Thread.sleep(Math.round(interval));
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new InterruptedIOException();
+                val interval = retryInterval(requestRetryTimes, requestRetryTimes - tryCount) * 1000
+                Thread.sleep(Math.round(interval))
+            } catch (e: InterruptedException) {
+                Thread.currentThread().interrupt()
+                throw InterruptedIOException()
             }
-        } while (true);
+        } while (true)
 
         if (response != null) {
-            return response;
+            return response
         }
-        throw new RuntimeException(exception);
+        throw RuntimeException(exception)
     }
 
-    public double retryInterval(int max, int remain) {
-        double nbRetries = Math.min(max - remain, MAX_RETRY_DELAY/INITIAL_RETRY_DELAY);
-        double sleepSeconds = Math.min(INITIAL_RETRY_DELAY * Math.pow(2.0, nbRetries), MAX_RETRY_DELAY);
-        double jitter = 1 - 0.25 * random();
-        return sleepSeconds * jitter;
+    fun retryInterval(max: Int, remain: Int): Double {
+        val nbRetries: Double = Math.min(max - remain, MAX_RETRY_DELAY / INITIAL_RETRY_DELAY)
+        val sleepSeconds: Double = Math.min(INITIAL_RETRY_DELAY * Math.pow(2.0, nbRetries), MAX_RETRY_DELAY)
+        val jitter: Double = 1 - 0.25 * random()
+        return sleepSeconds * jitter
     }
 
-    public int getRetryTimes(Request request) {
-        String path = request.url().encodedPath();
+    fun getRetryTimes(request: Request): Int {
+        val path: String = request.url().encodedPath()
         if (path.startsWith(BATCH_PATH_PREFIX)) {
-            return MAX_RETRY_TIMES;
+            return MAX_RETRY_TIMES
         }
-        return retryTimes;
+        return retryTimes
     }
 }
 

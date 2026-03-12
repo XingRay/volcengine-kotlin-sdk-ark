@@ -1,91 +1,63 @@
-package com.volcengine.ark.runtime.model.responses.content;
+package com.volcengine.ark.runtime.model.responses.content
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class InputContentItemVideo extends InputContentItem {
-
+class InputContentItemVideo : InputContentItem(ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_VIDEO) {
     @JsonProperty("video_url")
-    private String videoUrl;
+    var videoUrl: String? = null
 
     @JsonProperty("file_id")
-    private String fileId;
+    var fileId: String? = null
 
     @JsonProperty("fps")
-    private Float fps;
-
-    public InputContentItemVideo() {
-        super(ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_VIDEO);
-    }
-
-    public String getVideoUrl() {
-        return videoUrl;
-    }
-
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
-    }
-
-    public String getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
-    }
-
-    public Float getFps() {
-        return fps;
-    }
-
-    public void setFps(Float fps) {
-        this.fps = fps;
-    }
+    var fps: Float? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "InputContentItemVideo{" +
                 "type='" + getType() + '\'' +
                 ", videoUrl='" + videoUrl + '\'' +
                 ", fileId='" + fileId + '\'' +
                 ", fps=" + fps +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var videoUrl: String? = null
+        private var fileId: String? = null
+        private var fps: Float? = null
+
+        fun type(type: String?): Builder {
+            return this
+        }
+
+        fun videoUrl(videoUrl: String?): Builder {
+            this.videoUrl = videoUrl
+            return this
+        }
+
+        fun fileId(fileId: String?): Builder {
+            this.fileId = fileId
+            return this
+        }
+
+        fun fps(fps: Float?): Builder {
+            this.fps = fps
+            return this
+        }
+
+        fun build(): InputContentItemVideo {
+            val responsesContentItemVideo: InputContentItemVideo = com.volcengine.ark.runtime.model.responses.content.InputContentItemVideo()
+            responsesContentItemVideo.videoUrl = videoUrl
+            responsesContentItemVideo.fileId = fileId
+            responsesContentItemVideo.fps = fps
+            return responsesContentItemVideo
+        }
     }
 
-    public static class Builder {
-        private String videoUrl;
-        private String fileId;
-        private Float fps;
-
-        public Builder type(String type) {
-            return this;
-        }
-
-        public Builder videoUrl(String videoUrl) {
-            this.videoUrl = videoUrl;
-            return this;
-        }
-
-        public Builder fileId(String fileId) {
-            this.fileId = fileId;
-            return this;
-        }
-
-        public Builder fps(Float fps) {
-            this.fps = fps;
-            return this;
-        }
-
-        public InputContentItemVideo build() {
-            InputContentItemVideo responsesContentItemVideo = new InputContentItemVideo();
-            responsesContentItemVideo.setVideoUrl(videoUrl);
-            responsesContentItemVideo.setFileId(fileId);
-            responsesContentItemVideo.setFps(fps);
-            return responsesContentItemVideo;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.content.InputContentItemVideo.Builder()
         }
     }
 }

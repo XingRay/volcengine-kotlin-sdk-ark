@@ -1,95 +1,32 @@
-package com.volcengine.ark.runtime.model.responses.item;
+package com.volcengine.ark.runtime.model.responses.item
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemMCPCall extends BaseItem implements InputItem, OutputItem {
-
+class ItemMCPCall : BaseItem(ResponsesConstants.ITEM_TYPE_MCP_CALL), InputItem, OutputItem {
     @JsonProperty("id")
-    private String id;
+    var id: String? = null
 
     @JsonProperty("server_label")
-    private String serverLabel;
+    var serverLabel: String? = null
 
     @JsonProperty("approval_request_id")
-    private String approvalRequestId;
+    var approvalRequestId: String? = null
 
     @JsonProperty("arguments")
-    private String arguments;
+    var arguments: String? = null
 
     @JsonProperty("error")
-    private String error;
+    var error: String? = null
 
     @JsonProperty("name")
-    private String name;
+    var name: String? = null
 
     @JsonProperty("output")
-    private String output;
-
-    public ItemMCPCall() {
-        super(ResponsesConstants.ITEM_TYPE_MCP_CALL);
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getServerLabel() {
-        return serverLabel;
-    }
-
-    public void setServerLabel(String serverLabel) {
-        this.serverLabel = serverLabel;
-    }
-
-    public String getApprovalRequestId() {
-        return approvalRequestId;
-    }
-
-    public void setApprovalRequestId(String approvalRequestId) {
-        this.approvalRequestId = approvalRequestId;
-    }
-
-    public String getArguments() {
-        return arguments;
-    }
-
-    public void setArguments(String arguments) {
-        this.arguments = arguments;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getOutput() {
-        return output;
-    }
-
-    public void setOutput(String output) {
-        this.output = output;
-    }
+    var output: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ItemMCPCall{" +
                 "id='" + id + '\'' +
                 ", serverLabel='" + serverLabel + '\'' +
@@ -98,70 +35,69 @@ public class ItemMCPCall extends BaseItem implements InputItem, OutputItem {
                 ", error='" + error + '\'' +
                 ", name='" + name + '\'' +
                 ", output='" + output + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder private constructor() {
+        private var output: String? = null
+        private var name: String? = null
+        private var error: String? = null
+        private var arguments: String? = null
+        private var approvalRequestId: String? = null
+        private var serverLabel: String? = null
+        private var id: String? = null
+
+        fun output(output: String?): Builder {
+            this.output = output
+            return this
+        }
+
+        fun name(name: String?): Builder {
+            this.name = name
+            return this
+        }
+
+        fun error(error: String?): Builder {
+            this.error = error
+            return this
+        }
+
+        fun arguments(arguments: String?): Builder {
+            this.arguments = arguments
+            return this
+        }
+
+        fun approvalRequestId(approvalRequestId: String?): Builder {
+            this.approvalRequestId = approvalRequestId
+            return this
+        }
+
+        fun serverLabel(serverLabel: String?): Builder {
+            this.serverLabel = serverLabel
+            return this
+        }
+
+        fun id(id: String?): Builder {
+            this.id = id
+            return this
+        }
+
+        fun build(): ItemMCPCall {
+            val itemMCPCall: ItemMCPCall = com.volcengine.ark.runtime.model.responses.item.ItemMCPCall()
+            itemMCPCall.output = output
+            itemMCPCall.name = name
+            itemMCPCall.error = error
+            itemMCPCall.arguments = arguments
+            itemMCPCall.approvalRequestId = approvalRequestId
+            itemMCPCall.serverLabel = serverLabel
+            itemMCPCall.id = id
+            return itemMCPCall
+        }
     }
 
-    public static final class Builder {
-        private String output;
-        private String name;
-        private String error;
-        private String arguments;
-        private String approvalRequestId;
-        private String serverLabel;
-        private String id;
-
-        private Builder() {
-        }
-
-        public Builder output(String output) {
-            this.output = output;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder error(String error) {
-            this.error = error;
-            return this;
-        }
-
-        public Builder arguments(String arguments) {
-            this.arguments = arguments;
-            return this;
-        }
-
-        public Builder approvalRequestId(String approvalRequestId) {
-            this.approvalRequestId = approvalRequestId;
-            return this;
-        }
-
-        public Builder serverLabel(String serverLabel) {
-            this.serverLabel = serverLabel;
-            return this;
-        }
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public ItemMCPCall build() {
-            ItemMCPCall itemMCPCall = new ItemMCPCall();
-            itemMCPCall.setOutput(output);
-            itemMCPCall.setName(name);
-            itemMCPCall.setError(error);
-            itemMCPCall.setArguments(arguments);
-            itemMCPCall.setApprovalRequestId(approvalRequestId);
-            itemMCPCall.setServerLabel(serverLabel);
-            itemMCPCall.setId(id);
-            return itemMCPCall;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.ItemMCPCall.Builder()
         }
     }
 }

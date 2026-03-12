@@ -1,48 +1,37 @@
-package com.volcengine.ark.runtime.model.files;
+package com.volcengine.ark.runtime.model.files
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Video {
-    public Video(Double fps) {
-        this.fps = fps;
+class Video {
+    constructor(fps: Double?) {
+        this.fps = fps
     }
 
     @JsonProperty(value = "fps")
-    private Double fps;
+    var fps: Double? = null
 
-    public Double getFps() {
-        return fps;
-    }
+    constructor()
 
-    public void setFps(Double fps) {
-        this.fps = fps;
-    }
+    class VideoBuilder private constructor() {
+        private var fps: Double? = null
 
-    public Video() {
-    }
-
-    public static final class VideoBuilder {
-        private Double fps;
-
-        private VideoBuilder() {
+        fun fps(fps: Double?): VideoBuilder {
+            this.fps = fps
+            return this
         }
 
-        public static VideoBuilder aVideo() {
-            return new VideoBuilder();
+        fun build(): Video {
+            val video = Video()
+            video.fps = fps
+            return video
         }
 
-        public VideoBuilder fps(Double fps) {
-            this.fps = fps;
-            return this;
-        }
-
-        public Video build() {
-            Video video = new Video();
-            video.setFps(fps);
-            return video;
+        companion object {
+            fun aVideo(): VideoBuilder {
+                return com.volcengine.ark.runtime.model.files.Video.VideoBuilder()
+            }
         }
     }
 }

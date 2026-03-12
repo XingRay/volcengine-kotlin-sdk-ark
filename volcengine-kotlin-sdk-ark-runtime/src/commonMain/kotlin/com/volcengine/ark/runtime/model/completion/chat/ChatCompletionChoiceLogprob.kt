@@ -1,26 +1,23 @@
-package com.volcengine.ark.runtime.model.completion.chat;
+package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChatCompletionChoiceLogprob {
+class ChatCompletionChoiceLogprob {
+    var content: List<ChatCompletionChoiceLogprobContent?>? = null
 
-    List<ChatCompletionChoiceLogprobContent> content;
-
-    public List<ChatCompletionChoiceLogprobContent> getContent() {
-        return content;
+    fun getContent(): List<ChatCompletionChoiceLogprobContent?>? {
+        return content
     }
 
-    public void setContent(List<ChatCompletionChoiceLogprobContent> content) {
-        this.content = content;
+    fun setContent(content: List<ChatCompletionChoiceLogprobContent?>?) {
+        this.content = content
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ChatCompletionChoiceLogprob{" +
                 "content=" + content +
-                '}';
+                '}'
     }
 }

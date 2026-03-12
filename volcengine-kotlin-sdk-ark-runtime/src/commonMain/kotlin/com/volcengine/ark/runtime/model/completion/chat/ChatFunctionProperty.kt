@@ -1,83 +1,30 @@
-package com.volcengine.ark.runtime.model.completion.chat;
+package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChatFunctionProperty {
+class ChatFunctionProperty {
+    @JsonIgnore
+    var name: String? = null
+
+    var type: String? = null
 
     @JsonIgnore
-    String name;
+    var required: Boolean? = null
 
-    String type;
+    var description: String? = null
 
-    @JsonIgnore
-    Boolean required;
-
-    String description;
-
-    ChatFunctionProperty items;
+    var items: ChatFunctionProperty? = null
 
     @JsonProperty("enum")
-    Set<?> enumValues;
+    var enumValues: Set<*>? = null
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Boolean getRequired() {
-        return required;
-    }
-
-    public void setRequired(Boolean required) {
-        this.required = required;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public ChatFunctionProperty getItems() {
-        return items;
-    }
-
-    public void setItems(ChatFunctionProperty items) {
-        this.items = items;
-    }
-
-    public Set<?> getEnumValues() {
-        return enumValues;
-    }
-
-    public void setEnumValues(Set<?> enumValues) {
-        this.enumValues = enumValues;
-    }
-
-    public ChatFunctionProperty.Builder builder() {
-        return new ChatFunctionProperty.Builder();
+    fun builder(): Builder {
+        return com.volcengine.ark.runtime.model.completion.chat.ChatFunctionProperty.Builder()
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ChatFunctionProperty{" +
                 "name='" + name + '\'' +
                 ", type='" + type + '\'' +
@@ -85,56 +32,56 @@ public class ChatFunctionProperty {
                 ", description='" + description + '\'' +
                 ", items=" + items +
                 ", enumValues=" + enumValues +
-                '}';
+                '}'
     }
 
-    public static final class Builder {
-        private String name;
-        private String type;
-        private Boolean required;
-        private String description;
-        private ChatFunctionProperty items;
-        private Set<?> enumValues;
+    class Builder {
+        private var name: String? = null
+        private var type: String? = null
+        private var required: Boolean? = null
+        private var description: String? = null
+        private var items: ChatFunctionProperty? = null
+        private var enumValues: Set<*>? = null
 
-        public Builder name(String name) {
-            this.name = name;
-            return this;
+        fun name(name: String?): Builder {
+            this.name = name
+            return this
         }
 
-        public Builder type(String type) {
-            this.type = type;
-            return this;
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
         }
 
-        public Builder required(Boolean required) {
-            this.required = required;
-            return this;
+        fun required(required: Boolean?): Builder {
+            this.required = required
+            return this
         }
 
-        public Builder description(String description) {
-            this.description = description;
-            return this;
+        fun description(description: String?): Builder {
+            this.description = description
+            return this
         }
 
-        public Builder items(ChatFunctionProperty items) {
-            this.items = items;
-            return this;
+        fun items(items: ChatFunctionProperty?): Builder {
+            this.items = items
+            return this
         }
 
-        public Builder enumValues(Set<?> enumValues) {
-            this.enumValues = enumValues;
-            return this;
+        fun enumValues(enumValues: Set<*>?): Builder {
+            this.enumValues = enumValues
+            return this
         }
 
-        public ChatFunctionProperty build() {
-            ChatFunctionProperty chatFunctionProperty = new ChatFunctionProperty();
-            chatFunctionProperty.setName(name);
-            chatFunctionProperty.setType(type);
-            chatFunctionProperty.setRequired(required);
-            chatFunctionProperty.setDescription(description);
-            chatFunctionProperty.setItems(items);
-            chatFunctionProperty.setEnumValues(enumValues);
-            return chatFunctionProperty;
+        fun build(): ChatFunctionProperty {
+            val chatFunctionProperty: ChatFunctionProperty = com.volcengine.ark.runtime.model.completion.chat.ChatFunctionProperty()
+            chatFunctionProperty.name = name
+            chatFunctionProperty.type = type
+            chatFunctionProperty.required = required
+            chatFunctionProperty.description = description
+            chatFunctionProperty.items = items
+            chatFunctionProperty.enumValues = enumValues
+            return chatFunctionProperty
         }
     }
 }

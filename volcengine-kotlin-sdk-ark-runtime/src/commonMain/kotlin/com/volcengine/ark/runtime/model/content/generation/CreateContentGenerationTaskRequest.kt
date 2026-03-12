@@ -1,207 +1,104 @@
-package com.volcengine.ark.runtime.model.content.generation;
+package com.volcengine.ark.runtime.model.content.generation
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CreateContentGenerationTaskRequest {
-
+class CreateContentGenerationTaskRequest {
     @JsonProperty("model")
-    private String model;
+    var model: String? = null
 
     @JsonProperty("content")
-    private List<Content> content;
+    var content: List<Content?>? = null
 
     @JsonProperty("callback_url")
-    private String callbackUrl;
+    var callbackUrl: String? = null
 
     @JsonProperty("return_last_frame")
-    private Boolean returnLastFrame;
+    var returnLastFrame: Boolean? = null
 
     @JsonProperty("service_tier")
-    private String serviceTier;
+    var serviceTier: String? = null
 
     @JsonProperty("execution_expires_after")
-    private Long executionExpiresAfter;
+    var executionExpiresAfter: Long? = null
 
     @JsonProperty("generate_audio")
-    private Boolean generateAudio;
+    var generateAudio: Boolean? = null
 
     @JsonProperty("camera_fixed")
-    private Boolean cameraFixed;
+    var cameraFixed: Boolean? = null
 
     @JsonProperty("watermark")
-    private Boolean watermark;
+    var watermark: Boolean? = null
 
     @JsonProperty("seed")
-    private Long seed;
+    var seed: Long? = null
 
     @JsonProperty("resolution")
-    private String resolution;
+    var resolution: String? = null
 
     @JsonProperty("ratio")
-    private String ratio;
+    var ratio: String? = null
 
     @JsonProperty("duration")
-    private Long duration;
+    var duration: Long? = null
 
     @JsonProperty("frames")
-    private Long frames;
+    var frames: Long? = null
 
     @JsonProperty("draft")
-    private Boolean draft;
+    var draft: Boolean? = null
 
-    public CreateContentGenerationTaskRequest() {
-    }
+    constructor()
 
-    public CreateContentGenerationTaskRequest(String model, List<Content> content) {
-        this.model = model;
-        this.content = content;
-    }
-
-    public CreateContentGenerationTaskRequest(String model, List<Content> content, String callbackUrl, Boolean returnLastFrame) {
-        this.model = model;
-        this.content = content;
-        this.callbackUrl = callbackUrl;
-        this.returnLastFrame = returnLastFrame;
+    constructor(model: String?, content: List<Content?>?) {
+        this.model = model
+        this.content = content
     }
 
-    public CreateContentGenerationTaskRequest(String model, List<Content> content, String callbackUrl, Boolean returnLastFrame, String serviceTier, Long executionExpiresAfter, Boolean generateAudio, Boolean cameraFixed, Boolean watermark, Long seed, String resolution, String ratio, Long duration, Long frames, Boolean draft) {
-        this.model = model;
-        this.content = content;
-        this.callbackUrl = callbackUrl;
-        this.returnLastFrame = returnLastFrame;
-        this.serviceTier = serviceTier;
-        this.executionExpiresAfter = executionExpiresAfter;
-        this.generateAudio = generateAudio;
-        this.cameraFixed = cameraFixed;
-        this.watermark = watermark;
-        this.seed = seed;
-        this.resolution = resolution;
-        this.ratio = ratio;
-        this.duration = duration;
-        this.frames = frames;
-        this.draft = draft;
+    constructor(model: String?, content: List<Content?>?, callbackUrl: String?, returnLastFrame: Boolean?) {
+        this.model = model
+        this.content = content
+        this.callbackUrl = callbackUrl
+        this.returnLastFrame = returnLastFrame
     }
 
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public List<Content> getContent() {
-        return content;
-    }
-
-    public void setContent(List<Content> content) {
-        this.content = content;
-    }
-
-    public String getCallbackUrl() {
-        return callbackUrl;
-    }
-
-    public void setCallbackUrl(String callbackUrl) {
-        this.callbackUrl = callbackUrl;
-    }
-
-    public Boolean getReturnLastFrame() {
-        return returnLastFrame;
-    }
-
-    public void setReturnLastFrame(Boolean returnLastFrame) {
-        this.returnLastFrame = returnLastFrame;
-    }
-
-    public String getServiceTier() {
-        return serviceTier;
-    }
-
-    public void setServiceTier(String serviceTier) {
-        this.serviceTier = serviceTier;
-    }
-
-    public Long getExecutionExpiresAfter() {
-        return executionExpiresAfter;
-    }
-
-    public void setExecutionExpiresAfter(Long executionExpiresAfter) {
-        this.executionExpiresAfter = executionExpiresAfter;
-    }
-
-    public Boolean getGenerateAudio() {
-        return generateAudio;
-    }
-
-    public void setGenerateAudio(Boolean generateAudio) {
-        this.generateAudio = generateAudio;
-    }
-
-    public Boolean getCameraFixed() {
-        return cameraFixed;
-    }
-
-    public void setCameraFixed(Boolean cameraFixed) {
-        this.cameraFixed = cameraFixed;
-    }
-     public Boolean getWatermark() {
-        return watermark;
-    }
-
-    public void setWatermark(Boolean watermark) {
-        this.watermark = watermark;
-    }
-     public Long getSeed() {
-        return seed;
-    }
-
-    public void setSeed(Long seed) {
-        this.seed = seed;
-    }
-
-    public String getResolution() {
-        return resolution;
-    }
-
-    public void setResolution(String resolution) {
-        this.resolution = resolution;
-    }
-     public String getRatio() {
-        return ratio;
-    }
-
-    public void setRatio(String ratio) {
-        this.ratio = ratio;
-    }
-     public Long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Long duration) {
-        this.duration = duration;
-    }
-     public Long getFrames() {
-        return frames;
-    }
-
-    public void setFrames(Long frames) {
-        this.frames = frames;
-    }
-     public Boolean getDraft() {
-        return draft;
-    }
-
-    public void setDraft(Boolean draft) {
-        this.draft = draft;
+    constructor(
+        model: String?,
+        content: List<Content?>?,
+        callbackUrl: String?,
+        returnLastFrame: Boolean?,
+        serviceTier: String?,
+        executionExpiresAfter: Long?,
+        generateAudio: Boolean?,
+        cameraFixed: Boolean?,
+        watermark: Boolean?,
+        seed: Long?,
+        resolution: String?,
+        ratio: String?,
+        duration: Long?,
+        frames: Long?,
+        draft: Boolean?
+    ) {
+        this.model = model
+        this.content = content
+        this.callbackUrl = callbackUrl
+        this.returnLastFrame = returnLastFrame
+        this.serviceTier = serviceTier
+        this.executionExpiresAfter = executionExpiresAfter
+        this.generateAudio = generateAudio
+        this.cameraFixed = cameraFixed
+        this.watermark = watermark
+        this.seed = seed
+        this.resolution = resolution
+        this.ratio = ratio
+        this.duration = duration
+        this.frames = frames
+        this.draft = draft
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "CreateContentGenerationTaskRequest{" +
                 "model='" + model + '\'' +
                 ", content=" + content +
@@ -218,359 +115,293 @@ public class CreateContentGenerationTaskRequest {
                 ", duration=" + duration +
                 ", frames=" + frames +
                 ", draft=" + draft +
-                '}';
+                '}'
     }
 
-    public static CreateContentGenerationTaskRequest.Builder builder() {
-        return new Builder();
-    }
+    class Builder private constructor() {
+        private var model: String? = null
+        private var content: List<Content?>? = null
+        private var callbackUrl: String? = null
+        private var returnLastFrame: Boolean? = null
+        private var serviceTier: String? = null
+        private var executionExpiresAfter: Long? = null
+        private var generateAudio: Boolean? = null
+        private var cameraFixed: Boolean? = null
+        private var watermark: Boolean? = null
+        private var seed: Long? = null
+        private var resolution: String? = null
+        private var ratio: String? = null
+        private var duration: Long? = null
+        private var frames: Long? = null
+        private var draft: Boolean? = null
 
-    public static class Builder {
-        private String model;
-        private List<Content> content;
-        private String callbackUrl;
-        private Boolean returnLastFrame;
-        private String serviceTier;
-        private Long executionExpiresAfter;
-        private Boolean generateAudio;
-        private Boolean cameraFixed;
-        private Boolean watermark;
-        private Long seed;
-        private String resolution;
-        private String ratio;
-        private Long duration;
-        private Long frames;
-        private Boolean draft;
-
-        private Builder() {
+        fun model(model: String?): Builder {
+            this.model = model
+            return this
         }
 
-        public Builder model(String model) {
-            this.model = model;
-            return this;
+        fun content(content: List<Content?>?): Builder {
+            this.content = content
+            return this
         }
 
-        public Builder content(List<Content> content) {
-            this.content = content;
-            return this;
+        fun callbackUrl(callbackUrl: String?): Builder {
+            this.callbackUrl = callbackUrl
+            return this
         }
 
-        public Builder callbackUrl(String callbackUrl) {
-            this.callbackUrl = callbackUrl;
-            return this;
+        fun returnLastFrame(returnLastFrame: Boolean?): Builder {
+            this.returnLastFrame = returnLastFrame
+            return this
         }
 
-        public Builder returnLastFrame(Boolean returnLastFrame) {
-            this.returnLastFrame = returnLastFrame;
-            return this;
+        fun serviceTier(serviceTier: String?): Builder {
+            this.serviceTier = serviceTier
+            return this
         }
 
-        public Builder serviceTier(String serviceTier) {
-            this.serviceTier = serviceTier;
-            return this;
+        fun executionExpiresAfter(executionExpiresAfter: Long?): Builder {
+            this.executionExpiresAfter = executionExpiresAfter
+            return this
         }
 
-        public Builder executionExpiresAfter(Long executionExpiresAfter) {
-            this.executionExpiresAfter = executionExpiresAfter;
-            return this;
+        fun generateAudio(generateAudio: Boolean?): Builder {
+            this.generateAudio = generateAudio
+            return this
         }
 
-        public Builder generateAudio(Boolean generateAudio) {
-            this.generateAudio = generateAudio;
-            return this;
+        fun cameraFixed(cameraFixed: Boolean?): Builder {
+            this.cameraFixed = cameraFixed
+            return this
         }
 
-        public Builder cameraFixed(Boolean cameraFixed) {
-            this.cameraFixed = cameraFixed;
-            return this;
+        fun watermark(watermark: Boolean?): Builder {
+            this.watermark = watermark
+            return this
         }
 
-        public Builder watermark(Boolean watermark) {
-            this.watermark = watermark;
-            return this;
+        fun seed(seed: Long?): Builder {
+            this.seed = seed
+            return this
         }
 
-        public Builder seed(Long seed) {
-            this.seed = seed;
-            return this;
+        fun resolution(resolution: String?): Builder {
+            this.resolution = resolution
+            return this
         }
 
-        public Builder resolution(String resolution) {
-            this.resolution = resolution;
-            return this;
+        fun ratio(ratio: String?): Builder {
+            this.ratio = ratio
+            return this
         }
 
-        public Builder ratio(String ratio) {
-            this.ratio = ratio;
-            return this;
+        fun duration(duration: Long?): Builder {
+            this.duration = duration
+            return this
         }
 
-        public Builder duration(Long duration) {
-            this.duration = duration;
-            return this;
+        fun frames(frames: Long?): Builder {
+            this.frames = frames
+            return this
         }
 
-        public Builder frames(Long frames) {
-            this.frames = frames;
-            return this;
+        fun draft(draft: Boolean?): Builder {
+            this.draft = draft
+            return this
         }
 
-        public Builder draft(Boolean draft) {
-            this.draft = draft;
-            return this;
-        }
-
-        public CreateContentGenerationTaskRequest build() {
-            CreateContentGenerationTaskRequest createContentGenerationTaskRequest = new CreateContentGenerationTaskRequest();
-            createContentGenerationTaskRequest.setModel(model);
-            createContentGenerationTaskRequest.setContent(content);
-            createContentGenerationTaskRequest.setCallbackUrl(callbackUrl);
-            createContentGenerationTaskRequest.setReturnLastFrame(returnLastFrame);
-            createContentGenerationTaskRequest.setServiceTier(serviceTier);
-            createContentGenerationTaskRequest.setExecutionExpiresAfter(executionExpiresAfter);
-            createContentGenerationTaskRequest.setGenerateAudio(generateAudio);
-            createContentGenerationTaskRequest.setCameraFixed(cameraFixed);
-            createContentGenerationTaskRequest.setWatermark(watermark);
-            createContentGenerationTaskRequest.setSeed(seed);
-            createContentGenerationTaskRequest.setResolution(resolution);
-            createContentGenerationTaskRequest.setRatio(ratio);
-            createContentGenerationTaskRequest.setDuration(duration);
-            createContentGenerationTaskRequest.setFrames(frames);
-            createContentGenerationTaskRequest.setDraft(draft);
-            return createContentGenerationTaskRequest;
+        fun build(): CreateContentGenerationTaskRequest {
+            val createContentGenerationTaskRequest: CreateContentGenerationTaskRequest = com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest()
+            createContentGenerationTaskRequest.model = model
+            createContentGenerationTaskRequest.content = content
+            createContentGenerationTaskRequest.callbackUrl = callbackUrl
+            createContentGenerationTaskRequest.returnLastFrame = returnLastFrame
+            createContentGenerationTaskRequest.serviceTier = serviceTier
+            createContentGenerationTaskRequest.executionExpiresAfter = executionExpiresAfter
+            createContentGenerationTaskRequest.generateAudio = generateAudio
+            createContentGenerationTaskRequest.cameraFixed = cameraFixed
+            createContentGenerationTaskRequest.watermark = watermark
+            createContentGenerationTaskRequest.seed = seed
+            createContentGenerationTaskRequest.resolution = resolution
+            createContentGenerationTaskRequest.ratio = ratio
+            createContentGenerationTaskRequest.duration = duration
+            createContentGenerationTaskRequest.frames = frames
+            createContentGenerationTaskRequest.draft = draft
+            return createContentGenerationTaskRequest
         }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Content {
-
+    class Content {
         @JsonProperty("type")
-        private String type;
+        var type: String? = null
 
         @JsonProperty("text")
-        private String text;
+        var text: String? = null
 
         @JsonProperty("image_url")
-        private ImageUrl imageUrl;
+        var imageUrl: ImageUrl? = null
 
         @JsonProperty("role")
-        private String role;
+        var role: String? = null
 
         @JsonProperty("draft_task")
-        private DraftTask draftTask;
+        var draftTask: DraftTask? = null
 
-        public Content() {
-        }
+        constructor()
 
-        public Content(String type, String text, ImageUrl imageUrl, String role, DraftTask draftTask) {
-            this.type = type;
-            this.text = text;
-            this.imageUrl = imageUrl;
-            this.role = role;
-            this.draftTask = draftTask;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public void setText(String text) {
-            this.text = text;
-        }
-
-        public ImageUrl getImageUrl() {
-            return imageUrl;
-        }
-
-        public void setImageUrl(ImageUrl imageUrl) {
-            this.imageUrl = imageUrl;
-        }
-
-        public String getRole() {
-            return role;
-        }
-
-        public void setRole(String role) {
-            this.role = role;
-        }
-
-        public DraftTask getDraftTask() {
-            return draftTask;
-        }
-
-        public void setDraftTask(DraftTask draftTask) {
-            this.draftTask = draftTask;
+        constructor(type: String?, text: String?, imageUrl: ImageUrl?, role: String?, draftTask: DraftTask?) {
+            this.type = type
+            this.text = text
+            this.imageUrl = imageUrl
+            this.role = role
+            this.draftTask = draftTask
         }
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "Content{" +
                     "type='" + type + '\'' +
                     ", text='" + text + '\'' +
                     ", imageUrl=" + imageUrl +
                     ", role=" + role +
                     ", draftTask=" + draftTask +
-                    '}';
+                    '}'
         }
 
-        public static Content.Builder builder() {
-            return new Builder();
+        class Builder private constructor() {
+            private var type: String? = null
+            private var text: String? = null
+            private var imageUrl: ImageUrl? = null
+            private var role: String? = null
+            private var draftTask: DraftTask? = null
+
+            fun type(type: String?): Builder {
+                this.type = type
+                return this
+            }
+
+            fun text(text: String?): Builder {
+                this.text = text
+                return this
+            }
+
+            fun imageUrl(imageUrl: ImageUrl?): Builder {
+                this.imageUrl = imageUrl
+                return this
+            }
+
+            fun role(role: String?): Builder {
+                this.role = role
+                return this
+            }
+
+            fun draftTask(draftTask: DraftTask?): Builder {
+                this.draftTask = draftTask
+                return this
+            }
+
+            fun build(): Content {
+                val content: Content = com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.Content()
+                content.type = type
+                content.text = text
+                content.imageUrl = imageUrl
+                content.role = role
+                content.draftTask = draftTask
+                return content
+            }
         }
 
-        public static class Builder {
-            private String type;
-            private String text;
-            private ImageUrl imageUrl;
-            private String role;
-            private DraftTask draftTask;
-
-            private Builder() {
-            }
-
-            public Builder type(String type) {
-                this.type = type;
-                return this;
-            }
-
-            public Builder text(String text) {
-                this.text = text;
-                return this;
-            }
-
-            public Builder imageUrl(ImageUrl imageUrl) {
-                this.imageUrl = imageUrl;
-                return this;
-            }
-
-            public Builder role(String role) {
-                this.role = role;
-                return this;
-            }
-
-            public Builder draftTask(DraftTask draftTask) {
-                this.draftTask = draftTask;
-                return this;
-            }
-
-            public Content build() {
-                Content content = new Content();
-                content.setType(type);
-                content.setText(text);
-                content.setImageUrl(imageUrl);
-                content.setRole(role);
-                content.setDraftTask(draftTask);
-                return content;
+        companion object {
+            fun builder(): Builder {
+                return com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.Content.Builder()
             }
         }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class ImageUrl {
-
+    class ImageUrl {
         @JsonProperty("url")
-        private String url;
+        var url: String? = null
 
-        public ImageUrl() {
-        }
+        constructor()
 
-        public ImageUrl(String url) {
-            this.url = url;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
+        constructor(url: String?) {
+            this.url = url
         }
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "ImageUrl{" +
                     "url='" + url + '\'' +
-                    '}';
+                    '}'
         }
 
-        public static ImageUrl.Builder builder() {
-            return new Builder();
+        class Builder private constructor() {
+            private var url: String? = null
+
+            fun url(url: String?): Builder {
+                this.url = url
+                return this
+            }
+
+            fun build(): ImageUrl {
+                val imageUrl: ImageUrl = com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.ImageUrl()
+                imageUrl.url = url
+                return imageUrl
+            }
         }
 
-        public static class Builder {
-            private String url;
-
-            private Builder() {
-            }
-
-            public Builder url(String url) {
-                this.url = url;
-                return this;
-            }
-
-            public ImageUrl build() {
-                ImageUrl imageUrl = new ImageUrl();
-                imageUrl.setUrl(url);
-                return imageUrl;
+        companion object {
+            fun builder(): Builder {
+                return com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.ImageUrl.Builder()
             }
         }
     }
 
-   @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class DraftTask {
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    class DraftTask {
         @JsonProperty("id")
-        private String id;
+        var id: String? = null
 
-        public DraftTask() {
-        }
+        constructor()
 
-        public DraftTask(String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
+        constructor(id: String?) {
+            this.id = id
         }
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "DraftTask{" +
                     "id='" + id + '\'' +
-                    '}';
+                    '}'
         }
 
-        public static DraftTask.Builder builder() {
-            return new Builder();
+        class Builder private constructor() {
+            private var id: String? = null
+
+            fun id(id: String?): Builder {
+                this.id = id
+                return this
+            }
+
+            fun build(): DraftTask {
+                val draftTask: DraftTask = com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.DraftTask()
+                draftTask.id = id
+                return draftTask
+            }
         }
 
-        public static class Builder {
-            private String id;
-
-            private Builder() {
+        companion object {
+            fun builder(): Builder {
+                return com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.DraftTask.Builder()
             }
+        }
+    }
 
-            public Builder id(String id) {
-                this.id = id;
-                return this;
-            }
-
-            public DraftTask build() {
-                DraftTask draftTask = new DraftTask();
-                draftTask.setId(id);
-                return draftTask;
-            }
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest.Builder()
         }
     }
 }

@@ -1,27 +1,22 @@
-package com.volcengine.ark.runtime.interceptor;
+package com.volcengine.ark.runtime.interceptor
 
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.Interceptor
 
-import java.io.IOException;
-import java.util.Objects;
+class AuthenticationInterceptor(apiKey: String?) : Interceptor {
+    private val apiKey: String?
 
-public class AuthenticationInterceptor implements Interceptor {
-
-    private final String apiKey;
-
-    public AuthenticationInterceptor(String apiKey) {
-        Objects.requireNonNull(apiKey, "Api key required");
-        this.apiKey = apiKey;
+    init {
+        Objects.requireNonNull(apiKey, "Api key required")
+        this.apiKey = apiKey
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
-        Request request = chain.request()
-                .newBuilder()
-                .header("Authorization", "Bearer " + apiKey)
-                .build();
-        return chain.proceed(request);
+    @Throws(IOException::class)
+    fun intercept(chain: Chain): Response {
+        val request: Request? = chain.request()
+            .newBuilder()
+            .header("Authorization", "Bearer " + apiKey)
+            .build()
+        return chain.proceed(request)
     }
 }

@@ -1,47 +1,44 @@
-package com.volcengine.ark.runtime.model.files;
+package com.volcengine.ark.runtime.model.files
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public  class PreprocessConfigs {
-    public PreprocessConfigs() {
-    }
-
+class PreprocessConfigs {
     @JsonProperty(value = "video")
-    private Video video;
+    private var video: Video? = null
 
-    public static PreprocessConfigs.PreprocessConfigsBuilder builder() {
-        return new PreprocessConfigs.PreprocessConfigsBuilder();
+    fun getVideo(): Video? {
+        return video
     }
 
-    public Video getVideo() {
-        return video;
+    fun setVideo(video: Video?) {
+        this.video = video
     }
 
-    public void setVideo(Video video) {
-        this.video = video;
+    class PreprocessConfigsBuilder private constructor() {
+        private var video: Video? = null
+
+        fun video(video: Video?): PreprocessConfigsBuilder {
+            this.video = video
+            return this
+        }
+
+        fun build(): PreprocessConfigs {
+            val preprocessConfigs: PreprocessConfigs = com.volcengine.ark.runtime.model.files.PreprocessConfigs()
+            preprocessConfigs.setVideo(video)
+            return preprocessConfigs
+        }
+
+        companion object {
+            fun aPreprocessConfigs(): PreprocessConfigsBuilder {
+                return com.volcengine.ark.runtime.model.files.PreprocessConfigs.PreprocessConfigsBuilder()
+            }
+        }
     }
 
-    public static final class PreprocessConfigsBuilder {
-        private Video video;
-
-        private PreprocessConfigsBuilder() {
-        }
-
-        public static PreprocessConfigsBuilder aPreprocessConfigs() {
-            return new PreprocessConfigsBuilder();
-        }
-
-        public PreprocessConfigsBuilder video(Video video) {
-            this.video = video;
-            return this;
-        }
-
-        public PreprocessConfigs build() {
-            PreprocessConfigs preprocessConfigs = new PreprocessConfigs();
-            preprocessConfigs.setVideo(video);
-            return preprocessConfigs;
+    companion object {
+        fun builder(): PreprocessConfigsBuilder {
+            return com.volcengine.ark.runtime.model.files.PreprocessConfigs.PreprocessConfigsBuilder()
         }
     }
 }

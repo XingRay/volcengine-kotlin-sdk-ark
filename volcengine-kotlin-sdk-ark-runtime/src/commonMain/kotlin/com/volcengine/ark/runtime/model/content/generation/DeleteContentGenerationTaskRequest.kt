@@ -1,55 +1,43 @@
-package com.volcengine.ark.runtime.model.content.generation;
+package com.volcengine.ark.runtime.model.content.generation
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DeleteContentGenerationTaskRequest {
-
+class DeleteContentGenerationTaskRequest {
     @JsonProperty("task_id")
-    private String taskId;
+    var taskId: String? = null
 
-    public DeleteContentGenerationTaskRequest() {
-    }
+    constructor()
 
-    public DeleteContentGenerationTaskRequest(String taskId) {
-        this.taskId = taskId;
-    }
-
-    public String getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
+    constructor(taskId: String?) {
+        this.taskId = taskId
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "GetContentGenerationTaskRequest{" +
                 "taskId='" + taskId + '\'' +
-                '}';
+                '}'
     }
 
-    public static DeleteContentGenerationTaskRequest.Builder builder() {
-        return new Builder();
+    class Builder private constructor() {
+        private var taskId: String? = null
+
+        fun taskId(taskId: String?): Builder {
+            this.taskId = taskId
+            return this
+        }
+
+        fun build(): DeleteContentGenerationTaskRequest {
+            val request: DeleteContentGenerationTaskRequest = com.volcengine.ark.runtime.model.content.generation.DeleteContentGenerationTaskRequest()
+            request.taskId = taskId
+            return request
+        }
     }
 
-    public static class Builder {
-        private String taskId;
-
-        private Builder() {
-        }
-
-        public Builder taskId(String taskId) {
-            this.taskId = taskId;
-            return this;
-        }
-
-        public DeleteContentGenerationTaskRequest build() {
-            DeleteContentGenerationTaskRequest request = new DeleteContentGenerationTaskRequest();
-            request.setTaskId(taskId);
-            return request;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.content.generation.DeleteContentGenerationTaskRequest.Builder()
         }
     }
 }

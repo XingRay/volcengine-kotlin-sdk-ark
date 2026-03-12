@@ -1,88 +1,67 @@
-package com.volcengine.ark.runtime.model.responses.tool.mcp;
+package com.volcengine.ark.runtime.model.responses.tool.mcp
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MCPTool {
-
+class MCPTool {
     @JsonProperty("name")
-    private String name;
+    var name: String? = null
 
     @JsonProperty("description")
-    private String description;
+    var description: String? = null
 
     @JsonProperty("input_schema")
-    private Map<String, Object> inputSchema;
+    private var inputSchema: Map<String?, Object?>? = null
 
-    public String getName() {
-        return name;
+    fun getInputSchema(): Map<String?, Object?>? {
+        return inputSchema
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Map<String, Object> getInputSchema() {
-        return inputSchema;
-    }
-
-    public void setInputSchema(Map<String, Object> inputSchema) {
-        this.inputSchema = inputSchema;
+    fun setInputSchema(inputSchema: Map<String?, Object?>?) {
+        this.inputSchema = inputSchema
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "MCPTool{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", inputSchema=" + inputSchema +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder private constructor() {
+        private var name: String? = null
+        private var description: String? = null
+        private var inputSchema: Map<String?, Object?>? = null
+
+        fun name(name: String?): Builder {
+            this.name = name
+            return this
+        }
+
+        fun description(description: String?): Builder {
+            this.description = description
+            return this
+        }
+
+        fun inputSchema(inputSchema: Map<String?, Object?>?): Builder {
+            this.inputSchema = inputSchema
+            return this
+        }
+
+        fun build(): MCPTool {
+            val mCPTool: MCPTool = com.volcengine.ark.runtime.model.responses.tool.mcp.MCPTool()
+            mCPTool.name = name
+            mCPTool.description = description
+            mCPTool.setInputSchema(inputSchema)
+            return mCPTool
+        }
     }
 
-    public static final class Builder {
-        private String name;
-        private String description;
-        private Map<String, Object> inputSchema;
-
-        private Builder() {
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder description(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public Builder inputSchema(Map<String, Object> inputSchema) {
-            this.inputSchema = inputSchema;
-            return this;
-        }
-
-        public MCPTool build() {
-            MCPTool mCPTool = new MCPTool();
-            mCPTool.setName(name);
-            mCPTool.setDescription(description);
-            mCPTool.setInputSchema(inputSchema);
-            return mCPTool;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.mcp.MCPTool.Builder()
         }
     }
 }

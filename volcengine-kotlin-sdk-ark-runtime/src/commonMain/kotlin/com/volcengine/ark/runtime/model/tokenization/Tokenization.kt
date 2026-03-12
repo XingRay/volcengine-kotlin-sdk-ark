@@ -1,74 +1,65 @@
-package com.volcengine.ark.runtime.model.tokenization;
+package com.volcengine.ark.runtime.model.tokenization
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Tokenization {
+class Tokenization {
+    var index: Integer? = null
 
-    Integer index;
-
-    String object;
+    var `object`: String? = null
+        set(object) {
+            field = this.`object`
+        }
 
     @JsonProperty("total_tokens")
-    Integer totalTokens;
+    var totalTokens: Integer? = null
 
     @JsonProperty("token_ids")
-    List<Integer> tokenIds;
+    var tokenIds: List<Integer?>? = null
 
     @JsonProperty("offset_mapping")
-    List<List<Integer>> offsetMapping;
+    var offsetMapping: List<List<Integer?>?>? = null
 
-    public Integer getIndex() {
-        return index;
+    fun getIndex(): Integer? {
+        return index
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
+    fun setIndex(index: Integer?) {
+        this.index = index
     }
 
-    public String getObject() {
-        return object;
+    fun getTotalTokens(): Integer? {
+        return totalTokens
     }
 
-    public void setObject(String object) {
-        this.object = object;
+    fun setTotalTokens(totalTokens: Integer?) {
+        this.totalTokens = totalTokens
     }
 
-    public Integer getTotalTokens() {
-        return totalTokens;
+    fun getTokenIds(): List<Integer?>? {
+        return tokenIds
     }
 
-    public void setTotalTokens(Integer totalTokens) {
-        this.totalTokens = totalTokens;
+    fun setTokenIds(tokenIds: List<Integer?>?) {
+        this.tokenIds = tokenIds
     }
 
-    public List<Integer> getTokenIds() {
-        return tokenIds;
+    fun getOffsetMapping(): List<List<Integer?>?>? {
+        return offsetMapping
     }
 
-    public void setTokenIds(List<Integer> tokenIds) {
-        this.tokenIds = tokenIds;
-    }
-
-    public List<List<Integer>> getOffsetMapping() {
-        return offsetMapping;
-    }
-
-    public void setOffsetMapping(List<List<Integer>> offsetMapping) {
-        this.offsetMapping = offsetMapping;
+    fun setOffsetMapping(offsetMapping: List<List<Integer?>?>?) {
+        this.offsetMapping = offsetMapping
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "Tokenization{" +
                 "index=" + index +
-                ", object='" + object + '\'' +
+                ", object='" + this.`object` + '\'' +
                 ", totalTokens=" + totalTokens +
                 ", tokenIds=" + tokenIds +
                 ", offsetMapping=" + offsetMapping +
-                '}';
+                '}'
     }
 }

@@ -1,39 +1,16 @@
-package com.volcengine.ark.runtime.model.responses.event.doubaoapp;
+package com.volcengine.ark.runtime.model.responses.event.doubaoapp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class DoubaoAppCallReasoningTextDeltaEvent extends ItemEvent {
-
+class DoubaoAppCallReasoningTextDeltaEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_TEXT_DELTA) {
     @JsonProperty("block_index")
-    private Long blockIndex;
+    var blockIndex: Long? = null
 
     @JsonProperty("delta")
-    private String delta;
-
-    public DoubaoAppCallReasoningTextDeltaEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_REASONING_TEXT_DELTA);
-    }
-
-    public Long getBlockIndex() {
-        return blockIndex;
-    }
-
-    public void setBlockIndex(Long blockIndex) {
-        this.blockIndex = blockIndex;
-    }
-
-    public String getDelta() {
-        return delta;
-    }
-
-    public void setDelta(String delta) {
-        this.delta = delta;
-    }
+    var delta: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DoubaoAppCallReasoningTextDeltaEvent{" +
                 "type='" + getType() + '\'' +
                 ", blockIndex=" + blockIndex +
@@ -41,29 +18,30 @@ public class DoubaoAppCallReasoningTextDeltaEvent extends ItemEvent {
                 ", itemId='" + getItemId() + '\'' +
                 ", outputIndex=" + getOutputIndex() +
                 ", sequenceNumber=" + getSequenceNumber() +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private val event: DoubaoAppCallReasoningTextDeltaEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningTextDeltaEvent()
+
+        fun blockIndex(blockIndex: Long?): Builder {
+            event.blockIndex = blockIndex
+            return this
+        }
+
+        fun delta(delta: String?): Builder {
+            event.delta = delta
+            return this
+        }
+
+        fun build(): DoubaoAppCallReasoningTextDeltaEvent {
+            return event
+        }
     }
 
-    public static class Builder {
-
-        private DoubaoAppCallReasoningTextDeltaEvent event = new DoubaoAppCallReasoningTextDeltaEvent();
-
-        public Builder blockIndex(Long blockIndex) {
-            event.setBlockIndex(blockIndex);
-            return this;
-        }
-
-        public Builder delta(String delta) {
-            event.setDelta(delta);
-            return this;
-        }
-
-        public DoubaoAppCallReasoningTextDeltaEvent build() {
-            return event;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallReasoningTextDeltaEvent.Builder()
         }
     }
 }

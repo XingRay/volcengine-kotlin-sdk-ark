@@ -1,34 +1,25 @@
-package com.volcengine.ark.runtime.model.responses.event.response;
+package com.volcengine.ark.runtime.model.responses.event.response
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.StreamEvent;
-import com.volcengine.ark.runtime.model.responses.response.ResponseObject;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ResponseInCompleteEvent extends StreamEvent {
+class ResponseInCompleteEvent : StreamEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_INCOMPLETE) {
     @JsonProperty("response")
-    private ResponseObject response;
+    private var response: ResponseObject? = null
 
-    public ResponseObject getResponse() {
-        return response;
+    fun getResponse(): ResponseObject? {
+        return response
     }
 
-    public void setResponse(ResponseObject response) {
-        this.response = response;
-    }
-
-    public ResponseInCompleteEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_INCOMPLETE);
+    fun setResponse(response: ResponseObject?) {
+        this.response = response
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ResponseInCompleteEvent{" +
                 "type='" + getType() + '\'' +
                 ", sequenceNumber=" + getSequenceNumber() +
                 ", response=" + response +
-                '}';
+                '}'
     }
-
-
 }

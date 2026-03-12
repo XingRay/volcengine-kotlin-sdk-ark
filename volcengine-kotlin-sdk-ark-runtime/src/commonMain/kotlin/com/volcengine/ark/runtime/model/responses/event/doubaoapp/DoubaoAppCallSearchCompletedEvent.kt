@@ -1,64 +1,30 @@
-package com.volcengine.ark.runtime.model.responses.event.doubaoapp;
+package com.volcengine.ark.runtime.model.responses.event.doubaoapp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
-import com.volcengine.ark.runtime.model.responses.item.doubaoapp.DoubaoAppSearchResult;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.List;
-
-public class DoubaoAppCallSearchCompletedEvent extends ItemEvent {
-
+class DoubaoAppCallSearchCompletedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_SEARCH_COMPLETED) {
     @JsonProperty("block_index")
-    private Long blockIndex;
+    var blockIndex: Long? = null
 
     @JsonProperty("summary")
-    private String summary;
+    var summary: String? = null
 
     @JsonProperty("queries")
-    private List<String> queries;
+    var queries: List<String?>? = null
 
     @JsonProperty("results")
-    private List<DoubaoAppSearchResult> results;
+    private var results: List<DoubaoAppSearchResult?>? = null
 
-    public DoubaoAppCallSearchCompletedEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_SEARCH_COMPLETED);
+    fun getResults(): List<DoubaoAppSearchResult?>? {
+        return results
     }
 
-    public Long getBlockIndex() {
-        return blockIndex;
-    }
-
-    public void setBlockIndex(Long blockIndex) {
-        this.blockIndex = blockIndex;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public List<String> getQueries() {
-        return queries;
-    }
-
-    public void setQueries(List<String> queries) {
-        this.queries = queries;
-    }
-
-    public List<DoubaoAppSearchResult> getResults() {
-        return results;
-    }
-
-    public void setResults(List<DoubaoAppSearchResult> results) {
-        this.results = results;
+    fun setResults(results: List<DoubaoAppSearchResult?>?) {
+        this.results = results
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DoubaoAppCallSearchCompletedEvent{" +
                 "type='" + getType() + '\'' +
                 ", blockIndex=" + blockIndex +
@@ -68,39 +34,40 @@ public class DoubaoAppCallSearchCompletedEvent extends ItemEvent {
                 ", itemId='" + getItemId() + '\'' +
                 ", outputIndex=" + getOutputIndex() +
                 ", sequenceNumber=" + getSequenceNumber() +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private val event: DoubaoAppCallSearchCompletedEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallSearchCompletedEvent()
+
+        fun blockIndex(blockIndex: Long?): Builder {
+            event.blockIndex = blockIndex
+            return this
+        }
+
+        fun summary(summary: String?): Builder {
+            event.summary = summary
+            return this
+        }
+
+        fun queries(queries: List<String?>?): Builder {
+            event.queries = queries
+            return this
+        }
+
+        fun results(results: List<DoubaoAppSearchResult?>?): Builder {
+            event.setResults(results)
+            return this
+        }
+
+        fun build(): DoubaoAppCallSearchCompletedEvent {
+            return event
+        }
     }
 
-    public static class Builder {
-
-        private DoubaoAppCallSearchCompletedEvent event = new DoubaoAppCallSearchCompletedEvent();
-
-        public Builder blockIndex(Long blockIndex) {
-            event.setBlockIndex(blockIndex);
-            return this;
-        }
-
-        public Builder summary(String summary) {
-            event.setSummary(summary);
-            return this;
-        }
-
-        public Builder queries(List<String> queries) {
-            event.setQueries(queries);
-            return this;
-        }
-
-        public Builder results(List<DoubaoAppSearchResult> results) {
-            event.setResults(results);
-            return this;
-        }
-
-        public DoubaoAppCallSearchCompletedEvent build() {
-            return event;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallSearchCompletedEvent.Builder()
         }
     }
 }

@@ -1,42 +1,44 @@
-package com.volcengine.ark.runtime.model.responses.common;
+package com.volcengine.ark.runtime.model.responses.common
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ResponsesText {
+class ResponsesText {
     @JsonProperty("format")
-    private ResponsesTextFormat format;
+    private var format: ResponsesTextFormat? = null
 
-    public ResponsesTextFormat getFormat() {
-        return format;
+    fun getFormat(): ResponsesTextFormat? {
+        return format
     }
 
-    public void setFormat(ResponsesTextFormat format) {
-        this.format = format;
+    fun setFormat(format: ResponsesTextFormat?) {
+        this.format = format
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ResponsesText{" +
                 "format=" + format +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    class Builder {
+        private var format: ResponsesTextFormat? = null
 
-    public static class Builder {
-        private ResponsesTextFormat format;
-
-        public Builder format(ResponsesTextFormat format) {
-            this.format = format;
-            return this;
+        fun format(format: ResponsesTextFormat?): Builder {
+            this.format = format
+            return this
         }
 
-        public ResponsesText build() {
-            ResponsesText responsesText = new ResponsesText();
-            responsesText.setFormat(format);
-            return responsesText;
+        fun build(): ResponsesText {
+            val responsesText: ResponsesText = com.volcengine.ark.runtime.model.responses.common.ResponsesText()
+            responsesText.setFormat(format)
+            return responsesText
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.common.ResponsesText.Builder()
         }
     }
 }

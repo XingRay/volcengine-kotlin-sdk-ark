@@ -1,38 +1,36 @@
-package com.volcengine.ark.runtime.model.multimodalembeddings;
+package com.volcengine.ark.runtime.model.multimodalembeddings
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MultimodalEmbeddingPromptTokensDetails {
-
+class MultimodalEmbeddingPromptTokensDetails {
     @JsonProperty("text_tokens")
-    private Integer textTokens;
+    private var textTokens: Integer? = null
 
     @JsonProperty("image_tokens")
-    private Integer imageTokens;
+    private var imageTokens: Integer? = null
 
-    public Integer getImageTokens() {
-        return imageTokens;
+    fun getImageTokens(): Integer? {
+        return imageTokens
     }
 
-    public void setImageTokens(Integer imageTokens) {
-        this.imageTokens = imageTokens;
+    fun setImageTokens(imageTokens: Integer?) {
+        this.imageTokens = imageTokens
     }
 
-    public Integer getTextTokens() {
-        return textTokens;
+    fun getTextTokens(): Integer? {
+        return textTokens
     }
 
-    public void setTextTokens(Integer textTokens) {
-        this.textTokens = textTokens;
+    fun setTextTokens(textTokens: Integer?) {
+        this.textTokens = textTokens
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "PromptTokensDetails{" +
                 " textTokens=" + textTokens +
                 ", imageTokens=" + imageTokens +
-                '}';
+                '}'
     }
 }

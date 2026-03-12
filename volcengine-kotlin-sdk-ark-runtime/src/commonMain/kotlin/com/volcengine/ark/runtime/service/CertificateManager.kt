@@ -1,206 +1,165 @@
-package com.volcengine.ark.runtime.service;
+package com.volcengine.ark.runtime.service
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.GeneralNames;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.openssl.PEMParser;
+import com.fasterxml.jackson.core.type.TypeReference
 
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
+object CertificateManager {
+    private val certificateCache: ConcurrentHashMap<String?, ServerCertificateInfo?> = ConcurrentHashMap()
 
-public class CertificateManager {
-    private static final ConcurrentHashMap<String, ServerCertificateInfo> certificateCache = new ConcurrentHashMap<>();
-
-    /**
-     * 服务端证书信息类
-     */
-    public static class ServerCertificateInfo {
-        private final PublicKey publicKey;
-        private final String ringId;
-        private final String keyId;
-
-        public ServerCertificateInfo(PublicKey publicKey, String ringId, String keyId) {
-            this.publicKey = publicKey;
-            this.ringId = ringId;
-            this.keyId = keyId;
-        }
-
-        public PublicKey getPublicKey() {
-            return publicKey;
-        }
-
-        public String getRingId() {
-            return ringId;
-        }
-
-        public String getKeyId() {
-            return keyId;
-        }
-    }
-
-    private static List<String> getDnsNamesFromExtension(Extension sanExtension) {
-        List<String> dnsNames = new ArrayList<>();
+    private fun getDnsNamesFromExtension(sanExtension: Extension): List<String?> {
+        val dnsNames: List<String?> = ArrayList()
 
         try {
-            GeneralNames generalNames = GeneralNames.getInstance(sanExtension.getParsedValue());
+            val generalNames: GeneralNames = GeneralNames.getInstance(sanExtension.getParsedValue())
 
-            for (GeneralName generalName : generalNames.getNames()) {
-                if (generalName.getTagNo() == GeneralName.dNSName) {
-                    String dnsName = generalName.getName().toString();
-                    dnsNames.add(dnsName);
+            for (generalName in generalNames.getNames()) {
+                if (generalName.getTagNo() === GeneralName.dNSName) {
+                    val dnsName: String? = generalName.getName().toString()
+                    dnsNames.add(dnsName)
                 }
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Error getting DNS names from extension:", e);
+        } catch (e: Exception) {
+            throw RuntimeException("Error getting DNS names from extension:", e)
         }
 
-        return dnsNames;
+        return dnsNames
     }
 
     /**
      * 检查内存缓存中是否存在证书
      */
-    public static boolean hasCertificateInCache(String ep) {
-        return certificateCache.containsKey(ep);
+    fun hasCertificateInCache(ep: String?): Boolean {
+        return com.volcengine.ark.runtime.service.CertificateManager.certificateCache.containsKey(ep)
     }
 
     /**
      * 从内存缓存获取证书
      */
-    public static ServerCertificateInfo getServerCertificateFromCache(String ep) {
-        return certificateCache.get(ep);
+    fun getServerCertificateFromCache(ep: String?): ServerCertificateInfo {
+        return com.volcengine.ark.runtime.service.CertificateManager.certificateCache.get(ep)
     }
 
-    public static ServerCertificateInfo getServerCertificate(String apiKey, String baseUrl, String ep) throws IOException {
-        if (hasCertificateInCache(ep)) {
-            return getServerCertificateFromCache(ep);
+    @Throws(IOException::class)
+    fun getServerCertificate(apiKey: String?, baseUrl: String, ep: String?): ServerCertificateInfo {
+        if (com.volcengine.ark.runtime.service.CertificateManager.hasCertificateInCache(ep)) {
+            return com.volcengine.ark.runtime.service.CertificateManager.getServerCertificateFromCache(ep)
         }
 
         try {
-            String volcArkEncryption = System.getenv("VOLC_ARK_ENCRYPTION");
-            boolean aiccEnabled = "AICC".equals(volcArkEncryption);
+            val volcArkEncryption: String? = System.getenv("VOLC_ARK_ENCRYPTION")
+            val aiccEnabled = "AICC".equals(volcArkEncryption)
 
-            String certificate;
+            var certificate: String?
 
-            certificate = loadCertificateLocally(ep);
+            certificate = com.volcengine.ark.runtime.service.CertificateManager.loadCertificateLocally(ep)
             if (certificate != null) {
-                return createCertificateInfo(certificate, ep);
+                return com.volcengine.ark.runtime.service.CertificateManager.createCertificateInfo(certificate, ep)
             }
 
-            certificate = loadCertificateByApiKey(baseUrl, apiKey, ep, aiccEnabled);
+            certificate = com.volcengine.ark.runtime.service.CertificateManager.loadCertificateByApiKey(baseUrl, apiKey, ep, aiccEnabled)
 
-            saveCertificateLocally(ep, certificate);
+            com.volcengine.ark.runtime.service.CertificateManager.saveCertificateLocally(ep, certificate)
 
-            return createCertificateInfo(certificate, ep);
-
-        } catch (Exception e) {
-            throw new IOException("Failed to fetch server certificate", e);
+            return com.volcengine.ark.runtime.service.CertificateManager.createCertificateInfo(certificate, ep)
+        } catch (e: Exception) {
+            throw IOException("Failed to fetch server certificate", e)
         }
     }
 
-    public static String[] getCertInfo(String certPem) {
+    fun getCertInfo(certPem: String?): Array<String> {
         try {
-            try (PEMParser pemParser = new PEMParser(new StringReader(certPem))) {
-                Object object = pemParser.readObject();
+            PEMParser(StringReader(certPem)).use { pemParser ->
+                val `object`: Object? = pemParser.readObject()
+                if (`object` is X509CertificateHolder) {
+                    val certHolder: X509CertificateHolder = `object` as X509CertificateHolder
 
-                if (object instanceof X509CertificateHolder) {
-                    X509CertificateHolder certHolder = (X509CertificateHolder) object;
-
-                    Extension sanExtension = certHolder.getExtension(Extension.subjectAlternativeName);
+                    val sanExtension: Extension? = certHolder.getExtension(Extension.subjectAlternativeName)
                     if (sanExtension != null) {
-                        List<String> dnsNames = getDnsNamesFromExtension(sanExtension);
+                        val dnsNames: List<String?> = com.volcengine.ark.runtime.service.CertificateManager.getDnsNamesFromExtension(sanExtension)
 
                         if (dnsNames.size() > 1) {
-                            String firstDns = dnsNames.get(0);
-                            String secondDns = dnsNames.get(1);
+                            val firstDns: String = dnsNames.get(0)!!
+                            val secondDns: String = dnsNames.get(1)!!
 
-                            Pattern ringPattern = Pattern.compile("^ring\\..*$");
-                            Pattern keyPattern = Pattern.compile("^key\\..*$");
+                            val ringPattern: Pattern = Pattern.compile("^ring\\..*$")
+                            val keyPattern: Pattern = Pattern.compile("^key\\..*$")
 
                             if (ringPattern.matcher(firstDns).matches() &&
-                                    keyPattern.matcher(secondDns).matches()) {
-                                String ringId = firstDns.substring(5);
-                                String keyId = secondDns.substring(4);
-                                return new String[]{ringId, keyId};
+                                keyPattern.matcher(secondDns).matches()
+                            ) {
+                                val ringId: String? = firstDns.substring(5)
+                                val keyId: String? = secondDns.substring(4)
+                                return arrayOf<String>(ringId!!, keyId!!)
                             }
                         }
                     }
                 }
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to parse certificate to get ring_id and key_id", e);
+        } catch (e: Exception) {
+            throw RuntimeException("Failed to parse certificate to get ring_id and key_id", e)
         }
-        return new String[]{"", ""};
+        return arrayOf<String>("", "")
     }
 
     /**
      * 从本地缓存加载证书
      */
-    public static String loadCertificateLocally(String ep) throws IOException {
+    @Throws(IOException::class)
+    fun loadCertificateLocally(ep: String?): String? {
         try {
-            String certStoragePath = getCertStoragePath();
-            String certFilePath = certStoragePath + File.separator + ep + ".pem";
+            val certStoragePath: String = com.volcengine.ark.runtime.service.CertificateManager.getCertStoragePath()
+            val certFilePath = (certStoragePath + File.separator + ep).toString() + ".pem"
 
-            File certFile = new File(certFilePath);
+            val certFile: File = File(certFilePath)
 
             if (certFile.exists()) {
-                long lastModifiedSeconds = certFile.lastModified() / 1000;
-                long currentTimeSeconds = System.currentTimeMillis() / 1000;
-                long timeDifferenceSeconds = currentTimeSeconds - lastModifiedSeconds;
-                long certExpirationSeconds = 14L * 24 * 60 * 60;
+                val lastModifiedSeconds: Long = certFile.lastModified() / 1000
+                val currentTimeSeconds: Long = System.currentTimeMillis() / 1000
+                val timeDifferenceSeconds = currentTimeSeconds - lastModifiedSeconds
+                val certExpirationSeconds = 14L * 24 * 60 * 60
                 if (timeDifferenceSeconds <= certExpirationSeconds) {
-                    String certPem = new String(java.nio.file.Files.readAllBytes(certFile.toPath()), StandardCharsets.UTF_8);
+                    val certPem: String = String(java.nio.file.Files.readAllBytes(certFile.toPath()), StandardCharsets.UTF_8)
 
-                    String[] certInfo = getCertInfo(certPem);
-                    String ringId = certInfo[0];
-                    String keyId = certInfo[1];
+                    val certInfo: Array<String> = com.volcengine.ark.runtime.service.CertificateManager.getCertInfo(certPem)
+                    val ringId = certInfo[0]
+                    val keyId = certInfo[1]
 
-                    boolean aiccEnabled = "AICC".equals(System.getenv("VOLC_ARK_ENCRYPTION"));
+                    val aiccEnabled = "AICC".equals(System.getenv("VOLC_ARK_ENCRYPTION"))
 
                     if ((ringId.isEmpty() || keyId.isEmpty()) && !aiccEnabled) {
-                        return certPem;
+                        return certPem
                     }
                     if (!ringId.isEmpty() && !keyId.isEmpty() && aiccEnabled) {
-                        return certPem;
+                        return certPem
                     }
                 }
 
-                certFile.delete();
+                certFile.delete()
             }
-        } catch (Exception e) {
-            String errMsg = "Failed to load local certificate: " + e.getMessage();
-            throw new IOException(errMsg, e);
+        } catch (e: Exception) {
+            val errMsg = "Failed to load local certificate: " + e.getMessage()
+            throw IOException(errMsg, e)
         }
-        return null;
+        return null
     }
 
     /**
      * 使用API Key方式获取证书 - 重构后降低复杂度
      */
-    public static String loadCertificateByApiKey(String baseUrl, String apiKey, String ep, boolean aiccEnabled) throws IOException {
-        HttpURLConnection connection = null;
+    @Throws(IOException::class)
+    fun loadCertificateByApiKey(baseUrl: String, apiKey: String?, ep: String?, aiccEnabled: Boolean): String? {
+        var connection: HttpURLConnection? = null
         try {
-            connection = createHttpConnection(baseUrl, apiKey);
-            sendCertificateRequest(connection, ep, aiccEnabled);
-            return processCertificateResponse(connection);
-        } catch (IOException e) {
-            throw e;
-        } catch (Exception e) {
-            String errMsg = "通过API Key获取证书失败: " + e.getMessage();
-            throw new IOException(errMsg, e);
+            connection = com.volcengine.ark.runtime.service.CertificateManager.createHttpConnection(baseUrl, apiKey)
+            com.volcengine.ark.runtime.service.CertificateManager.sendCertificateRequest(connection, ep, aiccEnabled)
+            return com.volcengine.ark.runtime.service.CertificateManager.processCertificateResponse(connection)
+        } catch (e: IOException) {
+            throw e
+        } catch (e: Exception) {
+            val errMsg = "通过API Key获取证书失败: " + e.getMessage()
+            throw IOException(errMsg, e)
         } finally {
             if (connection != null) {
-                connection.disconnect();
+                connection.disconnect()
             }
         }
     }
@@ -208,237 +167,270 @@ public class CertificateManager {
     /**
      * 创建HTTP连接
      */
-    private static HttpURLConnection createHttpConnection(String baseUrl, String apiKey) throws IOException {
-        String certificateUrl = buildCertificateUrl(baseUrl);
-        URL url = URI.create(certificateUrl).toURL();
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    @Throws(IOException::class)
+    private fun createHttpConnection(baseUrl: String, apiKey: String?): HttpURLConnection {
+        val certificateUrl: String = com.volcengine.ark.runtime.service.CertificateManager.buildCertificateUrl(baseUrl)
+        val url: URL = URI.create(certificateUrl).toURL()
+        val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
 
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Authorization", "Bearer " + apiKey);
-        connection.setRequestProperty("X-Session-Token", "/e2e/get/certificate");
+        connection.setRequestMethod("POST")
+        connection.setRequestProperty("Content-Type", "application/json")
+        connection.setRequestProperty("Authorization", "Bearer " + apiKey)
+        connection.setRequestProperty("X-Session-Token", "/e2e/get/certificate")
 
-        return connection;
+        return connection
     }
 
     /**
      * 构建证书请求URL
      */
-    private static String buildCertificateUrl(String baseUrl) {
-        String requestedUrl = baseUrl.replaceAll("/+$", "");
+    private fun buildCertificateUrl(baseUrl: String): String {
+        val requestedUrl: String = baseUrl.replaceAll("/+$", "")
 
         if (requestedUrl.endsWith("/api/v3")) {
-            return requestedUrl + "/e2e/get/certificate";
+            return requestedUrl.toString() + "/e2e/get/certificate"
         } else {
-            return requestedUrl + "/api/v3/e2e/get/certificate";
+            return requestedUrl.toString() + "/api/v3/e2e/get/certificate"
         }
     }
 
     /**
      * 发送证书请求
      */
-    private static void sendCertificateRequest(HttpURLConnection connection, String ep, boolean aiccEnabled) throws IOException {
-        String jsonBody = buildRequestBody(ep, aiccEnabled);
+    @Throws(IOException::class)
+    private fun sendCertificateRequest(connection: HttpURLConnection, ep: String?, aiccEnabled: Boolean) {
+        val jsonBody: String = com.volcengine.ark.runtime.service.CertificateManager.buildRequestBody(ep, aiccEnabled)
 
-        connection.setDoOutput(true);
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = jsonBody.getBytes(StandardCharsets.UTF_8);
-            os.write(input, 0, input.length);
+        connection.setDoOutput(true)
+        connection.getOutputStream().use { os ->
+            val input: ByteArray = jsonBody.getBytes(StandardCharsets.UTF_8)
+            os.write(input, 0, input.size)
         }
     }
 
     /**
      * 构建请求体
      */
-    private static String buildRequestBody(String ep, boolean aiccEnabled) throws IOException {
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model", ep);
+    @Throws(IOException::class)
+    private fun buildRequestBody(ep: String?, aiccEnabled: Boolean): String {
+        val requestBody: Map<String?, Object?> = HashMap()
+        requestBody.put("model", ep)
         if (aiccEnabled) {
-            requestBody.put("type", "AICCv0.1");
+            requestBody.put("type", "AICCv0.1")
         }
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(requestBody);
+        val mapper: ObjectMapper = ObjectMapper()
+        return mapper.writeValueAsString(requestBody)
     }
 
     /**
      * 处理证书响应
      */
-    private static String processCertificateResponse(HttpURLConnection connection) throws IOException {
-        int responseCode = connection.getResponseCode();
+    @Throws(IOException::class)
+    private fun processCertificateResponse(connection: HttpURLConnection): String? {
+        val responseCode: Int = connection.getResponseCode()
 
-        if (!isSuccessfulResponse(responseCode)) {
-            handleErrorResponse(connection, responseCode);
+        if (!com.volcengine.ark.runtime.service.CertificateManager.isSuccessfulResponse(responseCode)) {
+            com.volcengine.ark.runtime.service.CertificateManager.handleErrorResponse(connection, responseCode)
         }
 
-        return extractCertificateFromResponse(connection);
+        return com.volcengine.ark.runtime.service.CertificateManager.extractCertificateFromResponse(connection)
     }
 
     /**
      * 检查响应是否成功
      */
-    private static boolean isSuccessfulResponse(int responseCode) {
-        return responseCode >= 200 && responseCode < 300;
+    private fun isSuccessfulResponse(responseCode: Int): Boolean {
+        return responseCode >= 200 && responseCode < 300
     }
 
     /**
      * 处理错误响应
      */
-    private static void handleErrorResponse(HttpURLConnection connection, int responseCode) throws IOException {
-        String errorResponse = readErrorResponse(connection);
-        String errorMsg = "证书请求失败，状态码: " + responseCode + ", 响应: " + errorResponse;
-        throw new IOException(errorMsg);
+    @Throws(IOException::class)
+    private fun handleErrorResponse(connection: HttpURLConnection, responseCode: Int) {
+        val errorResponse: String = com.volcengine.ark.runtime.service.CertificateManager.readErrorResponse(connection)
+        val errorMsg = "证书请求失败，状态码: " + responseCode + ", 响应: " + errorResponse
+        throw IOException(errorMsg)
     }
 
     /**
      * 从响应中提取证书
      */
-    private static String extractCertificateFromResponse(HttpURLConnection connection) throws IOException {
-        String responseBody = readResponseBody(connection);
-        ObjectMapper mapper = new ObjectMapper();
+    @Throws(IOException::class)
+    private fun extractCertificateFromResponse(connection: HttpURLConnection): String? {
+        val responseBody: String = com.volcengine.ark.runtime.service.CertificateManager.readResponseBody(connection)
+        val mapper: ObjectMapper = ObjectMapper()
 
-        Map<String, Object> responseJson = mapper.readValue(
-                responseBody,
-                new TypeReference<HashMap<String, Object>>() {
-                }
-        );
+        val responseJson: Map<String?, Object?> = mapper.readValue(
+            responseBody,
+            object : TypeReference<HashMap<String?, Object?>?>() {
+            }
+        )
 
-        validateResponse(responseJson);
+        com.volcengine.ark.runtime.service.CertificateManager.validateResponse(responseJson)
 
         if (responseJson.containsKey("Certificate")) {
-            return (String) responseJson.get("Certificate");
+            return responseJson.get("Certificate") as String?
         } else {
-            throw new IOException("响应中未找到Certificate字段");
+            throw IOException("响应中未找到Certificate字段")
         }
     }
 
     /**
      * 验证响应数据
      */
-    private static void validateResponse(Map<String, Object> responseJson) throws IOException {
+    @Throws(IOException::class)
+    private fun validateResponse(responseJson: Map<String?, Object?>) {
         if (responseJson.containsKey("error")) {
-            Object error = responseJson.get("error");
-            String errorMsg = "获取证书失败: " + error;
-            throw new IOException(errorMsg);
+            val error: Object? = responseJson.get("error")
+            val errorMsg = "获取证书失败: " + error
+            throw IOException(errorMsg)
         }
     }
 
     /**
      * 保存证书到本地缓存
      */
-    public static void saveCertificateLocally(String ep, String certificate) throws IOException {
+    @Throws(IOException::class)
+    fun saveCertificateLocally(ep: String?, certificate: String) {
         try {
-            String certStoragePath = getCertStoragePath();
-            String certFilePath = certStoragePath + File.separator + ep + ".pem";
+            val certStoragePath: String = com.volcengine.ark.runtime.service.CertificateManager.getCertStoragePath()
+            val certFilePath = (certStoragePath + File.separator + ep).toString() + ".pem"
 
-            File storageDir = new File(certStoragePath);
+            val storageDir: File = File(certStoragePath)
             if (!storageDir.exists()) {
                 if (!storageDir.mkdirs()) {
-                    String errMsg = "创建证书存储目录失败: " + certStoragePath;
-                    throw new IOException(errMsg);
+                    val errMsg = "创建证书存储目录失败: " + certStoragePath
+                    throw IOException(errMsg)
                 }
             }
 
             java.nio.file.Files.write(
-                    Paths.get(certFilePath),
-                    certificate.getBytes(StandardCharsets.UTF_8)
-            );
-
-        } catch (Exception e) {
-            String errMsg = "保存证书到本地失败: " + e.getMessage();
-            throw new IOException(errMsg, e);
+                Paths.get(certFilePath),
+                certificate.getBytes(StandardCharsets.UTF_8)
+            )
+        } catch (e: Exception) {
+            val errMsg = "保存证书到本地失败: " + e.getMessage()
+            throw IOException(errMsg, e)
         }
     }
 
-    /**
-     * 获取证书存储路径
-     */
-    public static String getCertStoragePath() {
-        String userHome = System.getProperty("user.home");
-        return userHome + File.separator + ".ark" + File.separator + "certificates";
-    }
+    val certStoragePath: String
+        /**
+         * 获取证书存储路径
+         */
+        get() {
+            val userHome: String? = System.getProperty("user.home")
+            return (userHome + File.separator).toString() + ".ark" + File.separator + "certificates"
+        }
 
     /**
      * 缓存服务端证书信息
      */
-    public static void cacheServerCertificate(String cacheKey, PublicKey publicKey, String ringId, String keyId) {
-        certificateCache.put(cacheKey, new ServerCertificateInfo(publicKey, ringId, keyId));
+    fun cacheServerCertificate(cacheKey: String?, publicKey: PublicKey?, ringId: String?, keyId: String?) {
+        com.volcengine.ark.runtime.service.CertificateManager.certificateCache.put(cacheKey, com.volcengine.ark.runtime.service.CertificateManager.ServerCertificateInfo(publicKey, ringId, keyId))
     }
 
     /**
      * 从PEM格式的X.509证书中提取公钥
      */
-    public static PublicKey extractPublicKeyFromCertificate(String certificate) throws GeneralSecurityException {
+    @Throws(GeneralSecurityException::class)
+    fun extractPublicKeyFromCertificate(certificate: String): PublicKey {
         try {
-            String certContent = certificate.replace("-----BEGIN CERTIFICATE-----", "")
-                    .replace("-----END CERTIFICATE-----", "")
-                    .replaceAll("\\s", "");
+            val certContent: String? = certificate.replace("-----BEGIN CERTIFICATE-----", "")
+                .replace("-----END CERTIFICATE-----", "")
+                .replaceAll("\\s", "")
 
-            byte[] certBytes = Base64.getDecoder().decode(certContent);
+            val certBytes: ByteArray? = Base64.getDecoder().decode(certContent)
 
-            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-            X509Certificate x509Cert = (X509Certificate) certFactory.generateCertificate(
-                    new java.io.ByteArrayInputStream(certBytes));
+            val certFactory: CertificateFactory = CertificateFactory.getInstance("X.509")
+            val x509Cert: X509Certificate = certFactory.generateCertificate(
+                ByteArrayInputStream(certBytes)
+            ) as X509Certificate
 
-            return x509Cert.getPublicKey();
-        } catch (Exception e) {
-            throw new GeneralSecurityException("Failed to extract public key from certificate", e);
+            return x509Cert.getPublicKey()
+        } catch (e: Exception) {
+            throw GeneralSecurityException("Failed to extract public key from certificate", e)
         }
     }
 
     /**
      * 创建证书信息对象并缓存
      */
-    public static ServerCertificateInfo createCertificateInfo(String certificate, String ep) throws IOException {
+    @Throws(IOException::class)
+    fun createCertificateInfo(certificate: String, ep: String?): ServerCertificateInfo {
         try {
-            String[] result = getCertInfo(certificate);
-            String ringId = result[0];
-            String keyId = result[1];
+            val result: Array<String> = com.volcengine.ark.runtime.service.CertificateManager.getCertInfo(certificate)
+            val ringId: String? = result[0]
+            val keyId: String? = result[1]
 
-            java.security.PublicKey publicKey = extractPublicKeyFromCertificate(certificate);
+            val publicKey: java.security.PublicKey = com.volcengine.ark.runtime.service.CertificateManager.extractPublicKeyFromCertificate(certificate)
 
-            ServerCertificateInfo certInfo =
-                    new ServerCertificateInfo(publicKey, ringId, keyId);
+            val certInfo: ServerCertificateInfo =
+                com.volcengine.ark.runtime.service.CertificateManager.ServerCertificateInfo(publicKey, ringId, keyId)
 
-            cacheServerCertificate(ep, publicKey, ringId, keyId);
+            com.volcengine.ark.runtime.service.CertificateManager.cacheServerCertificate(ep, publicKey, ringId, keyId)
 
-            return certInfo;
-
-        } catch (GeneralSecurityException e) {
-            String errMsg = "Failed to extract public key from certificate: " + e.getMessage();
-            throw new IOException(errMsg, e);
-        } catch (Exception e) {
-            String errMsg = "Failed to create certificate info: " + e.getMessage();
-            throw new IOException(errMsg, e);
+            return certInfo
+        } catch (e: GeneralSecurityException) {
+            val errMsg = "Failed to extract public key from certificate: " + e.getMessage()
+            throw IOException(errMsg, e)
+        } catch (e: Exception) {
+            val errMsg = "Failed to create certificate info: " + e.getMessage()
+            throw IOException(errMsg, e)
         }
     }
 
     /**
      * 读取HTTP响应体
      */
-    public static String readResponseBody(HttpURLConnection connection) throws IOException {
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                response.append(line);
+    @Throws(IOException::class)
+    fun readResponseBody(connection: HttpURLConnection): String {
+        BufferedReader(
+            InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)
+        ).use { br ->
+            val response = StringBuilder()
+            var line: String?
+            while ((br.readLine().also { line = it }) != null) {
+                response.append(line)
             }
-            return response.toString();
+            return response.toString()
         }
     }
 
     /**
      * 读取HTTP错误响应体
      */
-    public static String readErrorResponse(HttpURLConnection connection) throws IOException {
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(connection.getErrorStream(), StandardCharsets.UTF_8))) {
-            StringBuilder errorResponse = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                errorResponse.append(line);
+    @Throws(IOException::class)
+    fun readErrorResponse(connection: HttpURLConnection): String {
+        BufferedReader(
+            InputStreamReader(connection.getErrorStream(), StandardCharsets.UTF_8)
+        ).use { br ->
+            val errorResponse = StringBuilder()
+            var line: String?
+            while ((br.readLine().also { line = it }) != null) {
+                errorResponse.append(line)
             }
-            return errorResponse.toString();
+            return errorResponse.toString()
+        }
+    }
+
+    /**
+     * 服务端证书信息类
+     */
+    class ServerCertificateInfo(publicKey: PublicKey?, ringId: String?, keyId: String?) {
+        private val publicKey: PublicKey?
+        val ringId: String?
+        val keyId: String?
+
+        init {
+            this.publicKey = publicKey
+            this.ringId = ringId
+            this.keyId = keyId
+        }
+
+        fun getPublicKey(): PublicKey? {
+            return publicKey
         }
     }
 }

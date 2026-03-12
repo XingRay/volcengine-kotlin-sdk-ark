@@ -1,63 +1,56 @@
-package com.volcengine.ark.runtime.model.responses.usage;
+package com.volcengine.ark.runtime.model.responses.usage
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IncompleteDetails {
+class IncompleteDetails {
     @JsonProperty("reason")
-    private String reason;
+    var reason: String? = null
 
     @JsonProperty("content_filter")
-    private ContentFilter contentFilter;
+    private var contentFilter: ContentFilter? = null
 
-    public String getReason() {
-        return reason;
+    fun getContentFilter(): ContentFilter? {
+        return contentFilter
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    public ContentFilter getContentFilter() {
-        return contentFilter;
-    }
-
-    public void setContentFilter(ContentFilter contentFilter) {
-        this.contentFilter = contentFilter;
+    fun setContentFilter(contentFilter: ContentFilter?) {
+        this.contentFilter = contentFilter
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "IncompleteDetails{" +
                 "reason='" + reason + '\'' +
                 ", contentFilter=" + contentFilter +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var reason: String? = null
+        private var contentFilter: ContentFilter? = null
+
+        fun reason(reason: String?): Builder {
+            this.reason = reason
+            return this
+        }
+
+        fun contentFilter(contentFilter: ContentFilter?): Builder {
+            this.contentFilter = contentFilter
+            return this
+        }
+
+        fun build(): IncompleteDetails {
+            val incompleteDetails: IncompleteDetails = com.volcengine.ark.runtime.model.responses.usage.IncompleteDetails()
+            incompleteDetails.reason = reason
+            incompleteDetails.setContentFilter(contentFilter)
+            return incompleteDetails
+        }
     }
 
-    public static class Builder {
-        private String reason;
-        private ContentFilter contentFilter;
-
-        public Builder reason(String reason) {
-            this.reason = reason;
-            return this;
-        }
-
-        public Builder contentFilter(ContentFilter contentFilter) {
-            this.contentFilter = contentFilter;
-            return this;
-        }
-
-        public IncompleteDetails build() {
-            IncompleteDetails incompleteDetails = new IncompleteDetails();
-            incompleteDetails.setReason(reason);
-            incompleteDetails.setContentFilter(contentFilter);
-            return incompleteDetails;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.usage.IncompleteDetails.Builder()
         }
     }
 }

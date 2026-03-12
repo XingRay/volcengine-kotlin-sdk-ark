@@ -1,120 +1,48 @@
-package com.volcengine.ark.runtime.model.responses.tool.websearch;
+package com.volcengine.ark.runtime.model.responses.tool.websearch
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class Annotation {
+class Annotation {
     @JsonProperty("type")
-    private String type;
+    var type: String? = null
 
     @JsonProperty("title")
-    private String title;
+    var title: String? = null
 
     @JsonProperty("url")
-    private String url;
+    var url: String? = null
 
     @JsonProperty("logo_url")
-    private String logoUrl;
+    var logoUrl: String? = null
 
     @JsonProperty("mobile_url")
-    private String mobileUrl;
+    var mobileUrl: String? = null
 
     @JsonProperty("site_name")
-    private String siteName;
+    var siteName: String? = null
 
     @JsonProperty("publish_time")
-    private String publishTime;
+    var publishTime: String? = null
 
     @JsonProperty("cover_image")
-    private CoverImage coverImage;
+    private var coverImage: CoverImage? = null
 
     @JsonProperty("summary")
-    private String summary;
+    var summary: String? = null
 
     @JsonProperty("freshness_info")
-    private String freshnessInfo;
+    var freshnessInfo: String? = null
 
-    public String getType() {
-        return type;
+    fun getCoverImage(): CoverImage? {
+        return coverImage
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getLogoUrl() {
-        return logoUrl;
-    }
-
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
-    }
-
-    public String getMobileUrl() {
-        return mobileUrl;
-    }
-
-    public void setMobileUrl(String mobileUrl) {
-        this.mobileUrl = mobileUrl;
-    }
-
-    public String getSiteName() {
-        return siteName;
-    }
-
-    public void setSiteName(String siteName) {
-        this.siteName = siteName;
-    }
-
-    public String getPublishTime() {
-        return publishTime;
-    }
-
-    public void setPublishTime(String publishTime) {
-        this.publishTime = publishTime;
-    }
-
-    public CoverImage getCoverImage() {
-        return coverImage;
-    }
-
-    public void setCoverImage(CoverImage coverImage) {
-        this.coverImage = coverImage;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getFreshnessInfo() {
-        return freshnessInfo;
-    }
-
-    public void setFreshnessInfo(String freshnessInfo) {
-        this.freshnessInfo = freshnessInfo;
+    fun setCoverImage(coverImage: CoverImage?) {
+        this.coverImage = coverImage
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "Annotation{" +
                 "type='" + type + '\'' +
                 ", title='" + title + '\'' +
@@ -126,88 +54,90 @@ public class Annotation {
                 ", coverImage=" + coverImage +
                 ", summary='" + summary + '\'' +
                 ", freshnessInfo='" + freshnessInfo + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var type: String? = null
+        private var title: String? = null
+        private var url: String? = null
+        private var logoUrl: String? = null
+        private var mobileUrl: String? = null
+        private var siteName: String? = null
+        private var publishTime: String? = null
+        private var coverImage: CoverImage? = null
+        private var summary: String? = null
+        private var freshnessInfo: String? = null
+
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
+        }
+
+        fun title(title: String?): Builder {
+            this.title = title
+            return this
+        }
+
+        fun url(url: String?): Builder {
+            this.url = url
+            return this
+        }
+
+        fun logoUrl(logoUrl: String?): Builder {
+            this.logoUrl = logoUrl
+            return this
+        }
+
+        fun mobileUrl(mobileUrl: String?): Builder {
+            this.mobileUrl = mobileUrl
+            return this
+        }
+
+        fun siteName(siteName: String?): Builder {
+            this.siteName = siteName
+            return this
+        }
+
+        fun publishTime(publishTime: String?): Builder {
+            this.publishTime = publishTime
+            return this
+        }
+
+        fun coverImage(coverImage: CoverImage?): Builder {
+            this.coverImage = coverImage
+            return this
+        }
+
+        fun summary(summary: String?): Builder {
+            this.summary = summary
+            return this
+        }
+
+        fun freshnessInfo(freshnessInfo: String?): Builder {
+            this.freshnessInfo = freshnessInfo
+            return this
+        }
+
+        fun build(): Annotation {
+            val annotation: Annotation = com.volcengine.ark.runtime.model.responses.tool.websearch.Annotation()
+            annotation.type = type
+            annotation.title = title
+            annotation.url = url
+            annotation.logoUrl = logoUrl
+            annotation.mobileUrl = mobileUrl
+            annotation.siteName = siteName
+            annotation.publishTime = publishTime
+            annotation.setCoverImage(coverImage)
+            annotation.summary = summary
+            annotation.freshnessInfo = freshnessInfo
+            return annotation
+        }
     }
 
-    public static class Builder {
-        private String type;
-        private String title;
-        private String url;
-        private String logoUrl;
-        private String mobileUrl;
-        private String siteName;
-        private String publishTime;
-        private CoverImage coverImage;
-        private String summary;
-        private String freshnessInfo;
-
-        public Builder type(String type) {
-            this.type = type;
-            return this;
-        }
-
-        public Builder title(String title) {
-            this.title = title;
-            return this;
-        }
-
-        public Builder url(String url) {
-            this.url = url;
-            return this;
-        }
-
-        public Builder logoUrl(String logoUrl) {
-            this.logoUrl = logoUrl;
-            return this;
-        }
-
-        public Builder mobileUrl(String mobileUrl) {
-            this.mobileUrl = mobileUrl;
-            return this;
-        }
-
-        public Builder siteName(String siteName) {
-            this.siteName = siteName;
-            return this;
-        }
-
-        public Builder publishTime(String publishTime) {
-            this.publishTime = publishTime;
-            return this;
-        }
-
-        public Builder coverImage(CoverImage coverImage) {
-            this.coverImage = coverImage;
-            return this;
-        }
-
-        public Builder summary(String summary) {
-            this.summary = summary;
-            return this;
-        }
-
-        public Builder freshnessInfo(String freshnessInfo) {
-            this.freshnessInfo = freshnessInfo;
-            return this;
-        }
-
-        public Annotation build() {
-            Annotation annotation = new Annotation();
-            annotation.setType(type);
-            annotation.setTitle(title);
-            annotation.setUrl(url);
-            annotation.setLogoUrl(logoUrl);
-            annotation.setMobileUrl(mobileUrl);
-            annotation.setSiteName(siteName);
-            annotation.setPublishTime(publishTime);
-            annotation.setCoverImage(coverImage);
-            annotation.setSummary(summary);
-            annotation.setFreshnessInfo(freshnessInfo);
-            return annotation;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.websearch.Annotation.Builder()
         }
     }
 }

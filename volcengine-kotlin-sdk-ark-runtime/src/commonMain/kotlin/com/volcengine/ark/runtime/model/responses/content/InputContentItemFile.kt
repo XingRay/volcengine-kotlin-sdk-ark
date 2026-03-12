@@ -1,108 +1,69 @@
-package com.volcengine.ark.runtime.model.responses.content;
+package com.volcengine.ark.runtime.model.responses.content
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class InputContentItemFile extends InputContentItem{
-
-    public InputContentItemFile() {
-        super(ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_FILE);
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFileData() {
-        return fileData;
-    }
-
-    public void setFileData(String fileData) {
-        this.fileData = fileData;
-    }
-
-    public String getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
-    }
-
-    public String getFileUrl() {
-        return fileUrl;
-    }
-
-    public void setFileUrl(String fileUrl) {
-        this.fileUrl = fileUrl;
-    }
-
+class InputContentItemFile : InputContentItem(ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_FILE) {
     @JsonProperty("file_url")
-    private String fileUrl;
+    var fileUrl: String? = null
 
     @JsonProperty("file_id")
-    private String fileId;
+    var fileId: String? = null
 
     @JsonProperty("file_data")
-    private String fileData;
+    var fileData: String? = null
 
     @JsonProperty("filename")
-    private String fileName;
+    var fileName: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "InputContentItemFile{" +
                 "fileUrl='" + fileUrl + '\'' +
                 ", fileId='" + fileId + '\'' +
                 ", fileData='" + fileData + '\'' +
                 ", fileName='" + fileName + '\'' +
-                '}';
+                '}'
     }
 
-    public static final class InputContentItemFileBuilder {
-        private String fileUrl;
-        private String fileId;
-        private String fileData;
-        private String fileName;
+    class InputContentItemFileBuilder private constructor() {
+        private var fileUrl: String? = null
+        private var fileId: String? = null
+        private var fileData: String? = null
+        private var fileName: String? = null
 
-        private InputContentItemFileBuilder() {
+        fun fileUrl(fileUrl: String?): InputContentItemFileBuilder {
+            this.fileUrl = fileUrl
+            return this
         }
 
-        public static InputContentItemFileBuilder anInputContentItemFile() {
-            return new InputContentItemFileBuilder();
+        fun fileId(fileId: String?): InputContentItemFileBuilder {
+            this.fileId = fileId
+            return this
         }
 
-        public InputContentItemFileBuilder fileUrl(String fileUrl) {
-            this.fileUrl = fileUrl;
-            return this;
+        fun fileData(fileData: String?): InputContentItemFileBuilder {
+            this.fileData = fileData
+            return this
         }
 
-        public InputContentItemFileBuilder fileId(String fileId) {
-            this.fileId = fileId;
-            return this;
+        fun fileName(fileName: String?): InputContentItemFileBuilder {
+            this.fileName = fileName
+            return this
         }
 
-        public InputContentItemFileBuilder fileData(String fileData) {
-            this.fileData = fileData;
-            return this;
+        fun build(): InputContentItemFile {
+            val inputContentItemFile: InputContentItemFile = com.volcengine.ark.runtime.model.responses.content.InputContentItemFile()
+            inputContentItemFile.fileUrl = fileUrl
+            inputContentItemFile.fileId = fileId
+            inputContentItemFile.fileData = fileData
+            inputContentItemFile.fileName = fileName
+            return inputContentItemFile
         }
 
-        public InputContentItemFileBuilder fileName(String fileName) {
-            this.fileName = fileName;
-            return this;
-        }
-
-        public InputContentItemFile build() {
-            InputContentItemFile inputContentItemFile = new InputContentItemFile();
-            inputContentItemFile.setFileUrl(fileUrl);
-            inputContentItemFile.setFileId(fileId);
-            inputContentItemFile.setFileData(fileData);
-            inputContentItemFile.setFileName(fileName);
-            return inputContentItemFile;
+        companion object {
+            fun anInputContentItemFile(): InputContentItemFileBuilder {
+                return com.volcengine.ark.runtime.model.responses.content.InputContentItemFile.InputContentItemFileBuilder()
+            }
         }
     }
 }

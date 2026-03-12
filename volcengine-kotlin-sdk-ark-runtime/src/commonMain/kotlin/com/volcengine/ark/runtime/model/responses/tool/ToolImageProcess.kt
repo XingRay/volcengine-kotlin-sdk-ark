@@ -1,110 +1,102 @@
-package com.volcengine.ark.runtime.model.responses.tool;
+package com.volcengine.ark.runtime.model.responses.tool
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessGroundingOptions;
-import com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessPointOptions;
-import com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessRotateOptions;
-import com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessZoomOptions;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ToolImageProcess extends ResponsesTool {
-
+class ToolImageProcess : ResponsesTool(ResponsesConstants.TOOL_TYPE_IMAGE_PROCESS) {
     @JsonProperty("point")
-    private ImageProcessPointOptions point;
+    private var point: ImageProcessPointOptions? = null
 
     @JsonProperty("grounding")
-    private ImageProcessGroundingOptions grounding;
+    private var grounding: ImageProcessGroundingOptions? = null
 
     @JsonProperty("zoom")
-    private ImageProcessZoomOptions zoom;
+    private var zoom: ImageProcessZoomOptions? = null
 
     @JsonProperty("rotate")
-    private ImageProcessRotateOptions rotate;
+    private var rotate: ImageProcessRotateOptions? = null
 
-    public ToolImageProcess() {
-        super(ResponsesConstants.TOOL_TYPE_IMAGE_PROCESS);
+    fun getPoint(): ImageProcessPointOptions? {
+        return point
     }
 
-    public ImageProcessPointOptions getPoint() {
-        return point;
+    fun setPoint(point: ImageProcessPointOptions?) {
+        this.point = point
     }
 
-    public void setPoint(ImageProcessPointOptions point) {
-        this.point = point;
+    fun getGrounding(): ImageProcessGroundingOptions? {
+        return grounding
     }
 
-    public ImageProcessGroundingOptions getGrounding() {
-        return grounding;
+    fun setGrounding(grounding: ImageProcessGroundingOptions?) {
+        this.grounding = grounding
     }
 
-    public void setGrounding(ImageProcessGroundingOptions grounding) {
-        this.grounding = grounding;
+    fun getZoom(): ImageProcessZoomOptions? {
+        return zoom
     }
 
-    public ImageProcessZoomOptions getZoom() {
-        return zoom;
+    fun setZoom(zoom: ImageProcessZoomOptions?) {
+        this.zoom = zoom
     }
 
-    public void setZoom(ImageProcessZoomOptions zoom) {
-        this.zoom = zoom;
+    fun getRotate(): ImageProcessRotateOptions? {
+        return rotate
     }
 
-    public ImageProcessRotateOptions getRotate() {
-        return rotate;
-    }
-
-    public void setRotate(ImageProcessRotateOptions rotate) {
-        this.rotate = rotate;
+    fun setRotate(rotate: ImageProcessRotateOptions?) {
+        this.rotate = rotate
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ToolImageProcess{" +
                 "type='" + getType() + '\'' +
                 ", point=" + point +
                 ", grounding=" + grounding +
                 ", zoom=" + zoom +
                 ", rotate=" + rotate +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var point: ImageProcessPointOptions? = null
+        private var grounding: ImageProcessGroundingOptions? = null
+        private var zoom: ImageProcessZoomOptions? = null
+        private var rotate: ImageProcessRotateOptions? = null
+
+        fun point(point: ImageProcessPointOptions?): Builder {
+            this.point = point
+            return this
+        }
+
+        fun grounding(grounding: ImageProcessGroundingOptions?): Builder {
+            this.grounding = grounding
+            return this
+        }
+
+        fun zoom(zoom: ImageProcessZoomOptions?): Builder {
+            this.zoom = zoom
+            return this
+        }
+
+        fun rotate(rotate: ImageProcessRotateOptions?): Builder {
+            this.rotate = rotate
+            return this
+        }
+
+        fun build(): ToolImageProcess {
+            val toolImageProcess: ToolImageProcess = com.volcengine.ark.runtime.model.responses.tool.ToolImageProcess()
+            toolImageProcess.setPoint(point)
+            toolImageProcess.setGrounding(grounding)
+            toolImageProcess.setZoom(zoom)
+            toolImageProcess.setRotate(rotate)
+            return toolImageProcess
+        }
     }
 
-    public static class Builder {
-        private ImageProcessPointOptions point;
-        private ImageProcessGroundingOptions grounding;
-        private ImageProcessZoomOptions zoom;
-        private ImageProcessRotateOptions rotate;
-
-        public Builder point(ImageProcessPointOptions point) {
-            this.point = point;
-            return this;
-        }
-
-        public Builder grounding(ImageProcessGroundingOptions grounding) {
-            this.grounding = grounding;
-            return this;
-        }
-
-        public Builder zoom(ImageProcessZoomOptions zoom) {
-            this.zoom = zoom;
-            return this;
-        }
-
-        public Builder rotate(ImageProcessRotateOptions rotate) {
-            this.rotate = rotate;
-            return this;
-        }
-
-        public ToolImageProcess build() {
-            ToolImageProcess toolImageProcess = new ToolImageProcess();
-            toolImageProcess.setPoint(point);
-            toolImageProcess.setGrounding(grounding);
-            toolImageProcess.setZoom(zoom);
-            toolImageProcess.setRotate(rotate);
-            return toolImageProcess;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.ToolImageProcess.Builder()
         }
     }
 }

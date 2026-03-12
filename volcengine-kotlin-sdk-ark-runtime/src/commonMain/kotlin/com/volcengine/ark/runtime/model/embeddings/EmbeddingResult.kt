@@ -1,101 +1,68 @@
-package com.volcengine.ark.runtime.model.embeddings;
+package com.volcengine.ark.runtime.model.embeddings
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.volcengine.ark.runtime.model.Usage;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EmbeddingResult {
-
+class EmbeddingResult {
     /**
      * Unique id assigned to this embedding
      */
-    String id;
+    var id: String? = null
 
     /**
      * The creation time in epoch seconds.
      */
-    String created;
+    var created: String? = null
 
     /**
      * The model used for generating embeddings
      */
-    String model;
+    var model: String? = null
 
     /**
      * The type of object returned, should be "list"
      */
-    String object;
+    var `object`: String? = null
+        set(object) {
+            field = this.`object`
+        }
 
     /**
      * A list of the calculated embeddings
      */
-    List<Embedding> data;
+    var data: List<Embedding?>? = null
 
     /**
      * The API usage for this request
      */
-    Usage usage;
+    var usage: Usage? = null
 
-    public String getModel() {
-        return model;
+    fun getData(): List<Embedding?>? {
+        return data
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    fun setData(data: List<Embedding?>?) {
+        this.data = data
     }
 
-    public String getObject() {
-        return object;
+    fun getUsage(): Usage? {
+        return usage
     }
 
-    public void setObject(String object) {
-        this.object = object;
-    }
-
-    public List<Embedding> getData() {
-        return data;
-    }
-
-    public void setData(List<Embedding> data) {
-        this.data = data;
-    }
-
-    public Usage getUsage() {
-        return usage;
-    }
-
-    public void setUsage(Usage usage) {
-        this.usage = usage;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getCreated() {
-        return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
+    fun setUsage(usage: Usage?) {
+        this.usage = usage
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "EmbeddingResult{" +
                 "id='" + id + '\'' +
                 ", created='" + created + '\'' +
                 ", model='" + model + '\'' +
-                ", object='" + object + '\'' +
+                ", object='" + this.`object` + '\'' +
                 ", data=" + data +
                 ", usage=" + usage +
-                '}';
+                '}'
     }
 }

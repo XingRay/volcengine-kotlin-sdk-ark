@@ -1,39 +1,16 @@
-package com.volcengine.ark.runtime.model.responses.event.doubaoapp;
+package com.volcengine.ark.runtime.model.responses.event.doubaoapp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class DoubaoAppCallOutputTextDoneEvent extends ItemEvent {
-
+class DoubaoAppCallOutputTextDoneEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_OUTPUT_TEXT_DONE) {
     @JsonProperty("block_index")
-    private Long blockIndex;
+    var blockIndex: Long? = null
 
     @JsonProperty("text")
-    private String text;
-
-    public DoubaoAppCallOutputTextDoneEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_OUTPUT_TEXT_DONE);
-    }
-
-    public Long getBlockIndex() {
-        return blockIndex;
-    }
-
-    public void setBlockIndex(Long blockIndex) {
-        this.blockIndex = blockIndex;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
+    var text: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DoubaoAppCallOutputTextDoneEvent{" +
                 "type='" + getType() + '\'' +
                 ", blockIndex=" + blockIndex +
@@ -41,29 +18,30 @@ public class DoubaoAppCallOutputTextDoneEvent extends ItemEvent {
                 ", itemId='" + getItemId() + '\'' +
                 ", outputIndex=" + getOutputIndex() +
                 ", sequenceNumber=" + getSequenceNumber() +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private val event: DoubaoAppCallOutputTextDoneEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallOutputTextDoneEvent()
+
+        fun blockIndex(blockIndex: Long?): Builder {
+            event.blockIndex = blockIndex
+            return this
+        }
+
+        fun text(text: String?): Builder {
+            event.text = text
+            return this
+        }
+
+        fun build(): DoubaoAppCallOutputTextDoneEvent {
+            return event
+        }
     }
 
-    public static class Builder {
-
-        private DoubaoAppCallOutputTextDoneEvent event = new DoubaoAppCallOutputTextDoneEvent();
-
-        public Builder blockIndex(Long blockIndex) {
-            event.setBlockIndex(blockIndex);
-            return this;
-        }
-
-        public Builder text(String text) {
-            event.setText(text);
-            return this;
-        }
-
-        public DoubaoAppCallOutputTextDoneEvent build() {
-            return event;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallOutputTextDoneEvent.Builder()
         }
     }
 }

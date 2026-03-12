@@ -1,46 +1,37 @@
-package com.volcengine.ark.runtime.model.bot.completion.chat.reference;
+package com.volcengine.ark.runtime.model.bot.completion.chat.reference
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BotCoverImage {
+class BotCoverImage {
+    var url: String? = null
 
-    private String url;
+    private var width: Integer? = null
 
-    private Integer width;
+    private var height: Integer? = null
 
-    private Integer height;
-
-    public String getUrl() {
-        return url;
+    fun getWidth(): Integer? {
+        return width
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    fun setWidth(width: Integer?) {
+        this.width = width
     }
 
-    public Integer getWidth() {
-        return width;
+    fun getHeight(): Integer? {
+        return height
     }
 
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
+    fun setHeight(height: Integer?) {
+        this.height = height
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "BotCoverImage{" +
                 "url='" + url + '\'' +
                 ", width=" + width +
                 ", height=" + height +
-                '}';
+                '}'
     }
 }

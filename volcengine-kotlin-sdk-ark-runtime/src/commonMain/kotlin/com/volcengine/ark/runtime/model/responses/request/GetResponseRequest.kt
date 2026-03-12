@@ -1,42 +1,36 @@
-package com.volcengine.ark.runtime.model.responses.request;
+package com.volcengine.ark.runtime.model.responses.request
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class GetResponseRequest {
+class GetResponseRequest {
     @JsonProperty("response_id")
-    private String responseId;
-
-    public String getResponseId() {
-        return responseId;
-    }
-
-    public void setResponseId(String responseId) {
-        this.responseId = responseId;
-    }
+    var responseId: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "GetResponseRequest{" +
                 "responseId='" + responseId + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    class Builder {
+        private var responseId: String? = null
 
-    public static class Builder {
-        private String responseId;
-
-        public Builder responseId(String responseId) {
-            this.responseId = responseId;
-            return this;
+        fun responseId(responseId: String?): Builder {
+            this.responseId = responseId
+            return this
         }
 
-        public GetResponseRequest build() {
-            GetResponseRequest getResponseRequest = new GetResponseRequest();
-            getResponseRequest.setResponseId(responseId);
-            return getResponseRequest;
+        fun build(): GetResponseRequest {
+            val getResponseRequest: GetResponseRequest = com.volcengine.ark.runtime.model.responses.request.GetResponseRequest()
+            getResponseRequest.responseId = responseId
+            return getResponseRequest
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.request.GetResponseRequest.Builder()
         }
     }
 }

@@ -1,80 +1,53 @@
-package com.volcengine.ark.runtime.model.context;
+package com.volcengine.ark.runtime.model.context
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.Usage;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CreateContextResult {
-
+class CreateContextResult {
     @JsonProperty("id")
-    private String id;
+    var id: String? = null
 
     @JsonProperty("model")
-    private String model;
+    var model: String? = null
 
     @JsonProperty("mode")
-    private String mode;
+    var mode: String? = null
 
     @JsonProperty("ttl")
-    private Integer ttl;
+    private var ttl: Integer? = null
 
     @JsonProperty("truncation_strategy")
-    private TruncationStrategy truncationStrategy;
+    private var truncationStrategy: TruncationStrategy? = null
 
     @JsonProperty("usage")
-    private Usage usage;
+    private var usage: Usage? = null
 
-    public String getId() {
-        return id;
+    fun getTtl(): Integer? {
+        return ttl
     }
 
-    public void setId(String id) {
-        this.id = id;
+    fun setTtl(ttl: Integer?) {
+        this.ttl = ttl
     }
 
-    public String getModel() {
-        return model;
+    fun getTruncationStrategy(): TruncationStrategy? {
+        return truncationStrategy
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    fun setTruncationStrategy(truncationStrategy: TruncationStrategy?) {
+        this.truncationStrategy = truncationStrategy
     }
 
-    public String getMode() {
-        return mode;
+    fun getUsage(): Usage? {
+        return usage
     }
 
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
-
-    public Integer getTtl() {
-        return ttl;
-    }
-
-    public void setTtl(Integer ttl) {
-        this.ttl = ttl;
-    }
-
-    public TruncationStrategy getTruncationStrategy() {
-        return truncationStrategy;
-    }
-
-    public void setTruncationStrategy(TruncationStrategy truncationStrategy) {
-        this.truncationStrategy = truncationStrategy;
-    }
-
-    public Usage getUsage() {
-        return usage;
-    }
-
-    public void setUsage(Usage usage) {
-        this.usage = usage;
+    fun setUsage(usage: Usage?) {
+        this.usage = usage
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "CreateContextResult{" +
                 "id='" + id + '\'' +
                 ", model='" + model + '\'' +
@@ -82,6 +55,6 @@ public class CreateContextResult {
                 ", ttl=" + ttl +
                 ", truncationStrategy=" + truncationStrategy +
                 ", usage=" + usage +
-                '}';
+                '}'
     }
 }

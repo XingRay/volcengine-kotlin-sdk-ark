@@ -1,33 +1,18 @@
-package com.volcengine.ark.runtime.model.responses.event.mcp;
+package com.volcengine.ark.runtime.model.responses.event.mcp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.OutputEvent;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class MCPListToolCompletedEvent extends OutputEvent {
-
+class MCPListToolCompletedEvent : OutputEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_MCP_LIST_TOOLS_COMPLETED) {
     @JsonProperty("item_id")
-    private String itemId;
-
-    public String getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
-    }
-
-    public MCPListToolCompletedEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_MCP_LIST_TOOLS_COMPLETED);
-    }
+    var itemId: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "MCPListToolCompletedEvent{" +
                 "itemId='" + itemId + '\'' +
                 ", outputIndex=" + outputIndex +
                 ", type='" + type + '\'' +
                 ", sequenceNumber=" + sequenceNumber +
-                '}';
+                '}'
     }
 }

@@ -1,147 +1,95 @@
-package com.volcengine.ark.runtime.model.content.generation;
+package com.volcengine.ark.runtime.model.content.generation
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ListContentGenerationTasksRequest {
-
+class ListContentGenerationTasksRequest {
     @JsonProperty("page_num")
-    private java.lang.Integer pageNum;
+    var pageNum: Int? = null
 
     @JsonProperty("page_size")
-    private java.lang.Integer pageSize;
+    var pageSize: Int? = null
 
-    private String status;
-    private String model;
-    private List<String> taskIds;
-    private String serviceTier;
+    var status: String? = null
+    var model: String? = null
+    var taskIds: List<String?>? = null
+    var serviceTier: String? = null
 
-    public ListContentGenerationTasksRequest() {
-    }
+    constructor()
 
-    public ListContentGenerationTasksRequest(java.lang.Integer pageNum, java.lang.Integer pageSize, String status, String model, List<String> taskIds) {
-        this.pageNum = pageNum;
-        this.pageSize = pageSize;
-        this.status = status;
-        this.model = model;
-        this.taskIds = taskIds;
-    }
-
-    public java.lang.Integer getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(java.lang.Integer pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public java.lang.Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(java.lang.Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public List<String> getTaskIds() {
-        return taskIds;
-    }
-
-    public void setTaskIds(List<String> taskIds) {
-        this.taskIds = taskIds;
-    }
-
-    public String getServiceTier() {
-        return serviceTier;
-    }
-
-    public void setServiceTier(String serviceTier) {
-        this.serviceTier = serviceTier;
+    constructor(pageNum: Int?, pageSize: Int?, status: String?, model: String?, taskIds: List<String?>?) {
+        this.pageNum = pageNum
+        this.pageSize = pageSize
+        this.status = status
+        this.model = model
+        this.taskIds = taskIds
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ListContentGenerationTasksRequest{" +
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
                 ", status='" + status + '\'' +
                 ", model='" + model + '\'' +
                 ", taskIds=" + taskIds +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var pageNum: Int? = null
+        private var pageSize: Int? = null
+        private var status: String? = null
+        private var model: String? = null
+        private val taskIds: List<String?> = ArrayList()
+        private var serviceTier: String? = null
+
+        fun pageNum(pageNum: Int?): Builder {
+            this.pageNum = pageNum
+            return this
+        }
+
+        fun pageSize(pageSize: Int?): Builder {
+            this.pageSize = pageSize
+            return this
+        }
+
+        fun status(status: String): Builder {
+            this.status = status.toString()
+            return this
+        }
+
+        fun model(model: String?): Builder {
+            this.model = model
+            return this
+        }
+
+        fun serviceTier(serviceTier: String?): Builder {
+            this.serviceTier = serviceTier
+            return this
+        }
+
+        fun taskIds(taskIds: List<String?>?): Builder {
+            this.taskIds.clear()
+            this.taskIds.addAll(taskIds)
+            return this
+        }
+
+        fun addTaskId(taskId: String?): Builder {
+            this.taskIds.add(taskId)
+            return this
+        }
+
+        fun build(): ListContentGenerationTasksRequest {
+            val req: ListContentGenerationTasksRequest = com.volcengine.ark.runtime.model.content.generation.ListContentGenerationTasksRequest(pageNum, pageSize, status, model, taskIds)
+            req.serviceTier = serviceTier
+            return req
+        }
     }
 
-    public static class Builder {
-        private java.lang.Integer pageNum;
-        private java.lang.Integer pageSize;
-        private String status;
-        private String model;
-        private final List<String> taskIds = new ArrayList<>();
-        private String serviceTier;
-
-        public Builder pageNum(java.lang.Integer pageNum) {
-            this.pageNum = pageNum;
-            return this;
-        }
-
-        public Builder pageSize(java.lang.Integer pageSize) {
-            this.pageSize = pageSize;
-            return this;
-        }
-
-        public Builder status(String status) {
-            this.status = status.toString();
-            return this;
-        }
-
-        public Builder model(String model) {
-            this.model = model;
-            return this;
-        }
-
-        public Builder serviceTier(String serviceTier) {
-            this.serviceTier = serviceTier;
-            return this;
-        }
-
-        public Builder taskIds(List<String> taskIds) {
-            this.taskIds.clear();
-            this.taskIds.addAll(taskIds);
-            return this;
-        }
-
-        public Builder addTaskId(String taskId) {
-            this.taskIds.add(taskId);
-            return this;
-        }
-
-        public ListContentGenerationTasksRequest build() {
-            ListContentGenerationTasksRequest req = new ListContentGenerationTasksRequest(pageNum, pageSize, status, model, taskIds);
-            req.setServiceTier(serviceTier);
-            return req;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.content.generation.ListContentGenerationTasksRequest.Builder()
         }
     }
 }

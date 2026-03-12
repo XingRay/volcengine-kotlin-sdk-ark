@@ -1,109 +1,100 @@
-package com.volcengine.ark.runtime.model.files;
+package com.volcengine.ark.runtime.model.files
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.io.File;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UploadFileRequest {
-
+class UploadFileRequest {
     @JsonProperty(value = "file")
-    private File file;
+    private var file: File? = null
+
     @JsonProperty(value = "purpose")
-    private String purpose;
+    var purpose: String? = null
+
     @JsonProperty(value = "expire_at")
-    private Integer expireAt;
+    private var expireAt: Integer? = null
 
     @JsonProperty(value = "preprocess_configs")
-    private PreprocessConfigs preprocessConfigs;
+    private var preprocessConfigs: PreprocessConfigs? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "UploadFileRequest{" +
                 "file=" + file +
                 ", purpose='" + purpose + '\'' +
                 ", expireAt=" + expireAt +
                 ", preprocessConfigs=" + preprocessConfigs +
-                '}';
+                '}'
     }
 
-    public File getFile() {
-        return file;
+    fun getFile(): File? {
+        return file
     }
 
-    public void setFile(File file) {
-        this.file = file;
+    fun setFile(file: File?) {
+        this.file = file
     }
 
-    public String getPurpose() {
-        return purpose;
+    fun getExpireAt(): Integer? {
+        return expireAt
     }
 
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
+    fun setExpireAt(expireAt: Integer?) {
+        this.expireAt = expireAt
     }
 
-    public Integer getExpireAt() {
-        return expireAt;
+    fun getPreprocessConfigs(): PreprocessConfigs? {
+        return preprocessConfigs
     }
 
-    public void setExpireAt(Integer expireAt) {
-        this.expireAt = expireAt;
+    fun setPreprocessConfigs(preprocessConfigs: PreprocessConfigs?) {
+        this.preprocessConfigs = preprocessConfigs
     }
 
-    public PreprocessConfigs getPreprocessConfigs() {
-        return preprocessConfigs;
-    }
+    class UploadFileRequestBuilder private constructor() {
+        private var file: File? = null
+        private var purpose: String? = null
+        private var expireAt: Integer? = null
+        private var preprocessConfigs: PreprocessConfigs? = null
 
-    public void setPreprocessConfigs(PreprocessConfigs preprocessConfigs) {
-        this.preprocessConfigs = preprocessConfigs;
-    }
-
-    public static UploadFileRequestBuilder builder() {
-        return new UploadFileRequestBuilder();
-    }
-
-    public static final class UploadFileRequestBuilder {
-        private File file;
-        private String purpose;
-        private Integer expireAt;
-        private PreprocessConfigs preprocessConfigs;
-
-        private UploadFileRequestBuilder() {
+        fun file(file: File?): UploadFileRequestBuilder {
+            this.file = file
+            return this
         }
 
-        public static UploadFileRequestBuilder anUploadFileRequest() {
-            return new UploadFileRequestBuilder();
+        fun purpose(purpose: String?): UploadFileRequestBuilder {
+            this.purpose = purpose
+            return this
         }
 
-        public UploadFileRequestBuilder file(File file) {
-            this.file = file;
-            return this;
+        fun expireAt(expireAt: Integer?): UploadFileRequestBuilder {
+            this.expireAt = expireAt
+            return this
         }
 
-        public UploadFileRequestBuilder purpose(String purpose) {
-            this.purpose = purpose;
-            return this;
+        fun preprocessConfigs(preprocessConfigs: PreprocessConfigs?): UploadFileRequestBuilder {
+            this.preprocessConfigs = preprocessConfigs
+            return this
         }
 
-        public UploadFileRequestBuilder expireAt(Integer expireAt) {
-            this.expireAt = expireAt;
-            return this;
+        fun build(): UploadFileRequest {
+            val uploadFileRequest: UploadFileRequest = com.volcengine.ark.runtime.model.files.UploadFileRequest()
+            uploadFileRequest.setFile(file)
+            uploadFileRequest.purpose = purpose
+            uploadFileRequest.setExpireAt(expireAt)
+            uploadFileRequest.setPreprocessConfigs(preprocessConfigs)
+            return uploadFileRequest
         }
 
-        public UploadFileRequestBuilder preprocessConfigs(PreprocessConfigs preprocessConfigs) {
-            this.preprocessConfigs = preprocessConfigs;
-            return this;
+        companion object {
+            fun anUploadFileRequest(): UploadFileRequestBuilder {
+                return com.volcengine.ark.runtime.model.files.UploadFileRequest.UploadFileRequestBuilder()
+            }
         }
+    }
 
-        public UploadFileRequest build() {
-            UploadFileRequest uploadFileRequest = new UploadFileRequest();
-            uploadFileRequest.setFile(file);
-            uploadFileRequest.setPurpose(purpose);
-            uploadFileRequest.setExpireAt(expireAt);
-            uploadFileRequest.setPreprocessConfigs(preprocessConfigs);
-            return uploadFileRequest;
+    companion object {
+        fun builder(): UploadFileRequestBuilder {
+            return com.volcengine.ark.runtime.model.files.UploadFileRequest.UploadFileRequestBuilder()
         }
     }
 }

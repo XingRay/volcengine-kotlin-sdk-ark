@@ -1,39 +1,16 @@
-package com.volcengine.ark.runtime.model.responses.event.doubaoapp;
+package com.volcengine.ark.runtime.model.responses.event.doubaoapp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class DoubaoAppCallSearchSearchingEvent extends ItemEvent {
-
+class DoubaoAppCallSearchSearchingEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_SEARCH_SEARCHING) {
     @JsonProperty("block_index")
-    private Long blockIndex;
+    var blockIndex: Long? = null
 
     @JsonProperty("searching_state")
-    private String searchingState;
-
-    public DoubaoAppCallSearchSearchingEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_SEARCH_SEARCHING);
-    }
-
-    public Long getBlockIndex() {
-        return blockIndex;
-    }
-
-    public void setBlockIndex(Long blockIndex) {
-        this.blockIndex = blockIndex;
-    }
-
-    public String getSearchingState() {
-        return searchingState;
-    }
-
-    public void setSearchingState(String searchingState) {
-        this.searchingState = searchingState;
-    }
+    var searchingState: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DoubaoAppCallSearchSearchingEvent{" +
                 "type='" + getType() + '\'' +
                 ", blockIndex=" + blockIndex +
@@ -41,29 +18,30 @@ public class DoubaoAppCallSearchSearchingEvent extends ItemEvent {
                 ", itemId='" + getItemId() + '\'' +
                 ", outputIndex=" + getOutputIndex() +
                 ", sequenceNumber=" + getSequenceNumber() +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private val event: DoubaoAppCallSearchSearchingEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallSearchSearchingEvent()
+
+        fun blockIndex(blockIndex: Long?): Builder {
+            event.blockIndex = blockIndex
+            return this
+        }
+
+        fun searchingState(searchingState: String?): Builder {
+            event.searchingState = searchingState
+            return this
+        }
+
+        fun build(): DoubaoAppCallSearchSearchingEvent {
+            return event
+        }
     }
 
-    public static class Builder {
-
-        private DoubaoAppCallSearchSearchingEvent event = new DoubaoAppCallSearchSearchingEvent();
-
-        public Builder blockIndex(Long blockIndex) {
-            event.setBlockIndex(blockIndex);
-            return this;
-        }
-
-        public Builder searchingState(String searchingState) {
-            event.setSearchingState(searchingState);
-            return this;
-        }
-
-        public DoubaoAppCallSearchSearchingEvent build() {
-            return event;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallSearchSearchingEvent.Builder()
         }
     }
 }

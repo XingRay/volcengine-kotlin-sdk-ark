@@ -1,52 +1,30 @@
-package com.volcengine.ark.runtime.model.responses.item;
+package com.volcengine.ark.runtime.model.responses.item
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.volcengine.ark.runtime.model.responses.content.OutputContentItem;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize()
+@JsonDeserialize
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
-public class ItemOutputMessage extends BaseMessageItem implements OutputItem {
+class ItemOutputMessage : BaseMessageItem(), OutputItem {
     @JsonProperty("content")
-    private List<OutputContentItem> content;
+    private var content: List<OutputContentItem?>? = null
 
     @JsonProperty("status")
-    private String status;
+    var status: String? = null
 
     @JsonProperty("partial")
-    private Boolean partial;
+    var partial: Boolean? = null
 
-    public List<OutputContentItem> getContent() {
-        return content;
+    fun getContent(): List<OutputContentItem?>? {
+        return content
     }
 
-    public void setContent(List<OutputContentItem> content) {
-        this.content = content;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Boolean getPartial() {
-        return partial;
-    }
-
-    public void setPartial(Boolean partial) {
-        this.partial = partial;
+    fun setContent(content: List<OutputContentItem?>?) {
+        this.content = content
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ItemOutputMessage{" +
                 "type='" + getType() + '\'' +
                 ", role='" + getRole() + '\'' +
@@ -54,53 +32,55 @@ public class ItemOutputMessage extends BaseMessageItem implements OutputItem {
                 ", status='" + status + '\'' +
                 ", id='" + getId() + '\'' +
                 ", partial=" + partial +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var role: String? = null
+        private var content: List<OutputContentItem?>? = null
+        private var status: String? = null
+        private var id: String? = null
+        private var partial: Boolean? = null
+
+        fun role(role: String?): Builder {
+            this.role = role
+            return this
+        }
+
+        fun content(content: List<OutputContentItem?>?): Builder {
+            this.content = content
+            return this
+        }
+
+        fun status(status: String?): Builder {
+            this.status = status
+            return this
+        }
+
+        fun id(id: String?): Builder {
+            this.id = id
+            return this
+        }
+
+        fun partial(partial: Boolean?): Builder {
+            this.partial = partial
+            return this
+        }
+
+        fun build(): ItemOutputMessage {
+            val itemOutputMessage: ItemOutputMessage = com.volcengine.ark.runtime.model.responses.item.ItemOutputMessage()
+            itemOutputMessage.setRole(role)
+            itemOutputMessage.setContent(content)
+            itemOutputMessage.status = status
+            itemOutputMessage.setId(id)
+            itemOutputMessage.partial = partial
+            return itemOutputMessage
+        }
     }
 
-    public static class Builder {
-        private String role;
-        private List<OutputContentItem> content;
-        private String status;
-        private String id;
-        private Boolean partial;
-
-        public Builder role(String role) {
-            this.role = role;
-            return this;
-        }
-
-        public Builder content(List<OutputContentItem> content) {
-            this.content = content;
-            return this;
-        }
-
-        public Builder status(String status) {
-            this.status = status;
-            return this;
-        }
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder partial(Boolean partial) {
-            this.partial = partial;
-            return this;
-        }
-
-        public ItemOutputMessage build() {
-            ItemOutputMessage itemOutputMessage = new ItemOutputMessage();
-            itemOutputMessage.setRole(role);
-            itemOutputMessage.setContent(content);
-            itemOutputMessage.setStatus(status);
-            itemOutputMessage.setId(id);
-            itemOutputMessage.setPartial(partial);
-            return itemOutputMessage;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.ItemOutputMessage.Builder()
         }
     }
 }

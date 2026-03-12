@@ -1,74 +1,42 @@
-package com.volcengine.ark.runtime.model.responses.response;
+package com.volcengine.ark.runtime.model.responses.response
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.item.BaseItem;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.List;
-
-public class ListInputItemsResponse {
+class ListInputItemsResponse {
     @JsonProperty("object")
-    private String object;
+    var `object`: String? = null
+        set(object) {
+            field = this.`object`
+        }
 
     @JsonProperty("data")
-    private List<BaseItem> data;
+    private var data: List<BaseItem?>? = null
 
     @JsonProperty("first_id")
-    private String firstId;
+    var firstId: String? = null
 
     @JsonProperty("last_id")
-    private String lastId;
+    var lastId: String? = null
 
     @JsonProperty("has_more")
-    private Boolean hasMore;
+    var hasMore: Boolean? = null
 
-    public String getObject() {
-        return object;
+    fun getData(): List<BaseItem?>? {
+        return data
     }
 
-    public void setObject(String object) {
-        this.object = object;
-    }
-
-    public List<BaseItem> getData() {
-        return data;
-    }
-
-    public void setData(List<BaseItem> data) {
-        this.data = data;
-    }
-
-    public String getFirstId() {
-        return firstId;
-    }
-
-    public void setFirstId(String firstId) {
-        this.firstId = firstId;
-    }
-
-    public String getLastId() {
-        return lastId;
-    }
-
-    public void setLastId(String lastId) {
-        this.lastId = lastId;
-    }
-
-    public Boolean getHasMore() {
-        return hasMore;
-    }
-
-    public void setHasMore(Boolean hasMore) {
-        this.hasMore = hasMore;
+    fun setData(data: List<BaseItem?>?) {
+        this.data = data
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ListInputItemsResponse{" +
-                "object='" + object + '\'' +
+                "object='" + this.`object` + '\'' +
                 ", data=" + data +
                 ", firstId='" + firstId + '\'' +
                 ", lastId='" + lastId + '\'' +
                 ", hasMore=" + hasMore +
-                '}';
+                '}'
     }
 }

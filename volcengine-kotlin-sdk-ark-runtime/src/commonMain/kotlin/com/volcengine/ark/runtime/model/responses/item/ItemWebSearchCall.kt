@@ -1,89 +1,68 @@
-package com.volcengine.ark.runtime.model.responses.item;
+package com.volcengine.ark.runtime.model.responses.item
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.tool.websearch.Action;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemWebSearchCall extends BaseItem implements OutputItem {
+class ItemWebSearchCall : BaseItem(ResponsesConstants.ITEM_TYPE_WEB_SEARCH_CALL), OutputItem {
     @JsonProperty("action")
-    private Action action;
+    private var action: Action? = null
 
     @JsonProperty("status")
-    private String status;
+    var status: String? = null
 
     @JsonProperty("id")
-    private String id;
+    var id: String? = null
 
-    public ItemWebSearchCall() {
-        super(ResponsesConstants.ITEM_TYPE_WEB_SEARCH_CALL);
+    fun getAction(): Action? {
+        return action
     }
 
-    public Action getAction() {
-        return action;
-    }
-
-    public void setAction(Action action) {
-        this.action = action;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    fun setAction(action: Action?) {
+        this.action = action
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ItemWebSearchCall{" +
                 "type='" + getType() + '\'' +
                 ", action=" + action +
                 ", status='" + status + '\'' +
                 ", id='" + id + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var action: Action? = null
+        private var status: String? = null
+        private var id: String? = null
+
+        fun action(action: Action?): Builder {
+            this.action = action
+            return this
+        }
+
+        fun status(status: String?): Builder {
+            this.status = status
+            return this
+        }
+
+        fun id(id: String?): Builder {
+            this.id = id
+            return this
+        }
+
+        fun build(): ItemWebSearchCall {
+            val itemWebSearchCall: ItemWebSearchCall = com.volcengine.ark.runtime.model.responses.item.ItemWebSearchCall()
+            itemWebSearchCall.setAction(action)
+            itemWebSearchCall.status = status
+            itemWebSearchCall.id = id
+            return itemWebSearchCall
+        }
     }
 
-    public static class Builder {
-        private Action action;
-        private String status;
-        private String id;
-
-        public Builder action(Action action) {
-            this.action = action;
-            return this;
-        }
-
-        public Builder status(String status) {
-            this.status = status;
-            return this;
-        }
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public ItemWebSearchCall build() {
-            ItemWebSearchCall itemWebSearchCall = new ItemWebSearchCall();
-            itemWebSearchCall.setAction(action);
-            itemWebSearchCall.setStatus(status);
-            itemWebSearchCall.setId(id);
-            return itemWebSearchCall;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.ItemWebSearchCall.Builder()
         }
     }
 }

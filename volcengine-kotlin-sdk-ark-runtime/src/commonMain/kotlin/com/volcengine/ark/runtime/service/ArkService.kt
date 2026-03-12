@@ -1,584 +1,535 @@
-package com.volcengine.ark.runtime.service;
+package com.volcengine.ark.runtime.service
 
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.volcengine.ark.runtime.Const;
-import com.volcengine.ark.runtime.exception.ArkAPIError;
-import com.volcengine.ark.runtime.exception.ArkException;
-import com.volcengine.ark.runtime.exception.ArkHttpException;
-import com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionChunk;
-import com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionRequest;
-import com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionResult;
-import com.volcengine.ark.runtime.model.content.generation.DeleteContentGenerationTaskResponse;
-import com.volcengine.ark.runtime.model.context.CreateContextRequest;
-import com.volcengine.ark.runtime.model.context.CreateContextResult;
-import com.volcengine.ark.runtime.model.context.chat.ContextChatCompletionRequest;
-import com.volcengine.ark.runtime.model.embeddings.EmbeddingRequest;
-import com.volcengine.ark.runtime.model.embeddings.EmbeddingResult;
-import com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest;
-import com.volcengine.ark.runtime.model.images.generation.ImageGenStreamEvent;
-import com.volcengine.ark.runtime.model.images.generation.ImagesResponse;
-import com.volcengine.ark.runtime.model.multimodalembeddings.MultimodalEmbeddingRequest;
-import com.volcengine.ark.runtime.model.multimodalembeddings.MultimodalEmbeddingResult;
-import com.volcengine.ark.runtime.model.responses.event.StreamEvent;
-import com.volcengine.ark.runtime.model.responses.request.CreateResponsesRequest;
-import com.volcengine.ark.runtime.model.responses.request.DeleteResponseRequest;
-import com.volcengine.ark.runtime.model.responses.request.GetResponseRequest;
-import com.volcengine.ark.runtime.model.responses.request.ListInputItemsRequest;
-import com.volcengine.ark.runtime.model.responses.response.DeleteResponseResponse;
-import com.volcengine.ark.runtime.model.responses.response.ListInputItemsResponse;
-import com.volcengine.ark.runtime.model.responses.response.ResponseObject;
-import com.volcengine.ark.runtime.model.tokenization.TokenizationRequest;
-import com.volcengine.ark.runtime.model.tokenization.TokenizationResult;
-import com.volcengine.ark.runtime.utils.MultipartBodyUtils;
-import com.volcengine.ark.runtime.utils.ResponseBodyCallback;
-import com.volcengine.ark.runtime.utils.SSE;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.Single;
-import okhttp3.*;
-import retrofit2.Call;
-import retrofit2.HttpException;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+import com.fasterxml.jackson.annotation.JsonInclude
 
-import java.io.IOException;
-import java.net.Proxy;
-import java.time.Duration;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
+class ArkService : ArkBaseService, com.volcengine.ark.runtime.service.ArkBaseServiceImpl {
+    private val api: com.volcengine.ark.runtime.service.ArkApi
+    private val executorService: ExecutorService?
 
+    constructor(apiKey: String?) : this(apiKey, DEFAULT_TIMEOUT)
 
-public class ArkService extends ArkBaseService implements ArkBaseServiceImpl {
-    private static final ObjectMapper mapper = defaultObjectMapper();
-    private final ArkApi api;
-    private final ExecutorService executorService;
+    constructor(apiKey: String?, timeout: Duration) {
+        val mapper: ObjectMapper = com.volcengine.ark.runtime.service.ArkService.Companion.defaultObjectMapper()
+        val client: OkHttpClient = com.volcengine.ark.runtime.service.ArkService.Companion.defaultApiKeyClient(apiKey, timeout)
+        val retrofit: Retrofit = com.volcengine.ark.runtime.service.ArkService.Companion.defaultRetrofit(client, mapper, BASE_URL, null)
 
-    public ArkService(final String apiKey) {
-        this(apiKey, DEFAULT_TIMEOUT);
+        this.api = retrofit.create(com.volcengine.ark.runtime.service.ArkApi::class.java)
+        this.executorService = client.dispatcher().executorService()
     }
 
-    public ArkService(final String apiKey, final Duration timeout) {
-        ObjectMapper mapper = defaultObjectMapper();
-        OkHttpClient client = defaultApiKeyClient(apiKey, timeout);
-        Retrofit retrofit = defaultRetrofit(client, mapper, BASE_URL, null);
+    constructor(ak: String?, sk: String?) : this(ak, sk, DEFAULT_TIMEOUT)
 
-        this.api = retrofit.create(ArkApi.class);
-        this.executorService = client.dispatcher().executorService();
+    constructor(ak: String?, sk: String?, timeout: Duration) {
+        val mapper: ObjectMapper = com.volcengine.ark.runtime.service.ArkService.Companion.defaultObjectMapper()
+        val client: OkHttpClient = com.volcengine.ark.runtime.service.ArkService.Companion.defaultResourceStsClient(ak, sk, timeout, BASE_REGION)
+        val retrofit: Retrofit = com.volcengine.ark.runtime.service.ArkService.Companion.defaultRetrofit(client, mapper, BASE_URL, null)
+
+        this.api = retrofit.create(com.volcengine.ark.runtime.service.ArkApi::class.java)
+        this.executorService = client.dispatcher().executorService()
     }
 
-    public ArkService(final String ak, final String sk) {
-        this(ak, sk, DEFAULT_TIMEOUT);
+    constructor(api: com.volcengine.ark.runtime.service.ArkApi) {
+        this.api = api
+        this.executorService = null
     }
 
-    public ArkService(final String ak, final String sk, final Duration timeout) {
-        ObjectMapper mapper = defaultObjectMapper();
-        OkHttpClient client = defaultResourceStsClient(ak, sk, timeout, BASE_REGION);
-        Retrofit retrofit = defaultRetrofit(client, mapper, BASE_URL, null);
-
-        this.api = retrofit.create(ArkApi.class);
-        this.executorService = client.dispatcher().executorService();
+    constructor(api: com.volcengine.ark.runtime.service.ArkApi, executorService: ExecutorService?) {
+        this.api = api
+        this.executorService = executorService
     }
 
-    public ArkService(final ArkApi api) {
-        this.api = api;
-        this.executorService = null;
+    override fun createChatCompletion(request: ChatCompletionRequest): ChatCompletionResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ChatCompletionResult?>(api.createChatCompletion(request, request.getModel(), HashMap()))
     }
 
-    public ArkService(final ArkApi api, final ExecutorService executorService) {
-        this.api = api;
-        this.executorService = executorService;
+    override fun createBatchChatCompletion(request: ChatCompletionRequest): ChatCompletionResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ChatCompletionResult?>(api.createBatchChatCompletion(request, request.getModel(), HashMap()))
     }
 
-    public static ObjectMapper defaultObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
-        return mapper;
+    fun createChatCompletion(request: ChatCompletionRequest, customHeaders: Map<String?, String?>?): ChatCompletionResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ChatCompletionResult?>(api.createChatCompletion(request, request.getModel(), customHeaders))
     }
 
-    public static OkHttpClient defaultApiKeyClient(String apiKey, Duration timeout) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new AuthenticationInterceptor(apiKey))
-                .addInterceptor(new RequestIdInterceptor())
-                .addInterceptor(new RetryInterceptor(DEFAULT_RETRY_TIMES))
-                .connectionPool(new ConnectionPool(5, 1, TimeUnit.SECONDS))
-                .readTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
-                .build();
+    fun createBatchChatCompletion(request: ChatCompletionRequest, customHeaders: Map<String?, String?>?): ChatCompletionResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ChatCompletionResult?>(api.createBatchChatCompletion(request, request.getModel(), customHeaders))
     }
 
-    public static OkHttpClient defaultResourceStsClient(String ak, String sk, Duration timeout, String region) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new ArkResourceStsAuthenticationInterceptor(ak, sk, region))
-                .addInterceptor(new RequestIdInterceptor())
-                .addInterceptor(new RetryInterceptor(DEFAULT_RETRY_TIMES))
-                .connectionPool(new ConnectionPool(5, 1, TimeUnit.SECONDS))
-                .readTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
-                .build();
+    override fun streamChatCompletion(request: ChatCompletionRequest): Flowable<ChatCompletionChunk?>? {
+        request.setStream(true)
+
+        return stream(api.createChatCompletionStream(request, request.getModel(), HashMap()), ChatCompletionChunk::class.java)
     }
 
-    public static Retrofit defaultRetrofit(OkHttpClient client, ObjectMapper mapper, String baseUrl, Executor callbackExecutor) {
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .client(client)
-                .addConverterFactory(JacksonConverterFactory.create(mapper))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+    fun streamChatCompletion(request: ChatCompletionRequest, customHeaders: Map<String?, String?>?): Flowable<ChatCompletionChunk?>? {
+        request.setStream(true)
 
-        if (callbackExecutor != null) {
-            // to avoid NPE
-            builder.callbackExecutor(callbackExecutor);
-        }
-
-        return builder.build();
+        return stream(api.createChatCompletionStream(request, request.getModel(), customHeaders), ChatCompletionChunk::class.java)
     }
 
-    public static <T> T execute(Single<T> apiCall) {
-        try {
-            T resp = apiCall.blockingGet();
-            return resp;
-        } catch (HttpException e) {
-            String requestId = "";
-            try {
-                Headers headers = e.response().raw().request().headers();
-                requestId = headers.get(Const.CLIENT_REQUEST_HEADER);
-            } catch (Exception ignored) {
-            }
-
-            try {
-                if (e.response() == null || e.response().errorBody() == null) {
-                    throw e;
-                }
-                String errorBody = e.response().errorBody().string();
-
-                ArkAPIError error = mapper.readValue(errorBody, ArkAPIError.class);
-                throw new ArkHttpException(error, e, e.code(), requestId);
-            } catch (IOException ex) {
-                throw e;
-            }
-        }
+    override fun createEmbeddings(request: EmbeddingRequest): EmbeddingResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<EmbeddingResult?>(api.createEmbeddings(request, request.getModel(), HashMap()))
     }
 
-    public static Flowable<SSE> stream(Call<ResponseBody> apiCall) {
-        return stream(apiCall, false);
+    fun createEmbeddings(request: EmbeddingRequest, customHeaders: Map<String?, String?>?): EmbeddingResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<EmbeddingResult?>(api.createEmbeddings(request, request.getModel(), customHeaders))
     }
 
-    public static Flowable<SSE> stream(Call<ResponseBody> apiCall, boolean emitDone) {
-        return Flowable.create(emitter -> apiCall.enqueue(new ResponseBodyCallback(emitter, emitDone)), BackpressureStrategy.BUFFER);
+    override fun createBatchEmbeddings(request: EmbeddingRequest): EmbeddingResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<EmbeddingResult?>(api.createBatchEmbeddings(request, request.getModel(), HashMap()))
     }
 
-    public static <T> Flowable<T> stream(Call<ResponseBody> apiCall, Class<T> cl) {
-        return stream(apiCall).map(sse -> mapper.readValue(sse.getData(), cl));
+    fun createBatchEmbeddings(request: EmbeddingRequest, customHeaders: Map<String?, String?>?): EmbeddingResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<EmbeddingResult?>(api.createBatchEmbeddings(request, request.getModel(), customHeaders))
     }
 
-    public ChatCompletionResult createChatCompletion(ChatCompletionRequest request) {
-        return execute(api.createChatCompletion(request, request.getModel(), new HashMap<>()));
+    override fun createMultiModalEmbeddings(request: MultimodalEmbeddingRequest): MultimodalEmbeddingResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<MultimodalEmbeddingResult?>(api.createMultiModalEmbeddings(request, request.getModel(), HashMap()))
     }
 
-    public ChatCompletionResult createBatchChatCompletion(ChatCompletionRequest request) {
-        return execute(api.createBatchChatCompletion(request, request.getModel(), new HashMap<>()));
+    fun createMultiModalEmbeddings(request: MultimodalEmbeddingRequest, customHeaders: Map<String?, String?>?): MultimodalEmbeddingResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<MultimodalEmbeddingResult?>(api.createMultiModalEmbeddings(request, request.getModel(), customHeaders))
     }
 
-    public ChatCompletionResult createChatCompletion(ChatCompletionRequest request, Map<String, String> customHeaders) {
-        return execute(api.createChatCompletion(request, request.getModel(), customHeaders));
+    override fun createBatchMultiModalEmbeddings(request: MultimodalEmbeddingRequest): MultimodalEmbeddingResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<MultimodalEmbeddingResult?>(api.createBatchMultiModalEmbeddings(request, request.getModel(), HashMap()))
     }
 
-    public ChatCompletionResult createBatchChatCompletion(ChatCompletionRequest request, Map<String, String> customHeaders) {
-        return execute(api.createBatchChatCompletion(request, request.getModel(), customHeaders));
-    }
-
-    public Flowable<ChatCompletionChunk> streamChatCompletion(ChatCompletionRequest request) {
-        request.setStream(true);
-
-        return stream(api.createChatCompletionStream(request, request.getModel(), new HashMap<>()), ChatCompletionChunk.class);
-    }
-
-    public Flowable<ChatCompletionChunk> streamChatCompletion(ChatCompletionRequest request, Map<String, String> customHeaders) {
-        request.setStream(true);
-
-        return stream(api.createChatCompletionStream(request, request.getModel(), customHeaders), ChatCompletionChunk.class);
-    }
-
-    public EmbeddingResult createEmbeddings(EmbeddingRequest request) {
-        return execute(api.createEmbeddings(request, request.getModel(), new HashMap<>()));
-    }
-
-    public EmbeddingResult createEmbeddings(EmbeddingRequest request, Map<String, String> customHeaders) {
-        return execute(api.createEmbeddings(request, request.getModel(), customHeaders));
-    }
-
-    public EmbeddingResult createBatchEmbeddings(EmbeddingRequest request) {
-        return execute(api.createBatchEmbeddings(request, request.getModel(), new HashMap<>()));
-    }
-
-    public EmbeddingResult createBatchEmbeddings(EmbeddingRequest request, Map<String, String> customHeaders) {
-        return execute(api.createBatchEmbeddings(request, request.getModel(), customHeaders));
-    }
-
-    public MultimodalEmbeddingResult createMultiModalEmbeddings(MultimodalEmbeddingRequest request) {
-        return execute(api.createMultiModalEmbeddings(request, request.getModel(), new HashMap<>()));
-    }
-
-    public MultimodalEmbeddingResult createMultiModalEmbeddings(MultimodalEmbeddingRequest request, Map<String, String> customHeaders) {
-        return execute(api.createMultiModalEmbeddings(request, request.getModel(), customHeaders));
-    }
-
-    public MultimodalEmbeddingResult createBatchMultiModalEmbeddings(MultimodalEmbeddingRequest request) {
-        return execute(api.createBatchMultiModalEmbeddings(request, request.getModel(), new HashMap<>()));
-    }
-
-    public MultimodalEmbeddingResult createBatchMultiModalEmbeddings(MultimodalEmbeddingRequest request, Map<String, String> customHeaders) {
-        return execute(api.createBatchMultiModalEmbeddings(request, request.getModel(), customHeaders));
+    fun createBatchMultiModalEmbeddings(request: MultimodalEmbeddingRequest, customHeaders: Map<String?, String?>?): MultimodalEmbeddingResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<MultimodalEmbeddingResult?>(api.createBatchMultiModalEmbeddings(request, request.getModel(), customHeaders))
     }
 
     @Override
-    public BotChatCompletionResult createBotChatCompletion(BotChatCompletionRequest request) {
-        return execute(api.createBotChatCompletion(request, request.getModel(), new HashMap<>()));
+    override fun createBotChatCompletion(request: BotChatCompletionRequest): BotChatCompletionResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<BotChatCompletionResult?>(api.createBotChatCompletion(request, request.getModel(), HashMap()))
     }
 
-    public BotChatCompletionResult createBotChatCompletion(BotChatCompletionRequest request, Map<String, String> customHeaders) {
-        return execute(api.createBotChatCompletion(request, request.getModel(), customHeaders));
+    fun createBotChatCompletion(request: BotChatCompletionRequest, customHeaders: Map<String?, String?>?): BotChatCompletionResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<BotChatCompletionResult?>(api.createBotChatCompletion(request, request.getModel(), customHeaders))
     }
 
 
     @Override
-    public Flowable<BotChatCompletionChunk> streamBotChatCompletion(BotChatCompletionRequest request) {
-        request.setStream(true);
-        return stream(api.createBotChatCompletionStream(request, request.getModel(), new HashMap<>()), BotChatCompletionChunk.class);
+    override fun streamBotChatCompletion(request: BotChatCompletionRequest): Flowable<BotChatCompletionChunk?>? {
+        request.setStream(true)
+        return stream(api.createBotChatCompletionStream(request, request.getModel(), HashMap()), BotChatCompletionChunk::class.java)
     }
 
-    public Flowable<BotChatCompletionChunk> streamBotChatCompletion(BotChatCompletionRequest request, Map<String, String> customHeaders) {
-        request.setStream(true);
-        return stream(api.createBotChatCompletionStream(request, request.getModel(), customHeaders), BotChatCompletionChunk.class);
-    }
-
-    @Override
-    public CreateContextResult createContext(CreateContextRequest request) {
-        return execute(api.createContext(request, request.getModel(), new HashMap<>()));
-    }
-
-    public CreateContextResult createContext(CreateContextRequest request, Map<String, String> customHeaders) {
-        return execute(api.createContext(request, request.getModel(), customHeaders));
+    fun streamBotChatCompletion(request: BotChatCompletionRequest, customHeaders: Map<String?, String?>?): Flowable<BotChatCompletionChunk?>? {
+        request.setStream(true)
+        return stream(api.createBotChatCompletionStream(request, request.getModel(), customHeaders), BotChatCompletionChunk::class.java)
     }
 
     @Override
-    public ChatCompletionResult createContextChatCompletion(ContextChatCompletionRequest request) {
-        return execute(api.createContextChatCompletion(request, request.getModel(), new HashMap<>()));
+    override fun createContext(request: CreateContextRequest): CreateContextResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<CreateContextResult?>(api.createContext(request, request.getModel(), HashMap()))
     }
 
-    public ChatCompletionResult createContextChatCompletion(ContextChatCompletionRequest request, Map<String, String> customHeaders) {
-        return execute(api.createContextChatCompletion(request, request.getModel(), customHeaders));
-    }
-
-    @Override
-    public Flowable<ChatCompletionChunk> streamContextChatCompletion(ContextChatCompletionRequest request) {
-        request.setStream(true);
-        return stream(api.createContextChatCompletionStream(request, request.getModel(), new HashMap<>()), ChatCompletionChunk.class);
-    }
-
-    public Flowable<ChatCompletionChunk> streamContextChatCompletion(ContextChatCompletionRequest request, Map<String, String> customHeaders) {
-        request.setStream(true);
-        return stream(api.createContextChatCompletionStream(request, request.getModel(), customHeaders), ChatCompletionChunk.class);
-    }
-
-    public TokenizationResult createTokenization(TokenizationRequest request) {
-        return execute(api.createTokenization(request, request.getModel(), new HashMap<>()));
-    }
-
-    public TokenizationResult createTokenization(TokenizationRequest request, Map<String, String> customHeaders) {
-        return execute(api.createTokenization(request, request.getModel(), customHeaders));
-    }
-
-
-    public ImagesResponse generateImages(GenerateImagesRequest request) {
-        return execute(api.generateImages(request, request.getModel(), new HashMap<>()));
-    }
-
-    public ImagesResponse generateImages(GenerateImagesRequest request, Map<String, String> customHeaders) {
-        return execute(api.generateImages(request, request.getModel(), customHeaders));
-    }
-
-    public Flowable<ImageGenStreamEvent> streamGenerateImages(GenerateImagesRequest request) {
-        request.setStream(true);
-        return stream(api.streamGenerateImages(request, request.getModel(), new HashMap<>()), ImageGenStreamEvent.class);
-    }
-
-    public Flowable<ImageGenStreamEvent> streamGenerateImages(GenerateImagesRequest request, Map<String, String> customHeaders) {
-        request.setStream(true);
-        return stream(api.streamGenerateImages(request, request.getModel(), customHeaders), ImageGenStreamEvent.class);
-    }
-
-    public CreateContentGenerationTaskResult createContentGenerationTask(CreateContentGenerationTaskRequest request) {
-        return execute(api.createContentGenerationTask(request, request.getModel(), new HashMap<>()));
-    }
-
-    public CreateContentGenerationTaskResult createContentGenerationTask(CreateContentGenerationTaskRequest request, Map<String, String> customHeaders) {
-        return execute(api.createContentGenerationTask(request, request.getModel(), customHeaders));
-    }
-
-
-    public GetContentGenerationTaskResponse getContentGenerationTask(GetContentGenerationTaskRequest request) {
-        return execute(api.getContentGenerationTask(request.getTaskId(), new HashMap<>()));
-    }
-
-    public GetContentGenerationTaskResponse getContentGenerationTask(GetContentGenerationTaskRequest request, Map<String, String> customHeaders) {
-        return execute(api.getContentGenerationTask(request.getTaskId(), customHeaders));
+    fun createContext(request: CreateContextRequest, customHeaders: Map<String?, String?>?): CreateContextResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<CreateContextResult?>(api.createContext(request, request.getModel(), customHeaders))
     }
 
     @Override
-    public ListContentGenerationTasksResponse listContentGenerationTasks(ListContentGenerationTasksRequest request) {
-        return execute(
-                api.listContentGenerationTasks(
-                        request.getPageNum(),
-                        request.getPageSize(),
-                        request.getStatus(),
-                        request.getModel(),
-                        request.getServiceTier(),
-                        request.getTaskIds(),
-                        new HashMap<>()
-                )
-        );
+    override fun createContextChatCompletion(request: ContextChatCompletionRequest): ChatCompletionResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ChatCompletionResult?>(api.createContextChatCompletion(request, request.getModel(), HashMap()))
     }
 
-    public ListContentGenerationTasksResponse listContentGenerationTasks(
-            ListContentGenerationTasksRequest request,
-            Map<String, String> customHeaders
-    ) {
-        return execute(
-                api.listContentGenerationTasks(
-                        request.getPageNum(),
-                        request.getPageSize(),
-                        request.getStatus(),
-                        request.getModel(),
-                        request.getServiceTier(),
-                        request.getTaskIds(),
-                        customHeaders
-                )
-        );
+    fun createContextChatCompletion(request: ContextChatCompletionRequest, customHeaders: Map<String?, String?>?): ChatCompletionResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ChatCompletionResult?>(api.createContextChatCompletion(request, request.getModel(), customHeaders))
+    }
+
+    @Override
+    override fun streamContextChatCompletion(request: ContextChatCompletionRequest): Flowable<ChatCompletionChunk?>? {
+        request.setStream(true)
+        return stream(api.createContextChatCompletionStream(request, request.getModel(), HashMap()), ChatCompletionChunk::class.java)
+    }
+
+    fun streamContextChatCompletion(request: ContextChatCompletionRequest, customHeaders: Map<String?, String?>?): Flowable<ChatCompletionChunk?>? {
+        request.setStream(true)
+        return stream(api.createContextChatCompletionStream(request, request.getModel(), customHeaders), ChatCompletionChunk::class.java)
+    }
+
+    override fun createTokenization(request: TokenizationRequest): TokenizationResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<TokenizationResult?>(api.createTokenization(request, request.getModel(), HashMap()))
+    }
+
+    fun createTokenization(request: TokenizationRequest, customHeaders: Map<String?, String?>?): TokenizationResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<TokenizationResult?>(api.createTokenization(request, request.getModel(), customHeaders))
     }
 
 
-    public DeleteContentGenerationTaskResponse deleteContentGenerationTask(DeleteContentGenerationTaskRequest request) {
-        return execute(api.deleteContentGenerationTask(request.getTaskId(), new HashMap<>()));
+    override fun generateImages(request: GenerateImagesRequest): ImagesResponse? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ImagesResponse?>(api.generateImages(request, request.getModel(), HashMap()))
     }
 
-    public DeleteContentGenerationTaskResponse deleteContentGenerationTask(DeleteContentGenerationTaskRequest request, Map<String, String> customHeaders) {
-        return execute(api.deleteContentGenerationTask(request.getTaskId(), customHeaders));
+    fun generateImages(request: GenerateImagesRequest, customHeaders: Map<String?, String?>?): ImagesResponse? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ImagesResponse?>(api.generateImages(request, request.getModel(), customHeaders))
+    }
+
+    fun streamGenerateImages(request: GenerateImagesRequest): Flowable<ImageGenStreamEvent?>? {
+        request.setStream(true)
+        return stream(api.streamGenerateImages(request, request.getModel(), HashMap()), ImageGenStreamEvent::class.java)
+    }
+
+    fun streamGenerateImages(request: GenerateImagesRequest, customHeaders: Map<String?, String?>?): Flowable<ImageGenStreamEvent?>? {
+        request.setStream(true)
+        return stream(api.streamGenerateImages(request, request.getModel(), customHeaders), ImageGenStreamEvent::class.java)
+    }
+
+    override fun createContentGenerationTask(request: CreateContentGenerationTaskRequest): CreateContentGenerationTaskResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<CreateContentGenerationTaskResult?>(api.createContentGenerationTask(request, request.getModel(), HashMap()))
+    }
+
+    fun createContentGenerationTask(request: CreateContentGenerationTaskRequest, customHeaders: Map<String?, String?>?): CreateContentGenerationTaskResult? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<CreateContentGenerationTaskResult?>(api.createContentGenerationTask(request, request.getModel(), customHeaders))
+    }
+
+
+    override fun getContentGenerationTask(request: GetContentGenerationTaskRequest): GetContentGenerationTaskResponse? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<GetContentGenerationTaskResponse?>(api.getContentGenerationTask(request.getTaskId(), HashMap()))
+    }
+
+    fun getContentGenerationTask(request: GetContentGenerationTaskRequest, customHeaders: Map<String?, String?>?): GetContentGenerationTaskResponse? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<GetContentGenerationTaskResponse?>(api.getContentGenerationTask(request.getTaskId(), customHeaders))
+    }
+
+    @Override
+    override fun listContentGenerationTasks(request: ListContentGenerationTasksRequest): ListContentGenerationTasksResponse? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ListContentGenerationTasksResponse?>(
+            api.listContentGenerationTasks(
+                request.getPageNum(),
+                request.getPageSize(),
+                request.getStatus(),
+                request.getModel(),
+                request.getServiceTier(),
+                request.getTaskIds(),
+                HashMap()
+            )
+        )
+    }
+
+    fun listContentGenerationTasks(
+        request: ListContentGenerationTasksRequest,
+        customHeaders: Map<String?, String?>?
+    ): ListContentGenerationTasksResponse? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ListContentGenerationTasksResponse?>(
+            api.listContentGenerationTasks(
+                request.getPageNum(),
+                request.getPageSize(),
+                request.getStatus(),
+                request.getModel(),
+                request.getServiceTier(),
+                request.getTaskIds(),
+                customHeaders
+            )
+        )
+    }
+
+
+    override fun deleteContentGenerationTask(request: DeleteContentGenerationTaskRequest): DeleteContentGenerationTaskResponse? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<DeleteContentGenerationTaskResponse?>(api.deleteContentGenerationTask(request.getTaskId(), HashMap()))
+    }
+
+    fun deleteContentGenerationTask(request: DeleteContentGenerationTaskRequest, customHeaders: Map<String?, String?>?): DeleteContentGenerationTaskResponse? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<DeleteContentGenerationTaskResponse?>(api.deleteContentGenerationTask(request.getTaskId(), customHeaders))
     }
 
 
     @Override
-    public ResponseObject createResponse(CreateResponsesRequest request) {
-        return execute(api.createResponse(request, request.getModel(), new HashMap<>()));
+    override fun createResponse(request: CreateResponsesRequest): ResponseObject? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ResponseObject?>(api.createResponse(request, request.getModel(), HashMap()))
     }
 
-    public ResponseObject createResponse(CreateResponsesRequest request, Map<String, String> customHeaders) {
-        return execute(api.createResponse(request, request.getModel(), customHeaders));
-    }
-
-    @Override
-    public Flowable<StreamEvent> streamResponse(CreateResponsesRequest request) {
-        return stream(api.streamResponse(request, request.getModel(), new HashMap<>()), StreamEvent.class);
-    }
-
-    public Flowable<StreamEvent> streamResponse(CreateResponsesRequest request, Map<String, String> customHeaders) {
-        return stream(api.streamResponse(request, request.getModel(), customHeaders), StreamEvent.class);
+    fun createResponse(request: CreateResponsesRequest, customHeaders: Map<String?, String?>?): ResponseObject? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ResponseObject?>(api.createResponse(request, request.getModel(), customHeaders))
     }
 
     @Override
-    public ResponseObject getResponse(GetResponseRequest request) {
-        return execute(api.getResponse(request.getResponseId(), new HashMap<>()));
+    override fun streamResponse(request: CreateResponsesRequest): Flowable<StreamEvent?>? {
+        return stream(api.streamResponse(request, request.getModel(), HashMap()), StreamEvent::class.java)
+    }
+
+    fun streamResponse(request: CreateResponsesRequest, customHeaders: Map<String?, String?>?): Flowable<StreamEvent?>? {
+        return stream(api.streamResponse(request, request.getModel(), customHeaders), StreamEvent::class.java)
     }
 
     @Override
-    public DeleteResponseResponse deleteResponse(DeleteResponseRequest request) {
-        return execute(api.deleteResponse(request.getResponseId(), new HashMap<>()));
+    override fun getResponse(request: GetResponseRequest): ResponseObject? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ResponseObject?>(api.getResponse(request.getResponseId(), HashMap()))
     }
 
     @Override
-    public ListInputItemsResponse listResponseInputItems(ListInputItemsRequest request) {
-        return execute(api.listResponseInputItems(
+    override fun deleteResponse(request: DeleteResponseRequest): DeleteResponseResponse? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<DeleteResponseResponse?>(api.deleteResponse(request.getResponseId(), HashMap()))
+    }
+
+    @Override
+    override fun listResponseInputItems(request: ListInputItemsRequest): ListInputItemsResponse? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ListInputItemsResponse?>(
+            api.listResponseInputItems(
                 request.getResponseId(),
                 request.getAfter(),
                 request.getBefore(),
                 request.getLimit(),
                 request.getInclude(),
-                new HashMap<>()
-        ));
+                HashMap()
+            )
+        )
     }
 
     @Override
-    public FileMeta uploadFile(UploadFileRequest request) {
-        MultipartBody.Part fileBody = MultipartBodyUtils.getPart(request.getFile(), "file");
-        RequestBody purpose = RequestBody.create(MultipartBodyUtils.TYPE, request.getPurpose());
-        RequestBody expireAt = null;
+    override fun uploadFile(request: UploadFileRequest): FileMeta? {
+        val fileBody: MultipartBody.Part? = MultipartBodyUtils.getPart(request.getFile(), "file")
+        val purpose: RequestBody? = RequestBody.create(MultipartBodyUtils.TYPE, request.getPurpose())
+        var expireAt: RequestBody? = null
         if (request.getExpireAt() != null) {
-            expireAt = RequestBody.create(MultipartBodyUtils.TYPE, String.valueOf(request.getExpireAt()));
+            expireAt = RequestBody.create(MultipartBodyUtils.TYPE, String.valueOf(request.getExpireAt()))
         }
-        RequestBody fps = null;
+        var fps: RequestBody? = null
         if (request.getPreprocessConfigs() != null && request.getPreprocessConfigs().getVideo() != null && request.getPreprocessConfigs().getVideo().getFps() != null) {
-            fps = RequestBody.create(MultipartBodyUtils.TYPE, String.valueOf(request.getPreprocessConfigs().getVideo().getFps()));
+            fps = RequestBody.create(MultipartBodyUtils.TYPE, String.valueOf(request.getPreprocessConfigs().getVideo().getFps()))
         }
-        return execute(api.uploadFile(fileBody, purpose, expireAt, fps, new HashMap<>()));
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<FileMeta?>(api.uploadFile(fileBody, purpose, expireAt, fps, HashMap()))
     }
 
     @Override
-    public FileMeta retrieveFile(String fileId) {
-        return execute(api.retrieveFile(fileId, new HashMap<>()));
+    override fun retrieveFile(fileId: String?): FileMeta? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<FileMeta?>(api.retrieveFile(fileId, HashMap()))
     }
 
     @Override
-    public DeleteFileResponse deleteFile(String fileId) {
-        return execute(api.deleteFile(fileId, new HashMap<>()));
+    override fun deleteFile(fileId: String?): DeleteFileResponse? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<DeleteFileResponse?>(api.deleteFile(fileId, HashMap()))
     }
 
     @Override
-    public ListFilesResponse listFiles(ListFilesRequest request) {
-        return execute(api.listFiles(
+    override fun listFiles(request: ListFilesRequest): ListFilesResponse? {
+        return com.volcengine.ark.runtime.service.ArkService.Companion.execute<ListFilesResponse?>(
+            api.listFiles(
                 request.getLimit(),
                 request.getAfter(),
                 request.getPurpose(),
                 request.getOrder(),
-                new HashMap<>()
-        ));
+                HashMap()
+            )
+        )
     }
 
-    public void shutdownExecutor() {
-        Objects.requireNonNull(this.executorService, "executorService must be set in order to shut down");
-        this.executorService.shutdown();
+    fun shutdownExecutor() {
+        Objects.requireNonNull(this.executorService, "executorService must be set in order to shut down")
+        this.executorService.shutdown()
     }
 
-    public static ArkService.Builder builder() {
-        return new ArkService.Builder();
-    }
+    class Builder {
+        private var ak: String? = null
+        private var sk: String? = null
+        private var apiKey: String? = null
+        private var region: String? = BASE_REGION
+        private var baseUrl: String? = BASE_URL
+        private var timeout: Duration = DEFAULT_TIMEOUT
+        private var callTimeout: Duration? = null
+        private var connectTimeout: Duration? = DEFAULT_CONNECT_TIMEOUT
+        private var retryTimes: Int = DEFAULT_RETRY_TIMES
+        private var proxy: Proxy? = null
+        private var connectionPool: ConnectionPool? = null
+        private var dispatcher: Dispatcher? = null
+        private var callbackExecutor: Executor? = null
 
-    public static class Builder {
-        private String ak;
-        private String sk;
-        private String apiKey;
-        private String region = BASE_REGION;
-        private String baseUrl = BASE_URL;
-        private Duration timeout = DEFAULT_TIMEOUT;
-        private Duration callTimeout;
-        private Duration connectTimeout = DEFAULT_CONNECT_TIMEOUT;
-        private int retryTimes = DEFAULT_RETRY_TIMES;
-        private Proxy proxy;
-        private ConnectionPool connectionPool;
-        private Dispatcher dispatcher;
-        private Executor callbackExecutor;
-
-        public ArkService.Builder ak(String ak) {
-            this.ak = ak;
-            return this;
+        fun ak(ak: String?): Builder {
+            this.ak = ak
+            return this
         }
 
-        public ArkService.Builder sk(String sk) {
-            this.sk = sk;
-            return this;
+        fun sk(sk: String?): Builder {
+            this.sk = sk
+            return this
         }
 
-        public ArkService.Builder apiKey(String apiKey) {
-            this.apiKey = apiKey;
-            return this;
+        fun apiKey(apiKey: String?): Builder {
+            this.apiKey = apiKey
+            return this
         }
 
-        public ArkService.Builder region(String region) {
-            this.region = region;
-            return this;
+        fun region(region: String?): Builder {
+            this.region = region
+            return this
         }
 
-        public ArkService.Builder baseUrl(String baseUrl) {
-            this.baseUrl = baseUrl;
+        fun baseUrl(baseUrl: String): Builder {
+            this.baseUrl = baseUrl
             if (!baseUrl.endsWith("/")) {
-                this.baseUrl = baseUrl + "/";
+                this.baseUrl = baseUrl.toString() + "/"
             }
-            return this;
+            return this
         }
 
-        public ArkService.Builder timeout(Duration timeout) {
-            this.timeout = timeout;
-            return this;
+        fun timeout(timeout: Duration): Builder {
+            this.timeout = timeout
+            return this
         }
 
-        public ArkService.Builder callTimeout(Duration callTimeout) {
-            this.callTimeout = callTimeout;
-            return this;
+        fun callTimeout(callTimeout: Duration?): Builder {
+            this.callTimeout = callTimeout
+            return this
         }
 
-        public ArkService.Builder connectTimeout(Duration connectTimeout) {
-            this.connectTimeout = connectTimeout;
-            return this;
+        fun connectTimeout(connectTimeout: Duration?): Builder {
+            this.connectTimeout = connectTimeout
+            return this
         }
 
-        public ArkService.Builder retryTimes(int retryTimes) {
-            this.retryTimes = retryTimes;
-            return this;
+        fun retryTimes(retryTimes: Int): Builder {
+            this.retryTimes = retryTimes
+            return this
         }
 
-        public ArkService.Builder proxy(Proxy proxy) {
-            this.proxy = proxy;
-            return this;
+        fun proxy(proxy: Proxy?): Builder {
+            this.proxy = proxy
+            return this
         }
 
-        public ArkService.Builder connectionPool(ConnectionPool connectionPool) {
-            this.connectionPool = connectionPool;
-            return this;
+        fun connectionPool(connectionPool: ConnectionPool?): Builder {
+            this.connectionPool = connectionPool
+            return this
         }
 
-        public ArkService.Builder dispatcher(Dispatcher dispatcher) {
-            this.dispatcher = dispatcher;
-            return this;
+        fun dispatcher(dispatcher: Dispatcher?): Builder {
+            this.dispatcher = dispatcher
+            return this
         }
 
-        public ArkService.Builder callbackExecutor(Executor callbackExecutor) {
-            this.callbackExecutor = callbackExecutor;
-            return this;
+        fun callbackExecutor(callbackExecutor: Executor?): Builder {
+            this.callbackExecutor = callbackExecutor
+            return this
         }
 
-        public ArkService build() {
-            ObjectMapper mapper = defaultObjectMapper();
-            OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+        fun build(): ArkService {
+            val mapper: ObjectMapper = com.volcengine.ark.runtime.service.ArkService.Companion.defaultObjectMapper()
+            val clientBuilder: OkHttpClient.Builder = Builder()
             if (apiKey != null && apiKey.length() > 0) {
-                clientBuilder.addInterceptor(new AuthenticationInterceptor(apiKey));
-                clientBuilder.addInterceptor(new EncryptionInterceptor(apiKey, baseUrl));
+                clientBuilder.addInterceptor(AuthenticationInterceptor(apiKey))
+                clientBuilder.addInterceptor(EncryptionInterceptor(apiKey, baseUrl))
             } else if (ak != null && sk != null && ak.length() > 0 && sk.length() > 0) {
-                clientBuilder.addInterceptor(new ArkResourceStsAuthenticationInterceptor(ak, sk, region));
+                clientBuilder.addInterceptor(ArkResourceStsAuthenticationInterceptor(ak, sk, region))
             } else {
-                throw new ArkException("missing api_key or ak&sk.");
+                throw ArkException("missing api_key or ak&sk.")
             }
 
             if (proxy != null) {
-                clientBuilder.proxy(proxy);
+                clientBuilder.proxy(proxy)
             }
 
             if (connectionPool != null) {
-                clientBuilder.connectionPool(connectionPool);
+                clientBuilder.connectionPool(connectionPool)
             } else {
-                clientBuilder.connectionPool(new ConnectionPool(5, 1, TimeUnit.SECONDS));
+                clientBuilder.connectionPool(ConnectionPool(5, 1, TimeUnit.SECONDS))
             }
 
             if (dispatcher != null) {
-                clientBuilder.dispatcher(dispatcher);
+                clientBuilder.dispatcher(dispatcher)
             }
 
-            OkHttpClient client = clientBuilder
-                    .addInterceptor(new RequestIdInterceptor())
-                    .addInterceptor(new RetryInterceptor(retryTimes))
-                    .addInterceptor(new BatchInterceptor())
-                    .readTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
-                    .callTimeout(callTimeout == null ? timeout.toMillis() : callTimeout.toMillis(), TimeUnit.MILLISECONDS)
-                    .connectTimeout(connectTimeout)
-                    .build();
-            Retrofit retrofit = defaultRetrofit(client, mapper, baseUrl, callbackExecutor);
-            return new ArkService(
-                    retrofit.create(ArkApi.class),
-                    client.dispatcher().executorService()
-            );
+            val client: OkHttpClient = clientBuilder
+                .addInterceptor(RequestIdInterceptor())
+                .addInterceptor(RetryInterceptor(retryTimes))
+                .addInterceptor(BatchInterceptor())
+                .readTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
+                .callTimeout(if (callTimeout == null) timeout.toMillis() else callTimeout.toMillis(), TimeUnit.MILLISECONDS)
+                .connectTimeout(connectTimeout)
+                .build()
+            val retrofit: Retrofit = com.volcengine.ark.runtime.service.ArkService.Companion.defaultRetrofit(client, mapper, baseUrl, callbackExecutor)
+            return com.volcengine.ark.runtime.service.ArkService(
+                retrofit.create(com.volcengine.ark.runtime.service.ArkApi::class.java),
+                client.dispatcher().executorService()
+            )
+        }
+    }
+
+    companion object {
+        private val mapper: ObjectMapper = com.volcengine.ark.runtime.service.ArkService.Companion.defaultObjectMapper()
+        fun defaultObjectMapper(): ObjectMapper {
+            val mapper: ObjectMapper = ObjectMapper()
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+            return mapper
+        }
+
+        fun defaultApiKeyClient(apiKey: String?, timeout: Duration): OkHttpClient {
+            return Builder()
+                .addInterceptor(AuthenticationInterceptor(apiKey))
+                .addInterceptor(RequestIdInterceptor())
+                .addInterceptor(RetryInterceptor(DEFAULT_RETRY_TIMES))
+                .connectionPool(ConnectionPool(5, 1, TimeUnit.SECONDS))
+                .readTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
+                .build()
+        }
+
+        fun defaultResourceStsClient(ak: String?, sk: String?, timeout: Duration, region: String?): OkHttpClient {
+            return Builder()
+                .addInterceptor(ArkResourceStsAuthenticationInterceptor(ak, sk, region))
+                .addInterceptor(RequestIdInterceptor())
+                .addInterceptor(RetryInterceptor(DEFAULT_RETRY_TIMES))
+                .connectionPool(ConnectionPool(5, 1, TimeUnit.SECONDS))
+                .readTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
+                .build()
+        }
+
+        fun defaultRetrofit(client: OkHttpClient?, mapper: ObjectMapper?, baseUrl: String?, callbackExecutor: Executor?): Retrofit {
+            val builder: Retrofit.Builder = Builder()
+                .baseUrl(baseUrl!!)
+                .client(client)
+                .addConverterFactory(JacksonConverterFactory.create(mapper))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+
+            if (callbackExecutor != null) {
+                // to avoid NPE
+                builder.callbackExecutor(callbackExecutor)
+            }
+
+            return builder.build()
+        }
+
+        fun <T> execute(apiCall: Single<T?>): T? {
+            try {
+                val resp: T? = apiCall.blockingGet()
+                return resp
+            } catch (e: HttpException) {
+                var requestId: String? = ""
+                try {
+                    val headers: Headers = e.response().raw().request().headers()
+                    requestId = headers.get(Const.CLIENT_REQUEST_HEADER)
+                } catch (ignored: Exception) {
+                }
+
+                try {
+                    if (e.response() == null || e.response().errorBody() == null) {
+                        throw e
+                    }
+                    val errorBody: String? = e.response().errorBody().string()
+
+                    val error: ArkAPIError = com.volcengine.ark.runtime.service.ArkService.Companion.mapper.readValue(errorBody, ArkAPIError::class.java)
+                    throw ArkHttpException(error, e, e.code(), requestId)
+                } catch (ex: IOException) {
+                    throw e
+                }
+            }
+        }
+
+        fun stream(apiCall: Call<ResponseBody?>): Flowable<SSE?> {
+            return com.volcengine.ark.runtime.service.ArkService.Companion.stream(apiCall, false)
+        }
+
+        fun stream(apiCall: Call<ResponseBody?>, emitDone: Boolean): Flowable<SSE?> {
+            return Flowable.create({ emitter -> apiCall.enqueue(ResponseBodyCallback(emitter, emitDone)) }, BackpressureStrategy.BUFFER)
+        }
+
+        fun <T> stream(apiCall: Call<ResponseBody?>, cl: Class<T?>?): Flowable<T?> {
+            return com.volcengine.ark.runtime.service.ArkService.Companion.stream(apiCall).map({ sse -> com.volcengine.ark.runtime.service.ArkService.Companion.mapper.readValue(sse.getData(), cl) })
+        }
+
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.service.ArkService.Builder()
         }
     }
 }

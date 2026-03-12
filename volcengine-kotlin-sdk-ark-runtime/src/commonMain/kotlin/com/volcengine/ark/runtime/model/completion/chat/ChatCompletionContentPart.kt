@@ -1,194 +1,123 @@
-package com.volcengine.ark.runtime.model.completion.chat;
+package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChatCompletionContentPart {
+class ChatCompletionContentPart {
+    var type: String? = null
 
-    String type;
+    var content: String? = null
 
-    String content;
+    var text: String? = null
 
-    String text;
+    var imageUrl: ChatCompletionContentPartImageURL? = null
 
-    ChatCompletionContentPartImageURL imageUrl;
-
-    ChatCompletionContentPartVideoURL videoUrl;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public ChatCompletionContentPartImageURL getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(ChatCompletionContentPartImageURL imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public ChatCompletionContentPartVideoURL getVideoUrl() {
-        return videoUrl;
-    }
-
-    public void setVideoUrl(ChatCompletionContentPartVideoURL videoUrl) {
-        this.videoUrl = videoUrl;
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
+    var videoUrl: ChatCompletionContentPartVideoURL? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ChatCompletionContentPart{" +
                 "type='" + type + '\'' +
                 ", content='" + content + '\'' +
                 ", text='" + text + '\'' +
                 ", imageUrl=" + imageUrl +
                 ", videoUrl=" + videoUrl +
-                '}';
+                '}'
     }
 
-    public static class ChatCompletionContentPartVideoURL {
-        String url;
-        double fps;
+    class ChatCompletionContentPartVideoURL {
+        var url: String?
+        var fps: Double = 0.0
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "ChatCompletionContentPartVideoURL{" +
                     "url='" + url + '\'' +
                     ", fps=" + fps +
-                    '}';
+                    '}'
         }
 
-        public String getUrl() {
-            return url;
+        constructor(url: String?) {
+            this.url = url
         }
 
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public double getFps() {
-            return fps;
-        }
-
-        public void setFps(double fps) {
-            this.fps = fps;
-        }
-
-        public ChatCompletionContentPartVideoURL(String url) {
-            this.url = url;
-        }
-
-        public ChatCompletionContentPartVideoURL(String url, double fps) {
-            this.url = url;
-            this.fps = fps;
+        constructor(url: String?, fps: Double) {
+            this.url = url
+            this.fps = fps
         }
     }
 
-    public static class ChatCompletionContentPartImageURL {
-        String url;
+    class ChatCompletionContentPartImageURL {
+        var url: String? = null
 
-        String detail;
+        var detail: String? = null
 
-        public ChatCompletionContentPartImageURL(String url, String detail) {
-            this.url = url;
-            this.detail = detail;
+        constructor(url: String?, detail: String?) {
+            this.url = url
+            this.detail = detail
         }
 
-        public ChatCompletionContentPartImageURL(String url) {
-            this.url = url;
+        constructor(url: String?) {
+            this.url = url
         }
 
-        public ChatCompletionContentPartImageURL(){}
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public String getDetail() {
-            return detail;
-        }
-
-        public void setDetail(String detail) {
-            this.detail = detail;
-        }
+        constructor()
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "ChatCompletionContentPartImageURL{" +
                     "url='" + url + '\'' +
                     ", detail='" + detail + '\'' +
-                    '}';
+                    '}'
         }
     }
 
-    public static final class Builder {
-        private String type;
-        private String content;
-        private String text;
-        private ChatCompletionContentPartImageURL imageUrl;
-        private ChatCompletionContentPartVideoURL videoUrl;
+    class Builder {
+        private var type: String? = null
+        private var content: String? = null
+        private var text: String? = null
+        private var imageUrl: ChatCompletionContentPartImageURL? = null
+        private var videoUrl: ChatCompletionContentPartVideoURL? = null
 
-        public Builder type(String type) {
-            this.type = type;
-            return this;
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
         }
 
-        public Builder content(String content) {
-            this.content = content;
-            return this;
+        fun content(content: String?): Builder {
+            this.content = content
+            return this
         }
 
-        public Builder text(String text) {
-            this.text = text;
-            return this;
+        fun text(text: String?): Builder {
+            this.text = text
+            return this
         }
 
-        public Builder imageUrl(ChatCompletionContentPartImageURL imageUrl) {
-            this.imageUrl = imageUrl;
-            return this;
+        fun imageUrl(imageUrl: ChatCompletionContentPartImageURL?): Builder {
+            this.imageUrl = imageUrl
+            return this
         }
 
-        public Builder videoUrl(ChatCompletionContentPartVideoURL videoUrl) {
-            this.videoUrl = videoUrl;
-            return this;
+        fun videoUrl(videoUrl: ChatCompletionContentPartVideoURL?): Builder {
+            this.videoUrl = videoUrl
+            return this
         }
 
-        public ChatCompletionContentPart build() {
-            ChatCompletionContentPart chatCompletionContentPart = new ChatCompletionContentPart();
-            chatCompletionContentPart.setType(type);
-            chatCompletionContentPart.setContent(content);
-            chatCompletionContentPart.setText(text);
-            chatCompletionContentPart.setImageUrl(imageUrl);
-            chatCompletionContentPart.setVideoUrl(videoUrl);
-            return chatCompletionContentPart;
+        fun build(): ChatCompletionContentPart {
+            val chatCompletionContentPart: ChatCompletionContentPart = com.volcengine.ark.runtime.model.completion.chat.ChatCompletionContentPart()
+            chatCompletionContentPart.type = type
+            chatCompletionContentPart.content = content
+            chatCompletionContentPart.text = text
+            chatCompletionContentPart.imageUrl = imageUrl
+            chatCompletionContentPart.videoUrl = videoUrl
+            return chatCompletionContentPart
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.completion.chat.ChatCompletionContentPart.Builder()
         }
     }
 }

@@ -1,93 +1,72 @@
-package com.volcengine.ark.runtime.model.completion.chat;
+package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.volcengine.ark.runtime.utils.JacksonUtil;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChatFunction {
-
+class ChatFunction {
     /**
      * The name of the function being called.
      */
-    String name;
+    var name: String? = null
 
     /**
      * A description of what the function does, used by the model to choose when and how to call the function.
      */
-    String description;
+    var description: String? = null
 
     /**
      * The parameters the functions accepts.
      */
     @JsonProperty("parameters")
-    JsonNode parameters;
+    var parameters: JsonNode? = null
 
-    public <T> T getParameters(Class<T> cls) {
-        return JacksonUtil.jsonNodeToCls(this.parameters, cls);
+    fun <T> getParameters(cls: Class<T?>?): T? {
+        return JacksonUtil.jsonNodeToCls(this.parameters, cls)
     }
 
-    public String getName() {
-        return name;
+    fun getParameters(): JsonNode? {
+        return parameters
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public JsonNode getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(JsonNode parameters) {
-        this.parameters = parameters;
+    fun setParameters(parameters: JsonNode?) {
+        this.parameters = parameters
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ChatFunction{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", parameters=" + parameters +
-                '}';
+                '}'
     }
 
-    public static class Builder {
-        private String name;
-        private String description;
-        private JsonNode parameters;
+    class Builder {
+        private var name: String? = null
+        private var description: String? = null
+        private var parameters: JsonNode? = null
 
-        public Builder name(String name) {
-            this.name = name;
-            return this;
+        fun name(name: String?): Builder {
+            this.name = name
+            return this
         }
 
-        public Builder description(String description) {
-            this.description = description;
-            return this;
+        fun description(description: String?): Builder {
+            this.description = description
+            return this
         }
 
-        public Builder parameters(Object parameters) {
-            this.parameters = JacksonUtil.clsToJsonNode(parameters);
-            return this;
+        fun parameters(parameters: Object?): Builder {
+            this.parameters = JacksonUtil.clsToJsonNode(parameters)
+            return this
         }
 
-        public ChatFunction build() {
-            ChatFunction chatFunction = new ChatFunction();
-            chatFunction.setName(name);
-            chatFunction.setDescription(description);
-            chatFunction.setParameters(parameters);
-            return chatFunction;
+        fun build(): ChatFunction {
+            val chatFunction: ChatFunction = com.volcengine.ark.runtime.model.completion.chat.ChatFunction()
+            chatFunction.name = name
+            chatFunction.description = description
+            chatFunction.setParameters(parameters)
+            return chatFunction
         }
     }
-
 }

@@ -1,82 +1,68 @@
-package com.volcengine.ark.runtime.model.responses.request;
+package com.volcengine.ark.runtime.model.responses.request
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.volcengine.ark.runtime.model.responses.item.InputItem;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonSerialize(using = ResponsesInput.ResponsesInputSerializer.class)
-public class ResponsesInput {
-    private String stringValue;
-    private List<InputItem> listValue;
+@JsonSerialize(using = com.volcengine.ark.runtime.model.responses.request.ResponsesInput.ResponsesInputSerializer::class)
+class ResponsesInput {
+    var stringValue: String? = null
+    private var listValue: List<InputItem?>? = null
 
-    public String getStringValue() {
-        return stringValue;
+    fun getListValue(): List<InputItem?>? {
+        return listValue
     }
 
-    public void setStringValue(String stringValue) {
-        this.stringValue = stringValue;
+    fun setListValue(listValue: List<InputItem?>?) {
+        this.listValue = listValue
     }
 
-    public List<InputItem> getListValue() {
-        return listValue;
-    }
-
-    public void setListValue(List<InputItem> listValue) {
-        this.listValue = listValue;
-    }
-
-    public static class ResponsesInputSerializer extends JsonSerializer<ResponsesInput> {
+    class ResponsesInputSerializer : JsonSerializer<ResponsesInput?>() {
         @Override
-        public void serialize(ResponsesInput value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        @Throws(IOException::class)
+        fun serialize(value: ResponsesInput, gen: JsonGenerator, serializers: SerializerProvider?) {
             if (value.stringValue != null) {
-                gen.writeString(value.stringValue);
+                gen.writeString(value.stringValue)
             } else if (value.listValue != null) {
-                gen.writeObject(value.listValue);
+                gen.writeObject(value.listValue)
             } else {
-                gen.writeNull();
+                gen.writeNull()
             }
         }
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    class Builder {
+        private var stringValue: String? = null
+        private var listValue: List<InputItem?>? = null
 
-    public static class Builder {
-        private String stringValue;
-        private List<InputItem> listValue;
-
-        public Builder stringValue(String stringValue) {
-            this.stringValue = stringValue;
-            return this;
+        fun stringValue(stringValue: String?): Builder {
+            this.stringValue = stringValue
+            return this
         }
 
-        public Builder listValue(List<InputItem> listValue) {
-            this.listValue = listValue;
-            return this;
+        fun listValue(listValue: List<InputItem?>?): Builder {
+            this.listValue = listValue
+            return this
         }
 
-        public Builder addListItem(InputItem listItem) {
+        fun addListItem(listItem: InputItem?): Builder {
             if (this.listValue == null) {
-                this.listValue = new ArrayList<>();
+                this.listValue = ArrayList()
             }
-            this.listValue.add(listItem);
-            return this;
+            this.listValue.add(listItem)
+            return this
         }
 
-        public ResponsesInput build() {
-            ResponsesInput responsesInput = new ResponsesInput();
-            responsesInput.setStringValue(stringValue);
-            responsesInput.setListValue(listValue);
-            return responsesInput;
+        fun build(): ResponsesInput {
+            val responsesInput: ResponsesInput = com.volcengine.ark.runtime.model.responses.request.ResponsesInput()
+            responsesInput.stringValue = stringValue
+            responsesInput.setListValue(listValue)
+            return responsesInput
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.request.ResponsesInput.Builder()
         }
     }
 }

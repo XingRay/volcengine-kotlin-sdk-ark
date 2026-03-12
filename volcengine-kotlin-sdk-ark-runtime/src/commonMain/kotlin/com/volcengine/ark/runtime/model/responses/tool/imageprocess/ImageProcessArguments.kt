@@ -1,85 +1,43 @@
-package com.volcengine.ark.runtime.model.responses.tool.imageprocess;
+package com.volcengine.ark.runtime.model.responses.tool.imageprocess
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ImageProcessArguments {
-
+class ImageProcessArguments {
     @JsonProperty("image_index")
-    private Integer imageIndex;
+    private var imageIndex: Integer? = null
 
     @JsonProperty("points")
-    private String points;
+    var points: String? = null
 
     @JsonProperty("draw_line")
-    private Boolean drawLine;
+    var drawLine: Boolean? = null
 
     @JsonProperty("bbox_str")
-    private String bboxStr;
+    var bboxStr: String? = null
 
     @JsonProperty("crop")
-    private Boolean crop;
+    var crop: Boolean? = null
 
     @JsonProperty("degree")
-    private Integer degree;
+    private var degree: Integer? = null
 
     @JsonProperty("scale")
-    private Double scale;
+    var scale: Double? = null
 
-    public Integer getImageIndex() {
-        return imageIndex;
+    fun getImageIndex(): Integer? {
+        return imageIndex
     }
 
-    public void setImageIndex(Integer imageIndex) {
-        this.imageIndex = imageIndex;
+    fun setImageIndex(imageIndex: Integer?) {
+        this.imageIndex = imageIndex
     }
 
-    public String getPoints() {
-        return points;
+    fun getDegree(): Integer? {
+        return degree
     }
 
-    public void setPoints(String points) {
-        this.points = points;
-    }
-
-    public Boolean getDrawLine() {
-        return drawLine;
-    }
-
-    public void setDrawLine(Boolean drawLine) {
-        this.drawLine = drawLine;
-    }
-
-    public String getBboxStr() {
-        return bboxStr;
-    }
-
-    public void setBboxStr(String bboxStr) {
-        this.bboxStr = bboxStr;
-    }
-
-    public Boolean getCrop() {
-        return crop;
-    }
-
-    public void setCrop(Boolean crop) {
-        this.crop = crop;
-    }
-
-    public Integer getDegree() {
-        return degree;
-    }
-
-    public void setDegree(Integer degree) {
-        this.degree = degree;
-    }
-
-    public Double getScale() {
-        return scale;
-    }
-
-    public void setScale(Double scale) {
-        this.scale = scale;
+    fun setDegree(degree: Integer?) {
+        this.degree = degree
     }
 }

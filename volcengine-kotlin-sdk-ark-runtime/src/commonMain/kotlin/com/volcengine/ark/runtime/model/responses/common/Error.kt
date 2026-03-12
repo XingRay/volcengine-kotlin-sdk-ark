@@ -1,61 +1,47 @@
-package com.volcengine.ark.runtime.model.responses.common;
+package com.volcengine.ark.runtime.model.responses.common
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class Error {
+class Error {
     @JsonProperty("code")
-    private String code;
+    var code: String? = null
 
     @JsonProperty("message")
-    private String message;
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    var message: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "Error{" +
                 "code='" + code + '\'' +
                 ", message='" + message + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var code: String? = null
+        private var message: String? = null
+
+        fun code(code: String?): Builder {
+            this.code = code
+            return this
+        }
+
+        fun message(message: String?): Builder {
+            this.message = message
+            return this
+        }
+
+        fun build(): Error {
+            val error: Error = com.volcengine.ark.runtime.model.responses.common.Error()
+            error.code = code
+            error.message = message
+            return error
+        }
     }
 
-    public static class Builder {
-        private String code;
-        private String message;
-
-        public Builder code(String code) {
-            this.code = code;
-            return this;
-        }
-
-        public Builder message(String message) {
-            this.message = message;
-            return this;
-        }
-
-        public Error build() {
-            Error error = new Error();
-            error.setCode(code);
-            error.setMessage(message);
-            return error;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.common.Error.Builder()
         }
     }
 }

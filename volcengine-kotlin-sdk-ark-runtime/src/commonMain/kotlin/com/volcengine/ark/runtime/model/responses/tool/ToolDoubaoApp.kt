@@ -1,70 +1,64 @@
-package com.volcengine.ark.runtime.model.responses.tool;
+package com.volcengine.ark.runtime.model.responses.tool
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.common.UserLocation;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.tool.doubaoapp.DoubaoAppFeature;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ToolDoubaoApp extends ResponsesTool {
-
+class ToolDoubaoApp : ResponsesTool(ResponsesConstants.TOOL_TYPE_DOUBAO_APP) {
     @JsonProperty("feature")
-    private DoubaoAppFeature feature;
+    private var feature: DoubaoAppFeature? = null
 
     @JsonProperty("user_location")
-    private UserLocation userLocation;
+    private var userLocation: UserLocation? = null
 
-    public DoubaoAppFeature getFeature() {
-        return feature;
+    fun getFeature(): DoubaoAppFeature? {
+        return feature
     }
 
-    public void setFeature(DoubaoAppFeature feature) {
-        this.feature = feature;
+    fun setFeature(feature: DoubaoAppFeature?) {
+        this.feature = feature
     }
 
-    public UserLocation getUserLocation() {
-        return userLocation;
+    fun getUserLocation(): UserLocation? {
+        return userLocation
     }
 
-    public void setUserLocation(UserLocation userLocation) {
-        this.userLocation = userLocation;
+    fun setUserLocation(userLocation: UserLocation?) {
+        this.userLocation = userLocation
     }
 
-    public ToolDoubaoApp() {
-        super(ResponsesConstants.TOOL_TYPE_DOUBAO_APP);
-    }
+    class Builder {
+        private var feature: DoubaoAppFeature? = null
+        private var userLocation: UserLocation? = null
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private DoubaoAppFeature feature;
-        private UserLocation userLocation;
-
-        public Builder feature(DoubaoAppFeature feature) {
-            this.feature = feature;
-            return this;
+        fun feature(feature: DoubaoAppFeature?): Builder {
+            this.feature = feature
+            return this
         }
 
-        public Builder userLocation(UserLocation userLocation) {
-            this.userLocation = userLocation;
-            return this;
+        fun userLocation(userLocation: UserLocation?): Builder {
+            this.userLocation = userLocation
+            return this
         }
 
-        public ToolDoubaoApp build() {
-            ToolDoubaoApp toolDoubaoApp = new ToolDoubaoApp();
-            toolDoubaoApp.setFeature(feature);
-            toolDoubaoApp.setUserLocation(userLocation);
-            return toolDoubaoApp;
+        fun build(): ToolDoubaoApp {
+            val toolDoubaoApp: ToolDoubaoApp = com.volcengine.ark.runtime.model.responses.tool.ToolDoubaoApp()
+            toolDoubaoApp.setFeature(feature)
+            toolDoubaoApp.setUserLocation(userLocation)
+            return toolDoubaoApp
         }
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ToolDoubaoApp{" +
                 "type='" + getType() + '\'' +
                 ", feature=" + feature +
                 ", userLocation=" + userLocation +
-                '}';
+                '}'
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.ToolDoubaoApp.Builder()
+        }
     }
 }

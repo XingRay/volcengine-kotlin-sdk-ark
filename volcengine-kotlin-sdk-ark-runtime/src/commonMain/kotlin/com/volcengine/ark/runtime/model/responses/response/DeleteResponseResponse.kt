@@ -1,47 +1,26 @@
-package com.volcengine.ark.runtime.model.responses.response;
+package com.volcengine.ark.runtime.model.responses.response
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class DeleteResponseResponse {
+class DeleteResponseResponse {
     @JsonProperty("id")
-    private String id;
+    var id: String? = null
 
     @JsonProperty("object")
-    private String object;
+    var `object`: String? = null
+        set(object) {
+            field = this.`object`
+        }
 
     @JsonProperty("deleted")
-    private Boolean deleted;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getObject() {
-        return object;
-    }
-
-    public void setObject(String object) {
-        this.object = object;
-    }
-
-    public Boolean getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
-    }
+    var deleted: Boolean? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DeleteResponseResponse{" +
                 "id='" + id + '\'' +
-                ", object='" + object + '\'' +
+                ", object='" + this.`object` + '\'' +
                 ", deleted=" + deleted +
-                '}';
+                '}'
     }
 }

@@ -1,13 +1,9 @@
-package com.volcengine.ark.runtime.model.content.generation;
+package com.volcengine.ark.runtime.model.content.generation
 
-public class TaskStatus {
-
-    public static final String QUEUED = "queued";
-    public static final String RUNNING = "running";
-    public static final String SUCCEEDED = "succeeded";
-    public static final String FAILED = "failed";
-    public static final String CANCELLED = "cancelled";
-
-    private TaskStatus() {
-    }
+object TaskStatus {
+    val QUEUED: String = "queued"
+    val RUNNING: String = "running"
+    val SUCCEEDED: String = "succeeded"
+    val FAILED: String = "failed"
+    val CANCELLED: String = "cancelled"
 }

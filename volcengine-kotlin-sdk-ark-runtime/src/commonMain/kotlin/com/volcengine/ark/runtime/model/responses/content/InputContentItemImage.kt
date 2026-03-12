@@ -1,106 +1,78 @@
-package com.volcengine.ark.runtime.model.responses.content;
+package com.volcengine.ark.runtime.model.responses.content
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class InputContentItemImage extends InputContentItem {
-
+class InputContentItemImage : InputContentItem(ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_IMAGE) {
     @JsonProperty("detail")
-    private String detail;
+    var detail: String? = null
 
     @JsonProperty("image_url")
-    private String imageUrl;
+    var imageUrl: String? = null
 
     @JsonProperty("file_id")
-    private String fileId;
+    var fileId: String? = null
 
     @JsonProperty("image_pixel_limit")
-    private ImagePixelLimit imagePixelLimit;
+    private var imagePixelLimit: ImagePixelLimit? = null
 
-    public InputContentItemImage() {
-        super(ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_IMAGE);
+    fun getImagePixelLimit(): ImagePixelLimit? {
+        return imagePixelLimit
     }
 
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
-    }
-
-    public ImagePixelLimit getImagePixelLimit() {
-        return imagePixelLimit;
-    }
-
-    public void setImagePixelLimit(ImagePixelLimit imagePixelLimit) {
-        this.imagePixelLimit = imagePixelLimit;
+    fun setImagePixelLimit(imagePixelLimit: ImagePixelLimit?) {
+        this.imagePixelLimit = imagePixelLimit
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ResponsesContentItemImage{" +
                 "type='" + getType() + '\'' +
                 ", detail='" + detail + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", fileId='" + fileId + '\'' +
                 ", imagePixelLimit=" + imagePixelLimit +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var detail: String? = null
+        private var imageUrl: String? = null
+        private var fileId: String? = null
+        private var imagePixelLimit: ImagePixelLimit? = null
+
+        fun detail(detail: String?): Builder {
+            this.detail = detail
+            return this
+        }
+
+        fun imageUrl(imageUrl: String?): Builder {
+            this.imageUrl = imageUrl
+            return this
+        }
+
+        fun fileId(fileId: String?): Builder {
+            this.fileId = fileId
+            return this
+        }
+
+        fun imagePixelLimit(imagePixelLimit: ImagePixelLimit?): Builder {
+            this.imagePixelLimit = imagePixelLimit
+            return this
+        }
+
+        fun build(): InputContentItemImage {
+            val responsesContentItemImage: InputContentItemImage = com.volcengine.ark.runtime.model.responses.content.InputContentItemImage()
+            responsesContentItemImage.detail = detail
+            responsesContentItemImage.imageUrl = imageUrl
+            responsesContentItemImage.fileId = fileId
+            responsesContentItemImage.setImagePixelLimit(imagePixelLimit)
+            return responsesContentItemImage
+        }
     }
 
-    public static class Builder {
-        private String detail;
-        private String imageUrl;
-        private String fileId;
-        private ImagePixelLimit imagePixelLimit;
-
-        public Builder detail(String detail) {
-            this.detail = detail;
-            return this;
-        }
-
-        public Builder imageUrl(String imageUrl) {
-            this.imageUrl = imageUrl;
-            return this;
-        }
-
-        public Builder fileId(String fileId) {
-            this.fileId = fileId;
-            return this;
-        }
-
-        public Builder imagePixelLimit(ImagePixelLimit imagePixelLimit) {
-            this.imagePixelLimit = imagePixelLimit;
-            return this;
-        }
-
-        public InputContentItemImage build() {
-            InputContentItemImage responsesContentItemImage = new InputContentItemImage();
-            responsesContentItemImage.setDetail(detail);
-            responsesContentItemImage.setImageUrl(imageUrl);
-            responsesContentItemImage.setFileId(fileId);
-            responsesContentItemImage.setImagePixelLimit(imagePixelLimit);
-            return responsesContentItemImage;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.content.InputContentItemImage.Builder()
         }
     }
 }

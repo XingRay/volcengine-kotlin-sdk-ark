@@ -1,61 +1,47 @@
-package com.volcengine.ark.runtime.model.responses.tool.imageprocess;
+package com.volcengine.ark.runtime.model.responses.tool.imageprocess
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ImageProcessAction {
+class ImageProcessAction {
     @JsonProperty("type")
-    private String type;
+    var type: String? = null
 
     @JsonProperty("result_image_url")
-    private String resultImageUrl;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getResultImageUrl() {
-        return resultImageUrl;
-    }
-
-    public void setResultImageUrl(String resultImageUrl) {
-        this.resultImageUrl = resultImageUrl;
-    }
+    var resultImageUrl: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ImageProcessAction{" +
                 "type='" + type + '\'' +
                 ", resultImageUrl='" + resultImageUrl + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var type: String? = null
+        private var resultImageUrl: String? = null
+
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
+        }
+
+        fun resultImageUrl(resultImageUrl: String?): Builder {
+            this.resultImageUrl = resultImageUrl
+            return this
+        }
+
+        fun build(): ImageProcessAction {
+            val imageProcessAction: ImageProcessAction = com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessAction()
+            imageProcessAction.type = type
+            imageProcessAction.resultImageUrl = resultImageUrl
+            return imageProcessAction
+        }
     }
 
-    public static class Builder {
-        private String type;
-        private String resultImageUrl;
-
-        public Builder type(String type) {
-            this.type = type;
-            return this;
-        }
-
-        public Builder resultImageUrl(String resultImageUrl) {
-            this.resultImageUrl = resultImageUrl;
-            return this;
-        }
-
-        public ImageProcessAction build() {
-            ImageProcessAction imageProcessAction = new ImageProcessAction();
-            imageProcessAction.setType(type);
-            imageProcessAction.setResultImageUrl(resultImageUrl);
-            return imageProcessAction;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessAction.Builder()
         }
     }
 }

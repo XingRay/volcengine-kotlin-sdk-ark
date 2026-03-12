@@ -1,65 +1,64 @@
-package com.volcengine.ark.runtime.model.responses.tool.mcp;
+package com.volcengine.ark.runtime.model.responses.tool.mcp
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MCPToolApprovalFilter {
+class MCPToolApprovalFilter {
     @JsonProperty("always")
-    private MCPToolFilter always;
+    private var always: MCPToolFilter? = null
+
     @JsonProperty("never")
-    private MCPToolFilter never;
+    private var never: MCPToolFilter? = null
 
-    public MCPToolFilter getAlways() {
-        return always;
+    fun getAlways(): MCPToolFilter? {
+        return always
     }
 
-    public void setAlways(MCPToolFilter always) {
-        this.always = always;
+    fun setAlways(always: MCPToolFilter?) {
+        this.always = always
     }
 
-    public MCPToolFilter getNever() {
-        return never;
+    fun getNever(): MCPToolFilter? {
+        return never
     }
 
-    public void setNever(MCPToolFilter never) {
-        this.never = never;
+    fun setNever(never: MCPToolFilter?) {
+        this.never = never
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "MCPToolApprovalFilter{" +
                 "always=" + always +
                 ", never=" + never +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder private constructor() {
+        private var always: MCPToolFilter? = null
+        private var never: MCPToolFilter? = null
+
+        fun always(always: MCPToolFilter?): Builder {
+            this.always = always
+            return this
+        }
+
+        fun never(never: MCPToolFilter?): Builder {
+            this.never = never
+            return this
+        }
+
+        fun build(): MCPToolApprovalFilter {
+            val mCPToolApprovalFilter: MCPToolApprovalFilter = com.volcengine.ark.runtime.model.responses.tool.mcp.MCPToolApprovalFilter()
+            mCPToolApprovalFilter.setAlways(always)
+            mCPToolApprovalFilter.setNever(never)
+            return mCPToolApprovalFilter
+        }
     }
 
-    public static final class Builder {
-        private MCPToolFilter always;
-        private MCPToolFilter never;
-
-        private Builder() {
-        }
-
-        public Builder always(MCPToolFilter always) {
-            this.always = always;
-            return this;
-        }
-
-        public Builder never(MCPToolFilter never) {
-            this.never = never;
-            return this;
-        }
-
-        public MCPToolApprovalFilter build() {
-            MCPToolApprovalFilter mCPToolApprovalFilter = new MCPToolApprovalFilter();
-            mCPToolApprovalFilter.setAlways(always);
-            mCPToolApprovalFilter.setNever(never);
-            return mCPToolApprovalFilter;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.mcp.MCPToolApprovalFilter.Builder()
         }
     }
 }

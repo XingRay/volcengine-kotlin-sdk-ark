@@ -1,72 +1,26 @@
-package com.volcengine.ark.runtime.model.responses.item;
+package com.volcengine.ark.runtime.model.responses.item
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemFunctionToolCall extends BaseItem implements InputItem, OutputItem {
+class ItemFunctionToolCall : BaseItem(ResponsesConstants.ITEM_TYPE_FUNCTION_CALL), InputItem, OutputItem {
     @JsonProperty("arguments")
-    private String arguments;
+    var arguments: String? = null
 
     @JsonProperty("call_id")
-    private String callId;
+    var callId: String? = null
 
     @JsonProperty("name")
-    private String name;
+    var name: String? = null
 
     @JsonProperty("id")
-    private String id;
+    var id: String? = null
 
     @JsonProperty("status")
-    private String status;
-
-    public ItemFunctionToolCall() {
-        super(ResponsesConstants.ITEM_TYPE_FUNCTION_CALL);
-    }
-
-    public String getArguments() {
-        return arguments;
-    }
-
-    public void setArguments(String arguments) {
-        this.arguments = arguments;
-    }
-
-    public String getCallId() {
-        return callId;
-    }
-
-    public void setCallId(String callId) {
-        this.callId = callId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    var status: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ItemFunctionToolCall{" +
                 "arguments='" + arguments + '\'' +
                 ", callId='" + callId + '\'' +
@@ -74,53 +28,55 @@ public class ItemFunctionToolCall extends BaseItem implements InputItem, OutputI
                 ", type='" + getType() + '\'' +
                 ", id='" + id + '\'' +
                 ", status='" + status + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var arguments: String? = null
+        private var callId: String? = null
+        private var name: String? = null
+        private var id: String? = null
+        private var status: String? = null
+
+        fun arguments(arguments: String?): Builder {
+            this.arguments = arguments
+            return this
+        }
+
+        fun callId(callId: String?): Builder {
+            this.callId = callId
+            return this
+        }
+
+        fun name(name: String?): Builder {
+            this.name = name
+            return this
+        }
+
+        fun id(id: String?): Builder {
+            this.id = id
+            return this
+        }
+
+        fun status(status: String?): Builder {
+            this.status = status
+            return this
+        }
+
+        fun build(): ItemFunctionToolCall {
+            val itemFunctionToolCall: ItemFunctionToolCall = com.volcengine.ark.runtime.model.responses.item.ItemFunctionToolCall()
+            itemFunctionToolCall.arguments = arguments
+            itemFunctionToolCall.callId = callId
+            itemFunctionToolCall.name = name
+            itemFunctionToolCall.id = id
+            itemFunctionToolCall.status = status
+            return itemFunctionToolCall
+        }
     }
 
-    public static class Builder {
-        private String arguments;
-        private String callId;
-        private String name;
-        private String id;
-        private String status;
-
-        public Builder arguments(String arguments) {
-            this.arguments = arguments;
-            return this;
-        }
-
-        public Builder callId(String callId) {
-            this.callId = callId;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder status(String status) {
-            this.status = status;
-            return this;
-        }
-
-        public ItemFunctionToolCall build() {
-            ItemFunctionToolCall itemFunctionToolCall = new ItemFunctionToolCall();
-            itemFunctionToolCall.setArguments(arguments);
-            itemFunctionToolCall.setCallId(callId);
-            itemFunctionToolCall.setName(name);
-            itemFunctionToolCall.setId(id);
-            itemFunctionToolCall.setStatus(status);
-            return itemFunctionToolCall;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.ItemFunctionToolCall.Builder()
         }
     }
 }

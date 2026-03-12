@@ -1,89 +1,70 @@
-package com.volcengine.ark.runtime.model.completion.chat;
+package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChatCompletionChoice {
-
+class ChatCompletionChoice {
     /**
      * This index of this completion in the returned list.
      */
-    Integer index;
+    var index: Integer? = null
 
     /**
      * The assistant message or delta (when streaming) which was generated
      */
     @JsonAlias("delta")
-    ChatMessage message;
+    var message: ChatMessage? = null
 
     /**
      * The reason why GPT stopped generating, for example "length".
      */
     @JsonProperty("finish_reason")
-    String finishReason;
+    var finishReason: String? = null
 
     /**
      * The type of content moderation service hit.
      */
     @JsonProperty("moderation_hit_type")
-    String moderationHitType;
+    var moderationHitType: String? = null
 
     /**
      * Log probability information for the choice.
      */
     @JsonProperty("logprobs")
-    ChatCompletionChoiceLogprob logprobs;
+    var logprobs: ChatCompletionChoiceLogprob? = null
 
-    public Integer getIndex() {
-        return index;
+    fun getIndex(): Integer? {
+        return index
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
+    fun setIndex(index: Integer?) {
+        this.index = index
     }
 
-    public ChatMessage getMessage() {
-        return message;
+    fun getMessage(): ChatMessage? {
+        return message
     }
 
-    public void setMessage(ChatMessage message) {
-        this.message = message;
+    fun setMessage(message: ChatMessage?) {
+        this.message = message
     }
 
-    public String getFinishReason() {
-        return finishReason;
+    fun getLogprobs(): ChatCompletionChoiceLogprob? {
+        return logprobs
     }
 
-    public void setFinishReason(String finishReason) {
-        this.finishReason = finishReason;
-    }
-
-    public void setModerationHitType(String moderationHitType) {
-        this.moderationHitType = moderationHitType;
-    }
-
-    public String getModerationHitType() {
-        return moderationHitType;
-    }
-
-    public ChatCompletionChoiceLogprob getLogprobs() {
-        return logprobs;
-    }
-
-    public void setLogprobs(ChatCompletionChoiceLogprob logprobs) {
-        this.logprobs = logprobs;
+    fun setLogprobs(logprobs: ChatCompletionChoiceLogprob?) {
+        this.logprobs = logprobs
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ChatCompletionChoice{" +
                 "index=" + index +
                 ", message=" + message +
                 ", finishReason='" + finishReason + '\'' +
                 ", moderationHitType='" + moderationHitType + '\'' +
                 ", logprobs=" + logprobs +
-                '}';
+                '}'
     }
 }

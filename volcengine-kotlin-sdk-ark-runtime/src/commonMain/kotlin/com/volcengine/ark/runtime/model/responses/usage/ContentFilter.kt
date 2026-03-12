@@ -1,61 +1,47 @@
-package com.volcengine.ark.runtime.model.responses.usage;
+package com.volcengine.ark.runtime.model.responses.usage
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ContentFilter {
+class ContentFilter {
     @JsonProperty("type")
-    private String type;
+    var type: String? = null
 
     @JsonProperty("details")
-    private String details;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
+    var details: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ContentFilter{" +
                 "type='" + type + '\'' +
                 ", details='" + details + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var type: String? = null
+        private var details: String? = null
+
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
+        }
+
+        fun details(details: String?): Builder {
+            this.details = details
+            return this
+        }
+
+        fun build(): ContentFilter {
+            val contentFilter = ContentFilter()
+            contentFilter.type = type
+            contentFilter.details = details
+            return contentFilter
+        }
     }
 
-    public static class Builder {
-        private String type;
-        private String details;
-
-        public Builder type(String type) {
-            this.type = type;
-            return this;
-        }
-
-        public Builder details(String details) {
-            this.details = details;
-            return this;
-        }
-
-        public ContentFilter build() {
-            ContentFilter contentFilter = new ContentFilter();
-            contentFilter.setType(type);
-            contentFilter.setDetails(details);
-            return contentFilter;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.usage.ContentFilter.Builder()
         }
     }
 }

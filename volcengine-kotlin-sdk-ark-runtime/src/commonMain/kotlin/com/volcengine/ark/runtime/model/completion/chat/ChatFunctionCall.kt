@@ -1,48 +1,31 @@
-package com.volcengine.ark.runtime.model.completion.chat;
+package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChatFunctionCall {
-
+class ChatFunctionCall {
     /**
      * The name of the function being called
      */
-    String name;
+    var name: String? = null
 
     /**
      * The arguments of the call produced by the model, represented as a JsonNode for easy manipulation.
      */
-    String arguments;
+    var arguments: String? = null
 
-    public ChatFunctionCall(String name, String arguments) {
-        this.name = name;
-        this.arguments = arguments;
+    constructor(name: String?, arguments: String?) {
+        this.name = name
+        this.arguments = arguments
     }
 
-    public ChatFunctionCall(){}
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getArguments() {
-        return arguments;
-    }
-
-    public void setArguments(String arguments) {
-        this.arguments = arguments;
-    }
+    constructor()
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ChatFunctionCall{" +
                 "name='" + name + '\'' +
                 ", arguments=" + arguments +
-                '}';
+                '}'
     }
 }

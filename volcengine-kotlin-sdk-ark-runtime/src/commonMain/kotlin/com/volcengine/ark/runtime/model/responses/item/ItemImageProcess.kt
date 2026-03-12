@@ -1,75 +1,50 @@
-package com.volcengine.ark.runtime.model.responses.item;
+package com.volcengine.ark.runtime.model.responses.item
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessAction;
-import com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessArguments;
-import com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessError;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemImageProcess extends BaseItem implements InputItem, OutputItem {
+class ItemImageProcess : BaseItem(ResponsesConstants.ITEM_TYPE_IMAGE_PROCESS), InputItem, OutputItem {
     @JsonProperty("action")
-    private ImageProcessAction action;
+    private var action: ImageProcessAction? = null
 
     @JsonProperty("arguments")
-    private ImageProcessArguments arguments;
+    private var arguments: ImageProcessArguments? = null
 
     @JsonProperty("status")
-    private String status;
+    var status: String? = null
 
     @JsonProperty("id")
-    private String id;
+    var id: String? = null
 
     @JsonProperty("error")
-    private ImageProcessError error;
+    private var error: ImageProcessError? = null
 
-    public ItemImageProcess() {
-        super(ResponsesConstants.ITEM_TYPE_IMAGE_PROCESS);
+    fun getAction(): ImageProcessAction? {
+        return action
     }
 
-    public ImageProcessAction getAction() {
-        return action;
+    fun setAction(action: ImageProcessAction?) {
+        this.action = action
     }
 
-    public void setAction(ImageProcessAction action) {
-        this.action = action;
+    fun getArguments(): ImageProcessArguments? {
+        return arguments
     }
 
-    public ImageProcessArguments getArguments() {
-        return arguments;
+    fun setArguments(arguments: ImageProcessArguments?) {
+        this.arguments = arguments
     }
 
-    public void setArguments(ImageProcessArguments arguments) {
-        this.arguments = arguments;
+    fun getError(): ImageProcessError? {
+        return error
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public ImageProcessError getError() {
-        return error;
-    }
-
-    public void setError(ImageProcessError error) {
-        this.error = error;
+    fun setError(error: ImageProcessError?) {
+        this.error = error
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ItemImageProcess{" +
                 "type='" + getType() + '\'' +
                 ", action=" + action +
@@ -77,53 +52,55 @@ public class ItemImageProcess extends BaseItem implements InputItem, OutputItem 
                 ", status='" + status + '\'' +
                 ", id='" + id + '\'' +
                 ", error=" + error +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var action: ImageProcessAction? = null
+        private var arguments: ImageProcessArguments? = null
+        private var status: String? = null
+        private var id: String? = null
+        private var error: ImageProcessError? = null
+
+        fun action(action: ImageProcessAction?): Builder {
+            this.action = action
+            return this
+        }
+
+        fun arguments(arguments: ImageProcessArguments?): Builder {
+            this.arguments = arguments
+            return this
+        }
+
+        fun status(status: String?): Builder {
+            this.status = status
+            return this
+        }
+
+        fun id(id: String?): Builder {
+            this.id = id
+            return this
+        }
+
+        fun error(error: ImageProcessError?): Builder {
+            this.error = error
+            return this
+        }
+
+        fun build(): ItemImageProcess {
+            val itemImageProcess: ItemImageProcess = com.volcengine.ark.runtime.model.responses.item.ItemImageProcess()
+            itemImageProcess.setAction(action)
+            itemImageProcess.setArguments(arguments)
+            itemImageProcess.status = status
+            itemImageProcess.id = id
+            itemImageProcess.setError(error)
+            return itemImageProcess
+        }
     }
 
-    public static class Builder {
-        private ImageProcessAction action;
-        private ImageProcessArguments arguments;
-        private String status;
-        private String id;
-        private ImageProcessError error;
-
-        public Builder action(ImageProcessAction action) {
-            this.action = action;
-            return this;
-        }
-
-        public Builder arguments(ImageProcessArguments arguments) {
-            this.arguments = arguments;
-            return this;
-        }
-
-        public Builder status(String status) {
-            this.status = status;
-            return this;
-        }
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder error(ImageProcessError error) {
-            this.error = error;
-            return this;
-        }
-
-        public ItemImageProcess build() {
-            ItemImageProcess itemImageProcess = new ItemImageProcess();
-            itemImageProcess.setAction(action);
-            itemImageProcess.setArguments(arguments);
-            itemImageProcess.setStatus(status);
-            itemImageProcess.setId(id);
-            itemImageProcess.setError(error);
-            return itemImageProcess;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.ItemImageProcess.Builder()
         }
     }
 }

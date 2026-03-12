@@ -1,23 +1,14 @@
-package com.volcengine.ark.runtime.utils;
+package com.volcengine.ark.runtime.utils
 
-public class SSE {
-    private static final String DONE_DATA = "[DONE]";
-    
-    private final String data;
-
-    public SSE(String data){
-        this.data = data;
+class SSE(val data: String?) {
+    fun toBytes(): ByteArray {
+        return String.format("data: %s\n\n", this.data).getBytes()
     }
 
-    public String getData(){
-        return this.data;
-    }
+    val isDone: Boolean
+        get() = com.volcengine.ark.runtime.utils.SSE.Companion.DONE_DATA.equalsIgnoreCase(this.data)
 
-    public byte[] toBytes(){
-        return String.format("data: %s\n\n", this.data).getBytes();
-    }
-
-    public boolean isDone(){
-        return DONE_DATA.equalsIgnoreCase(this.data);
+    companion object {
+        private val DONE_DATA = "[DONE]"
     }
 }

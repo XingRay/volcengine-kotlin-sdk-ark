@@ -1,46 +1,44 @@
-package com.volcengine.ark.runtime.model.responses.item.doubaoapp;
+package com.volcengine.ark.runtime.model.responses.item.doubaoapp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class DoubaoAppSearchResult {
-
+class DoubaoAppSearchResult {
     @JsonProperty("text_card")
-    private DoubaoAppSearchTextItem textCard;
+    private var textCard: DoubaoAppSearchTextItem? = null
 
-    public DoubaoAppSearchTextItem getTextCard() {
-        return textCard;
+    fun getTextCard(): DoubaoAppSearchTextItem? {
+        return textCard
     }
 
-    public void setTextCard(DoubaoAppSearchTextItem textCard) {
-        this.textCard = textCard;
+    fun setTextCard(textCard: DoubaoAppSearchTextItem?) {
+        this.textCard = textCard
     }
 
-    public DoubaoAppSearchResult() {
-    }
+    class Builder {
+        private var textCard: DoubaoAppSearchTextItem? = null
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private DoubaoAppSearchTextItem textCard;
-
-        public Builder textCard(DoubaoAppSearchTextItem textCard) {
-            this.textCard = textCard;
-            return this;
+        fun textCard(textCard: DoubaoAppSearchTextItem?): Builder {
+            this.textCard = textCard
+            return this
         }
 
-        public DoubaoAppSearchResult build() {
-            DoubaoAppSearchResult searchResult = new DoubaoAppSearchResult();
-            searchResult.setTextCard(textCard);
-            return searchResult;
+        fun build(): DoubaoAppSearchResult {
+            val searchResult: DoubaoAppSearchResult = com.volcengine.ark.runtime.model.responses.item.doubaoapp.DoubaoAppSearchResult()
+            searchResult.setTextCard(textCard)
+            return searchResult
         }
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DoubaoAppSearchResult{" +
                 "textCard=" + textCard +
-                '}';
+                '}'
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.doubaoapp.DoubaoAppSearchResult.Builder()
+        }
     }
 }

@@ -1,65 +1,51 @@
-package com.volcengine.ark.runtime.model.responses.common;
+package com.volcengine.ark.runtime.model.responses.common
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ResponsesCaching {
+class ResponsesCaching {
     @JsonProperty("type")
-    private String type;
+    var type: String? = null
 
 
     @JsonProperty("prefix")
-    private Boolean prefix;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Boolean getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(Boolean prefix) {
-        this.prefix = prefix;
-    }
+    var prefix: Boolean? = null
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("ResponsesCaching{");
-        sb.append("type='").append(type).append('\'');
+    fun toString(): String {
+        val sb = StringBuilder("ResponsesCaching{")
+        sb.append("type='").append(type).append('\'')
         if (prefix != null) {
-            sb.append(", prefix=").append(prefix);
+            sb.append(", prefix=").append(prefix)
         }
-        sb.append('}');
-        return sb.toString();
+        sb.append('}')
+        return sb.toString()
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var type: String? = null
+        private var prefix: Boolean? = null
+
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
+        }
+
+        fun prefix(prefix: Boolean?): Builder {
+            this.prefix = prefix
+            return this
+        }
+
+        fun build(): ResponsesCaching {
+            val responsesCaching: ResponsesCaching = com.volcengine.ark.runtime.model.responses.common.ResponsesCaching()
+            responsesCaching.type = type
+            responsesCaching.prefix = prefix
+            return responsesCaching
+        }
     }
 
-    public static class Builder {
-        private String type;
-        private Boolean prefix;
-
-        public Builder type(String type) {
-            this.type = type;
-            return this;
-        }
-
-        public Builder prefix(Boolean prefix) {
-            this.prefix = prefix;
-            return this;
-        }
-
-        public ResponsesCaching build() {
-            ResponsesCaching responsesCaching = new ResponsesCaching();
-            responsesCaching.setType(type);
-            responsesCaching.setPrefix(prefix);
-            return responsesCaching;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.common.ResponsesCaching.Builder()
         }
     }
 }

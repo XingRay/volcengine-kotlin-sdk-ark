@@ -1,107 +1,78 @@
-package com.volcengine.ark.runtime.model.files;
+package com.volcengine.ark.runtime.model.files
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ListFilesRequest {
-    public String getOrder() {
-        return order;
+class ListFilesRequest {
+    fun getLimit(): Integer? {
+        return limit
     }
 
-    public void setOrder(String order) {
-        this.order = order;
-    }
-
-    public String getAfter() {
-        return after;
-    }
-
-    public void setAfter(String after) {
-        this.after = after;
-    }
-
-    public Integer getLimit() {
-        return limit;
-    }
-
-    public void setLimit(Integer limit) {
-        this.limit = limit;
-    }
-
-    public String getPurpose() {
-        return purpose;
-    }
-
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
+    fun setLimit(limit: Integer?) {
+        this.limit = limit
     }
 
     @JsonProperty(value = "after")
-    private String after;
+    var after: String? = null
 
     @JsonProperty(value = "limit")
-    private Integer limit;
+    private var limit: Integer? = null
 
     @JsonProperty(value = "order")
-    private String order;
+    var order: String? = null
 
     @JsonProperty(value = "purpose")
-    private String purpose;
+    var purpose: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ListFilesRequest{" +
                 "after='" + after + '\'' +
                 ", limit=" + limit +
                 ", order='" + order + '\'' +
                 ", purpose='" + purpose + '\'' +
-                '}';
+                '}'
     }
 
-    public ListFilesRequest() {
-    }
+    class ListFilesRequestBuilder private constructor() {
+        private var after: String? = null
+        private var limit: Integer? = null
+        private var order: String? = null
+        private var purpose: String? = null
 
-    public static final class ListFilesRequestBuilder {
-        private String after;
-        private Integer limit;
-        private String order;
-        private String purpose;
-
-        private ListFilesRequestBuilder() {
+        fun after(after: String?): ListFilesRequestBuilder {
+            this.after = after
+            return this
         }
 
-        public static ListFilesRequestBuilder aListFilesRequest() {
-            return new ListFilesRequestBuilder();
+        fun limit(limit: Integer?): ListFilesRequestBuilder {
+            this.limit = limit
+            return this
         }
 
-        public ListFilesRequestBuilder after(String after) {
-            this.after = after;
-            return this;
+        fun order(order: String?): ListFilesRequestBuilder {
+            this.order = order
+            return this
         }
 
-        public ListFilesRequestBuilder limit(Integer limit) {
-            this.limit = limit;
-            return this;
+        fun purpose(purpose: String?): ListFilesRequestBuilder {
+            this.purpose = purpose
+            return this
         }
 
-        public ListFilesRequestBuilder order(String order) {
-            this.order = order;
-            return this;
+        fun build(): ListFilesRequest {
+            val listFilesRequest: ListFilesRequest = com.volcengine.ark.runtime.model.files.ListFilesRequest()
+            listFilesRequest.after = after
+            listFilesRequest.setLimit(limit)
+            listFilesRequest.order = order
+            listFilesRequest.purpose = purpose
+            return listFilesRequest
         }
 
-        public ListFilesRequestBuilder purpose(String purpose) {
-            this.purpose = purpose;
-            return this;
-        }
-
-        public ListFilesRequest build() {
-            ListFilesRequest listFilesRequest = new ListFilesRequest();
-            listFilesRequest.setAfter(after);
-            listFilesRequest.setLimit(limit);
-            listFilesRequest.setOrder(order);
-            listFilesRequest.setPurpose(purpose);
-            return listFilesRequest;
+        companion object {
+            fun aListFilesRequest(): ListFilesRequestBuilder {
+                return com.volcengine.ark.runtime.model.files.ListFilesRequest.ListFilesRequestBuilder()
+            }
         }
     }
 }

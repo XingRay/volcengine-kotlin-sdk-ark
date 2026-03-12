@@ -1,103 +1,101 @@
-package com.volcengine.ark.runtime.model.responses.tool.doubaoapp;
+package com.volcengine.ark.runtime.model.responses.tool.doubaoapp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class DoubaoAppFeature {
-
+class DoubaoAppFeature {
     @JsonProperty("chat")
-    private DoubaoAppFeatureItem chat;
+    private var chat: DoubaoAppFeatureItem? = null
 
     @JsonProperty("deep_chat")
-    private DoubaoAppFeatureItem deepChat;
+    private var deepChat: DoubaoAppFeatureItem? = null
 
     @JsonProperty("ai_search")
-    private DoubaoAppFeatureItem aiSearch;
+    private var aiSearch: DoubaoAppFeatureItem? = null
 
     @JsonProperty("reasoning_search")
-    private DoubaoAppFeatureItem reasoningSearch;
+    private var reasoningSearch: DoubaoAppFeatureItem? = null
 
-    public DoubaoAppFeatureItem getChat() {
-        return chat;
+    fun getChat(): DoubaoAppFeatureItem? {
+        return chat
     }
 
-    public void setChat(DoubaoAppFeatureItem chat) {
-        this.chat = chat;
+    fun setChat(chat: DoubaoAppFeatureItem?) {
+        this.chat = chat
     }
 
-    public DoubaoAppFeatureItem getDeepChat() {
-        return deepChat;
+    fun getDeepChat(): DoubaoAppFeatureItem? {
+        return deepChat
     }
 
-    public void setDeepChat(DoubaoAppFeatureItem deepChat) {
-        this.deepChat = deepChat;
+    fun setDeepChat(deepChat: DoubaoAppFeatureItem?) {
+        this.deepChat = deepChat
     }
 
-    public DoubaoAppFeatureItem getAiSearch() {
-        return aiSearch;
+    fun getAiSearch(): DoubaoAppFeatureItem? {
+        return aiSearch
     }
 
-    public void setAiSearch(DoubaoAppFeatureItem aiSearch) {
-        this.aiSearch = aiSearch;
+    fun setAiSearch(aiSearch: DoubaoAppFeatureItem?) {
+        this.aiSearch = aiSearch
     }
 
-    public DoubaoAppFeatureItem getReasoningSearch() {
-        return reasoningSearch;
+    fun getReasoningSearch(): DoubaoAppFeatureItem? {
+        return reasoningSearch
     }
 
-    public void setReasoningSearch(DoubaoAppFeatureItem reasoningSearch) {
-        this.reasoningSearch = reasoningSearch;
+    fun setReasoningSearch(reasoningSearch: DoubaoAppFeatureItem?) {
+        this.reasoningSearch = reasoningSearch
     }
 
-    public DoubaoAppFeature() {
-    }
+    class Builder {
+        private var chat: DoubaoAppFeatureItem? = null
+        private var deepChat: DoubaoAppFeatureItem? = null
+        private var aiSearch: DoubaoAppFeatureItem? = null
+        private var reasoningSearch: DoubaoAppFeatureItem? = null
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private DoubaoAppFeatureItem chat;
-        private DoubaoAppFeatureItem deepChat;
-        private DoubaoAppFeatureItem aiSearch;
-        private DoubaoAppFeatureItem reasoningSearch;
-
-        public Builder chat(DoubaoAppFeatureItem chat) {
-            this.chat = chat;
-            return this;
+        fun chat(chat: DoubaoAppFeatureItem?): Builder {
+            this.chat = chat
+            return this
         }
 
-        public Builder deepChat(DoubaoAppFeatureItem deepChat) {
-            this.deepChat = deepChat;
-            return this;
+        fun deepChat(deepChat: DoubaoAppFeatureItem?): Builder {
+            this.deepChat = deepChat
+            return this
         }
 
-        public Builder aiSearch(DoubaoAppFeatureItem aiSearch) {
-            this.aiSearch = aiSearch;
-            return this;
+        fun aiSearch(aiSearch: DoubaoAppFeatureItem?): Builder {
+            this.aiSearch = aiSearch
+            return this
         }
 
-        public Builder reasoningSearch(DoubaoAppFeatureItem reasoningSearch) {
-            this.reasoningSearch = reasoningSearch;
-            return this;
+        fun reasoningSearch(reasoningSearch: DoubaoAppFeatureItem?): Builder {
+            this.reasoningSearch = reasoningSearch
+            return this
         }
 
-        public DoubaoAppFeature build() {
-            DoubaoAppFeature feature = new DoubaoAppFeature();
-            feature.setChat(chat);
-            feature.setDeepChat(deepChat);
-            feature.setAiSearch(aiSearch);
-            feature.setReasoningSearch(reasoningSearch);
-            return feature;
+        fun build(): DoubaoAppFeature {
+            val feature: DoubaoAppFeature = com.volcengine.ark.runtime.model.responses.tool.doubaoapp.DoubaoAppFeature()
+            feature.setChat(chat)
+            feature.setDeepChat(deepChat)
+            feature.setAiSearch(aiSearch)
+            feature.setReasoningSearch(reasoningSearch)
+            return feature
         }
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DoubaoAppFeature{" +
                 "chat=" + chat +
                 ", deepChat=" + deepChat +
                 ", aiSearch=" + aiSearch +
                 ", reasoningSearch=" + reasoningSearch +
-                '}';
+                '}'
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.doubaoapp.DoubaoAppFeature.Builder()
+        }
     }
 }

@@ -1,28 +1,23 @@
-package com.volcengine.ark.runtime.utils;
+package com.volcengine.ark.runtime.utils
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.annotation.JsonInclude
 
-public class JacksonUtil {
-    private static final ObjectMapper objectMapper = defaultObjectMapper();
+object JacksonUtil {
+    private val objectMapper: ObjectMapper = com.volcengine.ark.runtime.utils.JacksonUtil.defaultObjectMapper()
 
-    private static ObjectMapper defaultObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
-        return mapper;
+    private fun defaultObjectMapper(): ObjectMapper {
+        val mapper: ObjectMapper = ObjectMapper()
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+        return mapper
     }
 
-    public static JsonNode clsToJsonNode(Object o) {
-        return objectMapper.valueToTree(o);
+    fun clsToJsonNode(o: Object?): JsonNode {
+        return com.volcengine.ark.runtime.utils.JacksonUtil.objectMapper.valueToTree(o)
     }
 
-    public static <T> T jsonNodeToCls(JsonNode j, Class<T> cls) {
-        return objectMapper.convertValue(j, cls);
+    fun <T> jsonNodeToCls(j: JsonNode?, cls: Class<T?>?): T? {
+        return com.volcengine.ark.runtime.utils.JacksonUtil.objectMapper.convertValue(j, cls)
     }
-
 }

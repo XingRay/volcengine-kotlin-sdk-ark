@@ -1,66 +1,41 @@
-package com.volcengine.ark.runtime.model.completion.chat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.JsonNode;
+package com.volcengine.ark.runtime.model.completion.chat
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ResponseFormatJSONSchemaJSONSchemaParam {
-    String name;
-    String description;
-    JsonNode schema;
-    boolean strict;
+class ResponseFormatJSONSchemaJSONSchemaParam {
+    var name: String?
+    var description: String? = null
+    var schema: JsonNode? = null
+    var isStrict: Boolean = false
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ResponseFormatJSONSchemaJSONSchemaParam{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", schema=" + schema +
-                ", strict=" + strict +
-                '}';
+                ", strict=" + this.isStrict +
+                '}'
     }
 
-    public String getName() {
-        return name;
+    fun getSchema(): JsonNode? {
+        return schema
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public JsonNode getSchema() {
-        return schema;
-    }
-
-    public void setSchema(JsonNode schema) {
-        this.schema = schema;
-    }
-
-    public boolean isStrict() {
-        return strict;
-    }
-
-    public void setStrict(boolean strict) {
-        this.strict = strict;
+    fun setSchema(schema: JsonNode?) {
+        this.schema = schema
     }
 
 
-    public ResponseFormatJSONSchemaJSONSchemaParam(String name) {
-        this.name = name;
+    constructor(name: String?) {
+        this.name = name
     }
 
-    public ResponseFormatJSONSchemaJSONSchemaParam(String name, String description, JsonNode schema, boolean strict) {
-        this.name = name;
-        this.description = description;
-        this.schema = schema;
-        this.strict = strict;
+    constructor(name: String?, description: String?, schema: JsonNode?, strict: Boolean) {
+        this.name = name
+        this.description = description
+        this.schema = schema
+        this.isStrict = strict
     }
 }

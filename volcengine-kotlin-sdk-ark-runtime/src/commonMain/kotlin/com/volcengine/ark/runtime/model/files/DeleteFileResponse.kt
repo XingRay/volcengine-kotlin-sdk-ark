@@ -1,53 +1,27 @@
-package com.volcengine.ark.runtime.model.files;
+package com.volcengine.ark.runtime.model.files
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DeleteFileResponse {
-
-    public String getObject() {
-        return object;
-    }
-
-    public void setObject(String object) {
-        this.object = object;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Boolean getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
-    }
-
+class DeleteFileResponse {
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DeleteFileResponse{" +
-                "object='" + object + '\'' +
+                "object='" + this.`object` + '\'' +
                 ", id='" + id + '\'' +
                 ", deleted=" + deleted +
-                '}';
+                '}'
     }
 
     @JsonProperty(value = "object")
-    private String object;
+    var `object`: String? = null
+        set(object) {
+            field = this.`object`
+        }
 
     @JsonProperty(value = "id")
-    private String id;
+    var id: String? = null
 
     @JsonProperty(value = "deleted")
-    private Boolean deleted;
-
-    public DeleteFileResponse() {
-    }
+    var deleted: Boolean? = null
 }

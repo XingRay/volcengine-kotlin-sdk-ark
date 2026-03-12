@@ -1,182 +1,156 @@
-package com.volcengine.ark.runtime.model.completion.chat;
+package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.utils.Converter;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChatMessage {
+class ChatMessage {
+    var role: ChatMessageRole? = null
 
-	ChatMessageRole role;
+    var content: Object? = null
 
-	Object content;
+    @JsonProperty("reasoning_content")
+    var reasoningContent: String? = null
 
-	@JsonProperty("reasoning_content")
-	String reasoningContent;
+    var name: String? = null
 
-	private String name;
-	@JsonProperty("function_call")
-	ChatFunctionCall functionCall;
+    @JsonProperty("function_call")
+    var functionCall: ChatFunctionCall? = null
 
-	@JsonProperty("tool_calls")
-	List<ChatToolCall> toolCalls;
+    @JsonProperty("tool_calls")
+    var toolCalls: List<ChatToolCall?>? = null
 
-	@JsonProperty("tool_call_id")
-	String toolCallId;
+    @JsonProperty("tool_call_id")
+    var toolCallId: String? = null
 
-	public ChatMessageRole getRole() {
-		return role;
-	}
+    fun getRole(): ChatMessageRole? {
+        return role
+    }
 
-	public void setRole(ChatMessageRole role) {
-		this.role = role;
-	}
+    fun setRole(role: ChatMessageRole?) {
+        this.role = role
+    }
 
-	public Object getContent() {
-		return content;
-	}
+    fun getContent(): Object? {
+        return content
+    }
 
-	public String stringContent() {
-		return String.class.cast(content);
-	}
+    fun stringContent(): String {
+        return String::class.java.cast(content)
+    }
 
-	public List<ChatCompletionContentPart> multiContent() {
-		return Converter.castList(content, ChatCompletionContentPart.class);
-	}
+    fun multiContent(): List<ChatCompletionContentPart?> {
+        return Converter.castList(content, ChatCompletionContentPart::class.java)
+    }
 
-	public void setContent(Object content) {
-		this.content = content;
-	}
+    fun setContent(content: Object?) {
+        this.content = content
+    }
 
 
-	public String getName() {
-		return name;
-	}
+    fun getFunctionCall(): ChatFunctionCall? {
+        return functionCall
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    fun setFunctionCall(functionCall: ChatFunctionCall?) {
+        this.functionCall = functionCall
+    }
 
-	public ChatFunctionCall getFunctionCall() {
-		return functionCall;
-	}
+    fun getToolCalls(): List<ChatToolCall?>? {
+        return toolCalls
+    }
 
-	public void setFunctionCall(ChatFunctionCall functionCall) {
-		this.functionCall = functionCall;
-	}
+    fun setToolCalls(toolCalls: List<ChatToolCall?>?) {
+        this.toolCalls = toolCalls
+    }
 
-	public List<ChatToolCall> getToolCalls() {
-		return toolCalls;
-	}
+    @Override
+    fun toString(): String? {
+        return "ChatMessage{" +
+                "role=" + role +
+                ", content=" + content +
+                ", reasoningContent='" + reasoningContent + '\'' +
+                ", name='" + name + '\'' +
+                ", functionCall=" + functionCall +
+                ", toolCalls=" + toolCalls +
+                ", toolCallId='" + toolCallId + '\'' +
+                '}'
+    }
 
-	public void setToolCalls(List<ChatToolCall> toolCalls) {
-		this.toolCalls = toolCalls;
-	}
+    class Builder {
+        private var role: ChatMessageRole? = null
 
-	public String getToolCallId() {
-		return toolCallId;
-	}
+        private var content: Object? = null
 
-	public void setToolCallId(String toolCallId) {
-		this.toolCallId = toolCallId;
-	}
+        @JsonProperty("reasoning_content")
+        private var reasoningContent: String? = null
 
-	public String getReasoningContent() {
-		return reasoningContent;
-	}
+        private var name: String? = null
 
-	public void setReasoningContent(String reasoningContent) {
-		this.reasoningContent = reasoningContent;
-	}
+        @JsonProperty("function_call")
+        private var functionCall: ChatFunctionCall? = null
 
-	public static Builder builder() {
-		return new Builder();
-	}
+        @JsonProperty("tool_calls")
+        private var toolCalls: List<ChatToolCall?>? = null
 
-	@Override
-	public String toString() {
-		return "ChatMessage{" +
-				"role=" + role +
-				", content=" + content +
-				", reasoningContent='" + reasoningContent + '\'' +
-				", name='" + name + '\'' +
-				", functionCall=" + functionCall +
-				", toolCalls=" + toolCalls +
-				", toolCallId='" + toolCallId + '\'' +
-				'}';
-	}
+        @JsonProperty("tool_call_id")
+        private var toolCallId: String? = null
 
-	public static class Builder {
+        fun role(role: ChatMessageRole?): Builder {
+            this.role = role
+            return this
+        }
 
-		private ChatMessageRole role;
+        fun content(content: String?): Builder {
+            this.content = content
+            return this
+        }
 
-		private Object content;
+        fun multiContent(multiContent: List<ChatCompletionContentPart?>?): Builder {
+            this.content = multiContent
+            return this
+        }
 
-		@JsonProperty("reasoning_content")
-		private String reasoningContent;
+        fun name(name: String?): Builder {
+            this.name = name
+            return this
+        }
 
-		private String name;
-		@JsonProperty("function_call")
-		private ChatFunctionCall functionCall;
+        fun functionCall(functionCall: ChatFunctionCall?): Builder {
+            this.functionCall = functionCall
+            return this
+        }
 
-		@JsonProperty("tool_calls")
-		private List<ChatToolCall> toolCalls;
+        fun toolCalls(toolCalls: List<ChatToolCall?>?): Builder {
+            this.toolCalls = toolCalls
+            return this
+        }
 
-		@JsonProperty("tool_call_id")
-		private String toolCallId;
+        fun toolCallId(toolCallId: String?): Builder {
+            this.toolCallId = toolCallId
+            return this
+        }
 
-		public ChatMessage.Builder role(ChatMessageRole role) {
-			this.role = role;
-			return this;
-		}
+        fun reasoningContent(reasoningContent: String?): Builder {
+            this.reasoningContent = reasoningContent
+            return this
+        }
 
-		public ChatMessage.Builder content(String content) {
-			this.content = content;
-			return this;
-		}
+        fun build(): ChatMessage {
+            val chatMessage: ChatMessage = com.volcengine.ark.runtime.model.completion.chat.ChatMessage()
+            chatMessage.setRole(role)
+            chatMessage.setContent(content)
+            chatMessage.reasoningContent = reasoningContent
+            chatMessage.name = name
+            chatMessage.setFunctionCall(functionCall)
+            chatMessage.setToolCalls(toolCalls)
+            chatMessage.toolCallId = toolCallId
+            return chatMessage
+        }
+    }
 
-		public ChatMessage.Builder multiContent(List<ChatCompletionContentPart> multiContent) {
-			this.content = multiContent;
-			return this;
-		}
-
-		public ChatMessage.Builder name(String name) {
-			this.name = name;
-			return this;
-		}
-
-		public ChatMessage.Builder functionCall(ChatFunctionCall functionCall) {
-			this.functionCall = functionCall;
-			return this;
-		}
-
-		public ChatMessage.Builder toolCalls(List<ChatToolCall> toolCalls) {
-			this.toolCalls = toolCalls;
-			return this;
-		}
-
-		public ChatMessage.Builder toolCallId(String toolCallId) {
-			this.toolCallId = toolCallId;
-			return this;
-		}
-
-		public ChatMessage.Builder reasoningContent(String reasoningContent) {
-			this.reasoningContent = reasoningContent;
-			return this;
-		}
-
-		public ChatMessage build() {
-			ChatMessage chatMessage = new ChatMessage();
-			chatMessage.setRole(role);
-			chatMessage.setContent(content);
-			chatMessage.setReasoningContent(reasoningContent);
-			chatMessage.setName(name);
-			chatMessage.setFunctionCall(functionCall);
-			chatMessage.setToolCalls(toolCalls);
-			chatMessage.setToolCallId(toolCallId);
-			return chatMessage;
-		}
-	}
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.completion.chat.ChatMessage.Builder()
+        }
+    }
 }

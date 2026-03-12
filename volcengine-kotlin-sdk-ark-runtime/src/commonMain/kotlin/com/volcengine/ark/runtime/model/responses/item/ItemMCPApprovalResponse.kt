@@ -1,72 +1,48 @@
-package com.volcengine.ark.runtime.model.responses.item;
+package com.volcengine.ark.runtime.model.responses.item
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemMCPApprovalResponse extends BaseItem implements InputItem {
-
+class ItemMCPApprovalResponse : BaseItem(ResponsesConstants.ITEM_TYPE_MCP_APPROVAL_RESPONSE), InputItem {
     @JsonProperty("approve")
-    private Boolean approve;
+    var approve: Boolean? = null
 
     @JsonProperty("approval_request_id")
-    private String approvalRequestId;
-
-    public ItemMCPApprovalResponse() {
-        super(ResponsesConstants.ITEM_TYPE_MCP_APPROVAL_RESPONSE);
-    }
-
-    public Boolean getApprove() {
-        return approve;
-    }
-
-    public void setApprove(Boolean approve) {
-        this.approve = approve;
-    }
-
-    public String getApprovalRequestId() {
-        return approvalRequestId;
-    }
-
-    public void setApprovalRequestId(String approvalRequestId) {
-        this.approvalRequestId = approvalRequestId;
-    }
+    var approvalRequestId: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ItemMCPApprovalResponse{" +
                 "approve=" + approve +
                 ", approvalRequestId='" + approvalRequestId + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder private constructor() {
+        private var approve: Boolean? = null
+        private var approvalRequestId: String? = null
+
+        fun approve(approve: Boolean?): Builder {
+            this.approve = approve
+            return this
+        }
+
+        fun approvalRequestId(approvalRequestId: String?): Builder {
+            this.approvalRequestId = approvalRequestId
+            return this
+        }
+
+        fun build(): ItemMCPApprovalResponse {
+            val itemMCPApprovalResponse: ItemMCPApprovalResponse = com.volcengine.ark.runtime.model.responses.item.ItemMCPApprovalResponse()
+            itemMCPApprovalResponse.approve = approve
+            itemMCPApprovalResponse.approvalRequestId = approvalRequestId
+            return itemMCPApprovalResponse
+        }
     }
 
-    public static final class Builder {
-        private Boolean approve;
-        private String approvalRequestId;
-
-        private Builder() {
-        }
-
-        public Builder approve(Boolean approve) {
-            this.approve = approve;
-            return this;
-        }
-
-        public Builder approvalRequestId(String approvalRequestId) {
-            this.approvalRequestId = approvalRequestId;
-            return this;
-        }
-
-        public ItemMCPApprovalResponse build() {
-            ItemMCPApprovalResponse itemMCPApprovalResponse = new ItemMCPApprovalResponse();
-            itemMCPApprovalResponse.setApprove(approve);
-            itemMCPApprovalResponse.setApprovalRequestId(approvalRequestId);
-            return itemMCPApprovalResponse;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.ItemMCPApprovalResponse.Builder()
         }
     }
 }

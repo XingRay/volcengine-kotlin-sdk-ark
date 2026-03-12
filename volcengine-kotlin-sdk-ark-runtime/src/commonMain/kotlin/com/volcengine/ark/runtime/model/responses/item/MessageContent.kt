@@ -1,107 +1,93 @@
-package com.volcengine.ark.runtime.model.responses.item;
+package com.volcengine.ark.runtime.model.responses.item
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.volcengine.ark.runtime.model.responses.content.InputContentItem;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonSerialize(using = MessageContent.MessageContentSerializer.class)
-@JsonDeserialize(using = MessageContent.MessageContentDeserializer.class)
-public class MessageContent {
-    private String stringValue;
-    private List<InputContentItem> listValue;
+@JsonSerialize(using = com.volcengine.ark.runtime.model.responses.item.MessageContent.MessageContentSerializer::class)
+@JsonDeserialize(using = com.volcengine.ark.runtime.model.responses.item.MessageContent.MessageContentDeserializer::class)
+class MessageContent {
+    var stringValue: String? = null
+    private var listValue: List<InputContentItem?>? = null
 
-    public String getStringValue() {
-        return stringValue;
+    fun getListValue(): List<InputContentItem?>? {
+        return listValue
     }
 
-    public void setStringValue(String stringValue) {
-        this.stringValue = stringValue;
+    fun setListValue(listValue: List<InputContentItem?>?) {
+        this.listValue = listValue
     }
 
-    public List<InputContentItem> getListValue() {
-        return listValue;
-    }
-
-    public void setListValue(List<InputContentItem> listValue) {
-        this.listValue = listValue;
-    }
-
-    public static class MessageContentSerializer extends JsonSerializer<MessageContent> {
+    class MessageContentSerializer : JsonSerializer<MessageContent?>() {
         @Override
-        public void serialize(MessageContent value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        @Throws(IOException::class)
+        fun serialize(value: MessageContent, gen: JsonGenerator, serializers: SerializerProvider?) {
             if (value.stringValue != null) {
-                gen.writeString(value.stringValue);
+                gen.writeString(value.stringValue)
             } else if (value.listValue != null) {
-                gen.writeObject(value.listValue);
+                gen.writeObject(value.listValue)
             } else {
-                gen.writeNull();
+                gen.writeNull()
             }
         }
     }
 
-    public static class MessageContentDeserializer extends JsonDeserializer<MessageContent> {
+    class MessageContentDeserializer : JsonDeserializer<MessageContent?>() {
         @Override
-        public MessageContent deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-            JsonNode node = p.getCodec().readTree(p);
-            MessageContent result = new MessageContent();
+        @Throws(IOException::class)
+        fun deserialize(p: JsonParser, ctxt: DeserializationContext?): MessageContent {
+            val node: JsonNode = p.getCodec().readTree(p)
+            val result: MessageContent = com.volcengine.ark.runtime.model.responses.item.MessageContent()
 
             if (node.isTextual()) {
-                result.setStringValue(node.asText());
+                result.stringValue = node.asText()
             } else if (node.isArray()) {
-                List<InputContentItem> list = new ArrayList<>();
-                for (JsonNode itemNode : node) {
-                    InputContentItem item = p.getCodec().treeToValue(itemNode, InputContentItem.class);
-                    list.add(item);
+                val list: List<InputContentItem?> = ArrayList()
+                for (itemNode in node) {
+                    val item: InputContentItem? = p.getCodec().treeToValue(itemNode, InputContentItem::class.java)
+                    list.add(item)
                 }
-                result.setListValue(list);
+                result.setListValue(list)
             } else {
-                throw new IOException("Unexpected JSON type for MessageContent");
+                throw IOException("Unexpected JSON type for MessageContent")
             }
 
-            return result;
+            return result
         }
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    class Builder {
+        private var stringValue: String? = null
+        private var listValue: List<InputContentItem?>? = null
 
-    public static class Builder {
-        private String stringValue;
-        private List<InputContentItem> listValue;
-
-        public Builder stringValue(String stringValue) {
-            this.stringValue = stringValue;
-            return this;
+        fun stringValue(stringValue: String?): Builder {
+            this.stringValue = stringValue
+            return this
         }
 
-        public Builder listValue(List<InputContentItem> listValue) {
-            this.listValue = listValue;
-            return this;
+        fun listValue(listValue: List<InputContentItem?>?): Builder {
+            this.listValue = listValue
+            return this
         }
 
-        public Builder addListItem(InputContentItem listValue) {
+        fun addListItem(listValue: InputContentItem?): Builder {
             if (this.listValue == null) {
-                this.listValue = new ArrayList<>();
+                this.listValue = ArrayList()
             }
-            this.listValue.add(listValue);
-            return this;
+            this.listValue.add(listValue)
+            return this
         }
 
-        public MessageContent build() {
-            MessageContent messageContent = new MessageContent();
-            messageContent.setStringValue(stringValue);
-            messageContent.setListValue(listValue);
-            return messageContent;
+        fun build(): MessageContent {
+            val messageContent: MessageContent = com.volcengine.ark.runtime.model.responses.item.MessageContent()
+            messageContent.stringValue = stringValue
+            messageContent.setListValue(listValue)
+            return messageContent
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.MessageContent.Builder()
         }
     }
 }

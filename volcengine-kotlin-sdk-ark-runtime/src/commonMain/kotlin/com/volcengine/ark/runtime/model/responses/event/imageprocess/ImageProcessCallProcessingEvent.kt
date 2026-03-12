@@ -1,39 +1,32 @@
-package com.volcengine.ark.runtime.model.responses.event.imageprocess;
+package com.volcengine.ark.runtime.model.responses.event.imageprocess
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
-import com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessAction;
-import com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessArguments;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ImageProcessCallProcessingEvent extends ItemEvent {
+class ImageProcessCallProcessingEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_IMAGE_PROCESS_CALL_PROGRESSING) {
     @JsonProperty("action")
-    private ImageProcessAction action;
+    private var action: ImageProcessAction? = null
+
     @JsonProperty("arguments")
-    private ImageProcessArguments arguments;
+    private var arguments: ImageProcessArguments? = null
 
-    public ImageProcessAction getAction() {
-        return action;
+    fun getAction(): ImageProcessAction? {
+        return action
     }
 
-    public void setAction(ImageProcessAction action) {
-        this.action = action;
+    fun setAction(action: ImageProcessAction?) {
+        this.action = action
     }
 
-    public ImageProcessArguments getArguments() {
-        return arguments;
+    fun getArguments(): ImageProcessArguments? {
+        return arguments
     }
 
-    public void setArguments(ImageProcessArguments arguments) {
-        this.arguments = arguments;
-    }
-
-    public ImageProcessCallProcessingEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_IMAGE_PROCESS_CALL_PROGRESSING);
+    fun setArguments(arguments: ImageProcessArguments?) {
+        this.arguments = arguments
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ImageProcessCallProcessingEvent{" +
                 "type='" + getType() + '\'' +
                 ", sequenceNumber=" + getSequenceNumber() +
@@ -41,8 +34,6 @@ public class ImageProcessCallProcessingEvent extends ItemEvent {
                 ", outputIndex=" + getOutputIndex() +
                 ", action=" + action +
                 ", arguments=" + arguments +
-                '}';
+                '}'
     }
-
-
 }

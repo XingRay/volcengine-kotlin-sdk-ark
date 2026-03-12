@@ -1,31 +1,21 @@
-package com.volcengine.ark.runtime.model.bot.completion.chat.usage;
+package com.volcengine.ark.runtime.model.bot.completion.chat.usage
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.volcengine.ark.runtime.model.Usage;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BotModelUsage extends Usage {
-
+class BotModelUsage : Usage() {
     /**
      * The model name
      */
-    private String name;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    var name: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "BotModelUsage{" +
                 "promptTokens=" + getPromptTokens() +
                 ", completionTokens=" + getCompletionTokens() +
                 ", totalTokens=" + getTotalTokens() +
                 ", name='" + name + '\'' +
-                '}';
+                '}'
     }
 }

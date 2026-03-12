@@ -1,45 +1,37 @@
-package com.volcengine.ark.runtime.model.responses.common;
+package com.volcengine.ark.runtime.model.responses.common
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ResponsesReasoning {
-
+class ResponsesReasoning {
     @JsonProperty("effort")
-    private String effort;
-
-    public String getEffort() {
-        return effort;
-    }
-
-    public void setEffort(String effort) {
-        this.effort = effort;
-    }
-
+    var effort: String? = null
 
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ResponseReasoning{" +
                 "effort='" + effort + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    class Builder {
+        private var effort: String? = null
 
-    public static class Builder {
-        private String effort;
-
-        public Builder effort(String effort) {
-            this.effort = effort;
-            return this;
+        fun effort(effort: String?): Builder {
+            this.effort = effort
+            return this
         }
 
-        public ResponsesReasoning build() {
-            ResponsesReasoning responsesReasoning = new ResponsesReasoning();
-            responsesReasoning.setEffort(effort);
-            return responsesReasoning;
+        fun build(): ResponsesReasoning {
+            val responsesReasoning: ResponsesReasoning = com.volcengine.ark.runtime.model.responses.common.ResponsesReasoning()
+            responsesReasoning.effort = effort
+            return responsesReasoning
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.common.ResponsesReasoning.Builder()
         }
     }
 }

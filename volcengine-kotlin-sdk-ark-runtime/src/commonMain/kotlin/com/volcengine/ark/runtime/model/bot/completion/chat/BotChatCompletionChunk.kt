@@ -1,54 +1,46 @@
-package com.volcengine.ark.runtime.model.bot.completion.chat;
+package com.volcengine.ark.runtime.model.bot.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.bot.completion.chat.reference.BotChatResultReference;
-import com.volcengine.ark.runtime.model.bot.completion.chat.usage.BotUsage;
-import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionChunk;
-
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BotChatCompletionChunk extends ChatCompletionChunk {
-
+class BotChatCompletionChunk : ChatCompletionChunk() {
     /**
      * Same as BotChaCompletionRequest.metadata
      */
-    private Map<String, Object> metadata;
+    private var metadata: Map<String?, Object?>? = null
 
     /**
      * In bot chat completion, the bot_usage will be returned instead of usage
      */
     @JsonProperty("bot_usage")
-    private BotUsage botUsage;
+    private var botUsage: BotUsage? = null
 
     /**
      * The references returned by Search Actions.
      */
-    private List<BotChatResultReference> references;
+    private var references: List<BotChatResultReference?>? = null
 
-    public Map<String, Object> getMetadata() {
-        return metadata;
+    fun getMetadata(): Map<String?, Object?>? {
+        return metadata
     }
 
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
+    fun setMetadata(metadata: Map<String?, Object?>?) {
+        this.metadata = metadata
     }
 
-    public BotUsage getBotUsage() {
-        return botUsage;
+    fun getBotUsage(): BotUsage? {
+        return botUsage
     }
 
-    public void setBotUsage(BotUsage botUsage) {
-        this.botUsage = botUsage;
+    fun setBotUsage(botUsage: BotUsage?) {
+        this.botUsage = botUsage
     }
 
-    public List<BotChatResultReference> getReferences() {
-        return references;
+    fun getReferences(): List<BotChatResultReference?>? {
+        return references
     }
 
-    public void setReferences(List<BotChatResultReference> references) {
-        this.references = references;
+    fun setReferences(references: List<BotChatResultReference?>?) {
+        this.references = references
     }
 }

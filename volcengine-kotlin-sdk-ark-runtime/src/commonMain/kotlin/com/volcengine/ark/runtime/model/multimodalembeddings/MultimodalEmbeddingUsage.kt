@@ -1,69 +1,51 @@
-package com.volcengine.ark.runtime.model.multimodalembeddings;
+package com.volcengine.ark.runtime.model.multimodalembeddings
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MultimodalEmbeddingUsage {
+class MultimodalEmbeddingUsage {
     /**
      * The number of prompt tokens used.
      */
     @JsonProperty("prompt_tokens")
-    private long promptTokens;
+    var promptTokens: Long = 0
 
     /**
      * The number of total tokens used
      */
     @JsonProperty("total_tokens")
-    private long totalTokens;
+    var totalTokens: Long = 0
 
     @JsonProperty("prompt_tokens_details")
-    private MultimodalEmbeddingPromptTokensDetails promptTokensDetails;
+    private var promptTokensDetails: MultimodalEmbeddingPromptTokensDetails? = null
 
-    public MultimodalEmbeddingUsage(long promptTokens, long completionTokens, long totalTokens) {
-        this.promptTokens = promptTokens;
-        this.totalTokens = totalTokens;
+    constructor(promptTokens: Long, completionTokens: Long, totalTokens: Long) {
+        this.promptTokens = promptTokens
+        this.totalTokens = totalTokens
     }
 
-    public MultimodalEmbeddingUsage(long promptTokens, long completionTokens, long totalTokens, MultimodalEmbeddingPromptTokensDetails promptTokensDetails) {
-        this.promptTokens = promptTokens;
-        this.totalTokens = totalTokens;
-        this.promptTokensDetails = promptTokensDetails;
+    constructor(promptTokens: Long, completionTokens: Long, totalTokens: Long, promptTokensDetails: MultimodalEmbeddingPromptTokensDetails?) {
+        this.promptTokens = promptTokens
+        this.totalTokens = totalTokens
+        this.promptTokensDetails = promptTokensDetails
     }
 
-    public MultimodalEmbeddingUsage() {
+    constructor()
+
+    fun getPromptTokensDetails(): MultimodalEmbeddingPromptTokensDetails? {
+        return promptTokensDetails
     }
 
-    public long getPromptTokens() {
-        return promptTokens;
-    }
-
-    public void setPromptTokens(long promptTokens) {
-        this.promptTokens = promptTokens;
-    }
-
-    public long getTotalTokens() {
-        return totalTokens;
-    }
-
-    public void setTotalTokens(long totalTokens) {
-        this.totalTokens = totalTokens;
-    }
-
-    public MultimodalEmbeddingPromptTokensDetails getPromptTokensDetails() {
-        return promptTokensDetails;
-    }
-
-    public void setPromptTokensDetails(MultimodalEmbeddingPromptTokensDetails promptTokensDetails) {
-        this.promptTokensDetails = promptTokensDetails;
+    fun setPromptTokensDetails(promptTokensDetails: MultimodalEmbeddingPromptTokensDetails?) {
+        this.promptTokensDetails = promptTokensDetails
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "Usage{" +
                 "promptTokens=" + promptTokens +
                 ", totalTokens=" + totalTokens +
                 ", promptTokensDetails=" + promptTokensDetails +
-                '}';
+                '}'
     }
 }

@@ -1,42 +1,36 @@
-package com.volcengine.ark.runtime.model.responses.tool.imageprocess;
+package com.volcengine.ark.runtime.model.responses.tool.imageprocess
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ImageProcessError {
+class ImageProcessError {
     @JsonProperty("message")
-    private String message;
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    var message: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ImageProcessError{" +
                 "message='" + message + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    class Builder {
+        private var message: String? = null
 
-    public static class Builder {
-        private String message;
-
-        public Builder message(String message) {
-            this.message = message;
-            return this;
+        fun message(message: String?): Builder {
+            this.message = message
+            return this
         }
 
-        public ImageProcessError build() {
-            ImageProcessError imageProcessError = new ImageProcessError();
-            imageProcessError.setMessage(message);
-            return imageProcessError;
+        fun build(): ImageProcessError {
+            val imageProcessError: ImageProcessError = com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessError()
+            imageProcessError.message = message
+            return imageProcessError
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessError.Builder()
         }
     }
 }

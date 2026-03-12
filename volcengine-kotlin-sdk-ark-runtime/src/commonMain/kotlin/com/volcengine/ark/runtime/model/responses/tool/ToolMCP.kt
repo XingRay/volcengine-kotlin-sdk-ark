@@ -1,85 +1,44 @@
-package com.volcengine.ark.runtime.model.responses.tool;
+package com.volcengine.ark.runtime.model.responses.tool
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.tool.mcp.MCPAllowedTools;
-import com.volcengine.ark.runtime.model.responses.tool.mcp.MCPRequireApproval;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.Map;
-
-public class ToolMCP extends ResponsesTool {
+class ToolMCP : ResponsesTool(ResponsesConstants.TOOL_TYPE_MCP) {
     @JsonProperty("server_label")
-    private String serverLabel;
+    var serverLabel: String? = null
 
     @JsonProperty("server_url")
-    private String serverUrl;
+    var serverUrl: String? = null
 
     @JsonProperty("allowed_tools")
-    private MCPAllowedTools allowedTools;
+    private var allowedTools: MCPAllowedTools? = null
 
     @JsonProperty("headers")
-    private Map<String, String> headers;
+    var headers: Map<String?, String?>? = null
 
     @JsonProperty("require_approval")
-    private MCPRequireApproval requireApproval;
+    private var requireApproval: MCPRequireApproval? = null
 
     @JsonProperty("server_description")
-    private String serverDescription;
+    var serverDescription: String? = null
 
-    public ToolMCP() {
-        super(ResponsesConstants.TOOL_TYPE_MCP);
+    fun getAllowedTools(): MCPAllowedTools? {
+        return allowedTools
     }
 
-    public String getServerLabel() {
-        return serverLabel;
+    fun setAllowedTools(allowedTools: MCPAllowedTools?) {
+        this.allowedTools = allowedTools
     }
 
-    public void setServerLabel(String serverLabel) {
-        this.serverLabel = serverLabel;
+    fun getRequireApproval(): MCPRequireApproval? {
+        return requireApproval
     }
 
-    public String getServerUrl() {
-        return serverUrl;
-    }
-
-    public void setServerUrl(String serverUrl) {
-        this.serverUrl = serverUrl;
-    }
-
-    public MCPAllowedTools getAllowedTools() {
-        return allowedTools;
-    }
-
-    public void setAllowedTools(MCPAllowedTools allowedTools) {
-        this.allowedTools = allowedTools;
-    }
-
-    public Map<String, String> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-    }
-
-    public MCPRequireApproval getRequireApproval() {
-        return requireApproval;
-    }
-
-    public void setRequireApproval(MCPRequireApproval requireApproval) {
-        this.requireApproval = requireApproval;
-    }
-
-    public String getServerDescription() {
-        return serverDescription;
-    }
-
-    public void setServerDescription(String serverDescription) {
-        this.serverDescription = serverDescription;
+    fun setRequireApproval(requireApproval: MCPRequireApproval?) {
+        this.requireApproval = requireApproval
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ToolMCP{" +
                 "serverLabel='" + serverLabel + '\'' +
                 ", serverUrl='" + serverUrl + '\'' +
@@ -87,63 +46,62 @@ public class ToolMCP extends ResponsesTool {
                 ", headers=" + headers +
                 ", requireApproval=" + requireApproval +
                 ", serverDescription='" + serverDescription + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder private constructor() {
+        private var serverDescription: String? = null
+        private var requireApproval: MCPRequireApproval? = null
+        private var headers: Map<String?, String?>? = null
+        private var allowedTools: MCPAllowedTools? = null
+        private var serverUrl: String? = null
+        private var serverLabel: String? = null
+
+        fun serverDescription(serverDescription: String?): Builder {
+            this.serverDescription = serverDescription
+            return this
+        }
+
+        fun requireApproval(requireApproval: MCPRequireApproval?): Builder {
+            this.requireApproval = requireApproval
+            return this
+        }
+
+        fun headers(headers: Map<String?, String?>?): Builder {
+            this.headers = headers
+            return this
+        }
+
+        fun allowedTools(allowedTools: MCPAllowedTools?): Builder {
+            this.allowedTools = allowedTools
+            return this
+        }
+
+        fun serverUrl(serverUrl: String?): Builder {
+            this.serverUrl = serverUrl
+            return this
+        }
+
+        fun serverLabel(serverLabel: String?): Builder {
+            this.serverLabel = serverLabel
+            return this
+        }
+
+        fun build(): ToolMCP {
+            val toolMCP: ToolMCP = com.volcengine.ark.runtime.model.responses.tool.ToolMCP()
+            toolMCP.serverDescription = serverDescription
+            toolMCP.setRequireApproval(requireApproval)
+            toolMCP.headers = headers
+            toolMCP.setAllowedTools(allowedTools)
+            toolMCP.serverUrl = serverUrl
+            toolMCP.serverLabel = serverLabel
+            return toolMCP
+        }
     }
 
-    public static final class Builder {
-        private String serverDescription;
-        private MCPRequireApproval requireApproval;
-        private Map<String, String> headers;
-        private MCPAllowedTools allowedTools;
-        private String serverUrl;
-        private String serverLabel;
-
-        private Builder() {
-        }
-
-        public Builder serverDescription(String serverDescription) {
-            this.serverDescription = serverDescription;
-            return this;
-        }
-
-        public Builder requireApproval(MCPRequireApproval requireApproval) {
-            this.requireApproval = requireApproval;
-            return this;
-        }
-
-        public Builder headers(Map<String, String> headers) {
-            this.headers = headers;
-            return this;
-        }
-
-        public Builder allowedTools(MCPAllowedTools allowedTools) {
-            this.allowedTools = allowedTools;
-            return this;
-        }
-
-        public Builder serverUrl(String serverUrl) {
-            this.serverUrl = serverUrl;
-            return this;
-        }
-
-        public Builder serverLabel(String serverLabel) {
-            this.serverLabel = serverLabel;
-            return this;
-        }
-
-        public ToolMCP build() {
-            ToolMCP toolMCP = new ToolMCP();
-            toolMCP.setServerDescription(serverDescription);
-            toolMCP.setRequireApproval(requireApproval);
-            toolMCP.setHeaders(headers);
-            toolMCP.setAllowedTools(allowedTools);
-            toolMCP.setServerUrl(serverUrl);
-            toolMCP.setServerLabel(serverLabel);
-            return toolMCP;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.ToolMCP.Builder()
         }
     }
 }

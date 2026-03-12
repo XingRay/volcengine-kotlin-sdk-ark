@@ -1,33 +1,19 @@
-package com.volcengine.ark.runtime.model.responses.event.functioncall;
+package com.volcengine.ark.runtime.model.responses.event.functioncall
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class FunctionCallArgumentsDeltaEvent extends ItemEvent {
+class FunctionCallArgumentsDeltaEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_FUNCTION_CALL_ARGUMENTS_DELTA) {
     @JsonProperty("delta")
-    private String delta;
-
-    public String getDelta() {
-        return delta;
-    }
-
-    public void setDelta(String delta) {
-        this.delta = delta;
-    }
-
-    public FunctionCallArgumentsDeltaEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_FUNCTION_CALL_ARGUMENTS_DELTA);
-    }
+    var delta: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "FunctionCallArgumentsDeltaEvent{" +
                 "delta='" + delta + '\'' +
                 ", itemId='" + itemId + '\'' +
                 ", outputIndex=" + outputIndex +
                 ", type='" + type + '\'' +
                 ", sequenceNumber=" + sequenceNumber +
-                '}';
+                '}'
     }
 }

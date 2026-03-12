@@ -1,50 +1,43 @@
-package com.volcengine.ark.runtime.model.responses.event.imageprocess;
+package com.volcengine.ark.runtime.model.responses.event.imageprocess
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
-import com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessAction;
-import com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessArguments;
-import com.volcengine.ark.runtime.model.responses.tool.imageprocess.ImageProcessError;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ImageProcessCallCompletedEvent extends ItemEvent {
+class ImageProcessCallCompletedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_IMAGE_PROCESS_CALL_COMPLETED) {
     @JsonProperty("action")
-    private ImageProcessAction action;
+    private var action: ImageProcessAction? = null
+
     @JsonProperty("arguments")
-    private ImageProcessArguments arguments;
+    private var arguments: ImageProcessArguments? = null
+
     @JsonProperty("error")
-    private ImageProcessError error;
+    private var error: ImageProcessError? = null
 
-    public ImageProcessAction getAction() {
-        return action;
+    fun getAction(): ImageProcessAction? {
+        return action
     }
 
-    public void setAction(ImageProcessAction action) {
-        this.action = action;
+    fun setAction(action: ImageProcessAction?) {
+        this.action = action
     }
 
-    public ImageProcessArguments getArguments() {
-        return arguments;
+    fun getArguments(): ImageProcessArguments? {
+        return arguments
     }
 
-    public void setArguments(ImageProcessArguments arguments) {
-        this.arguments = arguments;
+    fun setArguments(arguments: ImageProcessArguments?) {
+        this.arguments = arguments
     }
 
-    public ImageProcessError getError() {
-        return error;
+    fun getError(): ImageProcessError? {
+        return error
     }
 
-    public void setError(ImageProcessError error) {
-        this.error = error;
-    }
-
-    public ImageProcessCallCompletedEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_IMAGE_PROCESS_CALL_COMPLETED);
+    fun setError(error: ImageProcessError?) {
+        this.error = error
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ImageProcessCallCompletedEvent{" +
                 "type='" + getType() + '\'' +
                 ", sequenceNumber=" + getSequenceNumber() +
@@ -53,8 +46,6 @@ public class ImageProcessCallCompletedEvent extends ItemEvent {
                 ", action=" + action +
                 ", arguments=" + arguments +
                 ", error=" + error +
-                '}';
+                '}'
     }
-
-
 }

@@ -1,46 +1,37 @@
-package com.volcengine.ark.runtime.model.completion.chat;
+package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChatTool {
-
+class ChatTool {
     /**
      * The type of the tool. Currently, only function is supported.
      */
-    String type;
+    var type: String? = null
 
 
-    ChatFunction function;
+    var function: ChatFunction? = null
 
-    public ChatTool(String type, ChatFunction function) {
-        this.type = type;
-        this.function = function;
+    constructor(type: String?, function: ChatFunction?) {
+        this.type = type
+        this.function = function
     }
 
-    public ChatTool(){}
+    constructor()
 
-    public String getType() {
-        return type;
+    fun getFunction(): ChatFunction? {
+        return function
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public ChatFunction getFunction() {
-        return function;
-    }
-
-    public void setFunction(ChatFunction function) {
-        this.function = function;
+    fun setFunction(function: ChatFunction?) {
+        this.function = function
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ChatTool{" +
                 "type='" + type + '\'' +
                 ", function=" + function +
-                '}';
+                '}'
     }
 }

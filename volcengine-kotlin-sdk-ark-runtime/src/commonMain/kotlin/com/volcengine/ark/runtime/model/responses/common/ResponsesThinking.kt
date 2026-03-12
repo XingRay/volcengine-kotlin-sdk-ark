@@ -1,42 +1,36 @@
-package com.volcengine.ark.runtime.model.responses.common;
+package com.volcengine.ark.runtime.model.responses.common
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ResponsesThinking {
+class ResponsesThinking {
     @JsonProperty("type")
-    private String type;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+    var type: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ResponsesThinking{" +
                 "type='" + type + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    class Builder {
+        private var type: String? = null
 
-    public static class Builder {
-        private String type;
-
-        public Builder type(String type) {
-            this.type = type;
-            return this;
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
         }
 
-        public ResponsesThinking build() {
-            ResponsesThinking responsesThinking = new ResponsesThinking();
-            responsesThinking.setType(type);
-            return responsesThinking;
+        fun build(): ResponsesThinking {
+            val responsesThinking: ResponsesThinking = com.volcengine.ark.runtime.model.responses.common.ResponsesThinking()
+            responsesThinking.type = type
+            return responsesThinking
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.common.ResponsesThinking.Builder()
         }
     }
 }

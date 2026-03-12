@@ -1,107 +1,79 @@
-package com.volcengine.ark.runtime.model.responses.tool;
+package com.volcengine.ark.runtime.model.responses.tool
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ToolFunction extends ResponsesTool {
+class ToolFunction : ResponsesTool(ResponsesConstants.TOOL_TYPE_FUNCTION) {
     @JsonProperty("name")
-    private String name;
+    var name: String? = null
 
     @JsonProperty("strict")
-    private Boolean strict;
+    var strict: Boolean? = null
 
     @JsonProperty("description")
-    private String description;
+    var description: String? = null
 
     @JsonProperty("parameters")
-    private JsonNode parameters;
+    private var parameters: JsonNode? = null
 
-    public String getName() {
-        return name;
+    fun getParameters(): JsonNode? {
+        return parameters
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Boolean getStrict() {
-        return strict;
-    }
-
-    public void setStrict(Boolean strict) {
-        this.strict = strict;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public JsonNode getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(JsonNode parameters) {
-        this.parameters = parameters;
-    }
-
-    public ToolFunction() {
-        super(ResponsesConstants.TOOL_TYPE_FUNCTION);
+    fun setParameters(parameters: JsonNode?) {
+        this.parameters = parameters
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ToolFunction{" +
                 "name='" + name + '\'' +
                 ", strict=" + strict +
                 ", type='" + getType() + '\'' +
                 ", description='" + description + '\'' +
                 ", parameters=" + parameters +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var name: String? = null
+        private var strict: Boolean? = null
+        private val type: String? = null
+        private var description: String? = null
+        private var parameters: JsonNode? = null
+
+        fun name(name: String?): Builder {
+            this.name = name
+            return this
+        }
+
+        fun strict(strict: Boolean?): Builder {
+            this.strict = strict
+            return this
+        }
+
+        fun description(description: String?): Builder {
+            this.description = description
+            return this
+        }
+
+        fun parameters(parameters: JsonNode?): Builder {
+            this.parameters = parameters
+            return this
+        }
+
+        fun build(): ToolFunction {
+            val toolFunction: ToolFunction = com.volcengine.ark.runtime.model.responses.tool.ToolFunction()
+            toolFunction.name = name
+            toolFunction.strict = strict
+            toolFunction.description = description
+            toolFunction.setParameters(parameters)
+            return toolFunction
+        }
     }
 
-    public static class Builder {
-        private String name;
-        private Boolean strict;
-        private String type;
-        private String description;
-        private JsonNode parameters;
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder strict(Boolean strict) {
-            this.strict = strict;
-            return this;
-        }
-
-        public Builder description(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public Builder parameters(JsonNode parameters) {
-            this.parameters = parameters;
-            return this;
-        }
-
-        public ToolFunction build() {
-            ToolFunction toolFunction = new ToolFunction();
-            toolFunction.setName(name);
-            toolFunction.setStrict(strict);
-            toolFunction.setDescription(description);
-            toolFunction.setParameters(parameters);
-            return toolFunction;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.ToolFunction.Builder()
         }
     }
 }

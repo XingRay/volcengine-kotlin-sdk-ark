@@ -1,57 +1,55 @@
-package com.volcengine.ark.runtime.model.multimodalembeddings;
+package com.volcengine.ark.runtime.model.multimodalembeddings
 
-public class SparseEmbedding {
-    private Integer index;
-    private Double value;
+class SparseEmbedding {
+    private var index: Integer? = null
+    var value: Double? = null
 
-    public SparseEmbedding() {}
-
-    public Integer getIndex() {
-        return index;
+    fun getIndex(): Integer? {
+        return index
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
-    }
-    public Double getValue() {
-        return value;
-    }
-
-    public void setValue(Double value) {
-        this.value = value;
+    fun setIndex(index: Integer?) {
+        this.index = index
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "SparseEmbedding{" +
                 "index=" + index +
                 ", value=" + value +
-                '}';
+                '}'
     }
-    public static SparseEmbedding.Builder builder() {
-        return new SparseEmbedding.Builder();
+
+    class Builder private constructor() {
+        private var index: Integer? = null
+        private var value: Double? = null
+        fun index(index: Integer?): Builder {
+            this.index = index
+            return this
+        }
+
+        fun value(value: Double?): Builder {
+            this.value = value
+            return this
+        }
+
+        fun build(): SparseEmbedding {
+            val sparseEmbedding: SparseEmbedding = com.volcengine.ark.runtime.model.multimodalembeddings.SparseEmbedding()
+            sparseEmbedding.setIndex(index)
+            sparseEmbedding.value = value
+            return sparseEmbedding
+        }
+
+        companion object {
+            fun SparseEmbedding(): Builder {
+                return com.volcengine.ark.runtime.model.multimodalembeddings.SparseEmbedding.Builder()
+            }
+        }
     }
-    public static final class Builder {
-        private Integer index;
-        private Double value;
-        private Builder() {
-        }
-        public static SparseEmbedding.Builder SparseEmbedding() {
-            return new SparseEmbedding.Builder();
-        }
-        public SparseEmbedding.Builder index(Integer index) {
-            this.index = index;
-            return this;
-        }
-        public SparseEmbedding.Builder value(Double value) {
-            this.value = value;
-            return this;
-        }
-        public SparseEmbedding build() {
-            SparseEmbedding sparseEmbedding = new SparseEmbedding();
-            sparseEmbedding.setIndex(index);
-            sparseEmbedding.setValue(value);
-            return sparseEmbedding;
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.multimodalembeddings.SparseEmbedding.Builder()
         }
     }
 }

@@ -1,37 +1,16 @@
-package com.volcengine.ark.runtime.model.responses.event.outputtext;
+package com.volcengine.ark.runtime.model.responses.event.outputtext
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class OutputTextDoneEvent extends ItemEvent {
+class OutputTextDoneEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_OUTPUT_TEXT_DONE) {
     @JsonProperty("content_index")
-    private Long contentIndex;
+    var contentIndex: Long? = null
+
     @JsonProperty("text")
-    private String text;
-
-    public Long getContentIndex() {
-        return contentIndex;
-    }
-
-    public void setContentIndex(Long contentIndex) {
-        this.contentIndex = contentIndex;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public OutputTextDoneEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_OUTPUT_TEXT_DONE);
-    }
+    var text: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "OutputTextDoneEvent{" +
                 "contentIndex=" + contentIndex +
                 ", text='" + text + '\'' +
@@ -39,6 +18,6 @@ public class OutputTextDoneEvent extends ItemEvent {
                 ", outputIndex=" + outputIndex +
                 ", type='" + type + '\'' +
                 ", sequenceNumber=" + sequenceNumber +
-                '}';
+                '}'
     }
 }

@@ -1,111 +1,71 @@
-package com.volcengine.ark.runtime.model.responses.item;
+package com.volcengine.ark.runtime.model.responses.item
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemMCPApprovalRequest extends BaseItem implements InputItem, OutputItem {
-
+class ItemMCPApprovalRequest : BaseItem(ResponsesConstants.ITEM_TYPE_MCP_APPROVAL_REQUEST), InputItem, OutputItem {
     @JsonProperty("id")
-    private String id;
+    var id: String? = null
 
     @JsonProperty("name")
-    private String name;
+    var name: String? = null
 
     @JsonProperty("arguments")
-    private String arguments;
+    var arguments: String? = null
 
     @JsonProperty("server_label")
-    private String serverLabel;
-
-    public ItemMCPApprovalRequest() {
-        super(ResponsesConstants.ITEM_TYPE_MCP_APPROVAL_REQUEST);
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getArguments() {
-        return arguments;
-    }
-
-    public void setArguments(String arguments) {
-        this.arguments = arguments;
-    }
-
-    public String getServerLabel() {
-        return serverLabel;
-    }
-
-    public void setServerLabel(String serverLabel) {
-        this.serverLabel = serverLabel;
-    }
+    var serverLabel: String? = null
 
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ItemMCPApprovalRequest{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", arguments='" + arguments + '\'' +
                 ", serverLabel='" + serverLabel + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder private constructor() {
+        private var id: String? = null
+        private var name: String? = null
+        private var arguments: String? = null
+        private var serverLabel: String? = null
+
+        fun id(id: String?): Builder {
+            this.id = id
+            return this
+        }
+
+        fun name(name: String?): Builder {
+            this.name = name
+            return this
+        }
+
+        fun arguments(arguments: String?): Builder {
+            this.arguments = arguments
+            return this
+        }
+
+        fun serverLabel(serverLabel: String?): Builder {
+            this.serverLabel = serverLabel
+            return this
+        }
+
+        fun build(): ItemMCPApprovalRequest {
+            val itemMCPApprovalRequest: ItemMCPApprovalRequest = com.volcengine.ark.runtime.model.responses.item.ItemMCPApprovalRequest()
+            itemMCPApprovalRequest.id = id
+            itemMCPApprovalRequest.name = name
+            itemMCPApprovalRequest.arguments = arguments
+            itemMCPApprovalRequest.serverLabel = serverLabel
+            return itemMCPApprovalRequest
+        }
     }
 
-    public static final class Builder {
-        private String id;
-        private String name;
-        private String arguments;
-        private String serverLabel;
-
-        private Builder() {
-        }
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder arguments(String arguments) {
-            this.arguments = arguments;
-            return this;
-        }
-
-        public Builder serverLabel(String serverLabel) {
-            this.serverLabel = serverLabel;
-            return this;
-        }
-
-        public ItemMCPApprovalRequest build() {
-            ItemMCPApprovalRequest itemMCPApprovalRequest = new ItemMCPApprovalRequest();
-            itemMCPApprovalRequest.setId(id);
-            itemMCPApprovalRequest.setName(name);
-            itemMCPApprovalRequest.setArguments(arguments);
-            itemMCPApprovalRequest.setServerLabel(serverLabel);
-            return itemMCPApprovalRequest;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.ItemMCPApprovalRequest.Builder()
         }
     }
 }

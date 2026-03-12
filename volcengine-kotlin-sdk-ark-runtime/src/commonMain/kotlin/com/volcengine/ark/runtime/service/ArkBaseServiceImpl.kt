@@ -1,86 +1,59 @@
-package com.volcengine.ark.runtime.service;
+package com.volcengine.ark.runtime.service
 
-import com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionChunk;
-import com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionRequest;
-import com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionResult;
-import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionChunk;
-import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionRequest;
-import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionResult;
-import com.volcengine.ark.runtime.model.context.CreateContextRequest;
-import com.volcengine.ark.runtime.model.context.CreateContextResult;
-import com.volcengine.ark.runtime.model.context.chat.ContextChatCompletionRequest;
-import com.volcengine.ark.runtime.model.embeddings.EmbeddingRequest;
-import com.volcengine.ark.runtime.model.embeddings.EmbeddingResult;
-import com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest;
-import com.volcengine.ark.runtime.model.images.generation.ImagesResponse;
-import com.volcengine.ark.runtime.model.multimodalembeddings.MultimodalEmbeddingRequest;
-import com.volcengine.ark.runtime.model.multimodalembeddings.MultimodalEmbeddingResult;
-import com.volcengine.ark.runtime.model.responses.event.StreamEvent;
-import com.volcengine.ark.runtime.model.responses.request.CreateResponsesRequest;
-import com.volcengine.ark.runtime.model.responses.request.DeleteResponseRequest;
-import com.volcengine.ark.runtime.model.responses.request.GetResponseRequest;
-import com.volcengine.ark.runtime.model.responses.request.ListInputItemsRequest;
-import com.volcengine.ark.runtime.model.responses.response.DeleteResponseResponse;
-import com.volcengine.ark.runtime.model.responses.response.ListInputItemsResponse;
-import com.volcengine.ark.runtime.model.responses.response.ResponseObject;
-import com.volcengine.ark.runtime.model.tokenization.TokenizationRequest;
-import com.volcengine.ark.runtime.model.tokenization.TokenizationResult;
-import io.reactivex.Flowable;
+import com.volcengine.ark.runtime.model.bot.completion.chat.BotChatCompletionChunk
 
+interface ArkBaseServiceImpl {
+    fun createChatCompletion(request: ChatCompletionRequest?): ChatCompletionResult?
 
-public interface ArkBaseServiceImpl {
+    fun createBatchChatCompletion(request: ChatCompletionRequest?): ChatCompletionResult?
 
-    ChatCompletionResult createChatCompletion(ChatCompletionRequest request);
+    fun streamChatCompletion(request: ChatCompletionRequest?): Flowable<ChatCompletionChunk?>?
 
-    ChatCompletionResult createBatchChatCompletion(ChatCompletionRequest request);
+    fun createBotChatCompletion(request: BotChatCompletionRequest?): BotChatCompletionResult?
 
-    Flowable<ChatCompletionChunk> streamChatCompletion(ChatCompletionRequest request);
+    fun streamBotChatCompletion(request: BotChatCompletionRequest?): Flowable<BotChatCompletionChunk?>?
 
-    BotChatCompletionResult createBotChatCompletion(BotChatCompletionRequest request);
+    fun createContext(request: CreateContextRequest?): CreateContextResult?
 
-    Flowable<BotChatCompletionChunk> streamBotChatCompletion(BotChatCompletionRequest request);
+    fun createContextChatCompletion(request: ContextChatCompletionRequest?): ChatCompletionResult?
 
-    CreateContextResult createContext(CreateContextRequest request);
+    fun createResponse(request: CreateResponsesRequest?): ResponseObject?
 
-    ChatCompletionResult createContextChatCompletion(ContextChatCompletionRequest request);
+    fun streamResponse(request: CreateResponsesRequest?): Flowable<StreamEvent?>?
 
-    ResponseObject createResponse(CreateResponsesRequest request);
+    fun streamContextChatCompletion(request: ContextChatCompletionRequest?): Flowable<ChatCompletionChunk?>?
 
-    Flowable<StreamEvent> streamResponse(CreateResponsesRequest request);
+    fun createTokenization(request: TokenizationRequest?): TokenizationResult?
 
-    Flowable<ChatCompletionChunk> streamContextChatCompletion(ContextChatCompletionRequest request);
+    fun createEmbeddings(request: EmbeddingRequest?): EmbeddingResult?
 
-    TokenizationResult createTokenization(TokenizationRequest request);
+    fun createBatchEmbeddings(request: EmbeddingRequest?): EmbeddingResult?
 
-    EmbeddingResult createEmbeddings(EmbeddingRequest request);
+    fun createMultiModalEmbeddings(request: MultimodalEmbeddingRequest?): MultimodalEmbeddingResult?
 
-    EmbeddingResult createBatchEmbeddings(EmbeddingRequest request);
+    fun createBatchMultiModalEmbeddings(request: MultimodalEmbeddingRequest?): MultimodalEmbeddingResult?
 
-    MultimodalEmbeddingResult createMultiModalEmbeddings(MultimodalEmbeddingRequest request);
+    fun generateImages(request: GenerateImagesRequest?): ImagesResponse?
 
-    MultimodalEmbeddingResult createBatchMultiModalEmbeddings(MultimodalEmbeddingRequest request);
+    fun createContentGenerationTask(request: CreateContentGenerationTaskRequest?): CreateContentGenerationTaskResult?
 
-    ImagesResponse generateImages(GenerateImagesRequest request);
+    fun getContentGenerationTask(request: GetContentGenerationTaskRequest?): GetContentGenerationTaskResponse?
 
-    CreateContentGenerationTaskResult createContentGenerationTask(CreateContentGenerationTaskRequest request);
+    fun listContentGenerationTasks(request: ListContentGenerationTasksRequest?): ListContentGenerationTasksResponse?
 
-    GetContentGenerationTaskResponse getContentGenerationTask(GetContentGenerationTaskRequest request);
+    fun deleteContentGenerationTask(request: DeleteContentGenerationTaskRequest?): DeleteContentGenerationTaskResponse?
 
-    ListContentGenerationTasksResponse listContentGenerationTasks(ListContentGenerationTasksRequest request);
+    fun getResponse(request: GetResponseRequest?): ResponseObject?
 
-    DeleteContentGenerationTaskResponse deleteContentGenerationTask(DeleteContentGenerationTaskRequest request);
+    fun deleteResponse(request: DeleteResponseRequest?): DeleteResponseResponse?
 
-    ResponseObject getResponse(GetResponseRequest request);
+    fun listResponseInputItems(request: ListInputItemsRequest?): ListInputItemsResponse?
 
-    DeleteResponseResponse deleteResponse(DeleteResponseRequest request);
+    fun uploadFile(file: UploadFileRequest?): FileMeta?
 
-    ListInputItemsResponse listResponseInputItems(ListInputItemsRequest request);
+    fun retrieveFile(fileId: String?): FileMeta?
 
-    FileMeta uploadFile(UploadFileRequest file);
+    fun deleteFile(fileId: String?): DeleteFileResponse?
 
-    FileMeta retrieveFile(String fileId);
-
-    DeleteFileResponse deleteFile(String fileId);
-
-    ListFilesResponse listFiles(ListFilesRequest request);
+    fun listFiles(request: ListFilesRequest?): ListFilesResponse?
 }

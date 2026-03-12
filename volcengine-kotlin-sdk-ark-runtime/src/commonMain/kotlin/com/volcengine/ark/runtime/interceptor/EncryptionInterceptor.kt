@@ -1,209 +1,186 @@
-package com.volcengine.ark.runtime.interceptor;
+package com.volcengine.ark.runtime.interceptor
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.volcengine.ark.runtime.service.CertificateManager;
-import com.volcengine.ark.runtime.utils.KeyAgreementUtil;
-import com.volcengine.ark.runtime.utils.ResponseDecryptUtil;
-import okhttp3.*;
-import okio.Buffer;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
-
-import static com.volcengine.ark.runtime.service.CertificateManager.getServerCertificate;
-import static com.volcengine.ark.runtime.utils.KeyAgreementUtil.*;
+import com.fasterxml.jackson.core.type.TypeReference
 
 /**
  * 加密拦截器 - 处理请求加密和响应解密
  */
-public class EncryptionInterceptor implements Interceptor {
-
-    private final String apiKey;
-    private final String baseUrl;
-    private final ObjectMapper mapper = new ObjectMapper();
-
-    public EncryptionInterceptor(String apiKey, String baseUrl) {
-        this.baseUrl = baseUrl;
-        this.apiKey = apiKey;
-    }
+class EncryptionInterceptor(private val apiKey: String?, private val baseUrl: String?) : Interceptor {
+    private val mapper: ObjectMapper = ObjectMapper()
 
     /**
      * 拦截器主入口 - 处理请求加密和响应解密
      */
-    public Response intercept(Chain chain) throws IOException {
-        Request request = chain.request();
+    @Throws(IOException::class)
+    fun intercept(chain: Chain): Response {
+        val request: Request = chain.request()
 
-        String is_encrypt = request.headers().get("x-is-encrypted");
+        val is_encrypt: String? = request.headers().get("x-is-encrypted")
 
         if (!"true".equals(is_encrypt)) {
-            return chain.proceed(request);
+            return chain.proceed(request)
         }
 
-        RequestBody originalBody = request.body();
+        val originalBody: RequestBody? = request.body()
         if (originalBody == null) {
-            return chain.proceed(request);
+            return chain.proceed(request)
         }
 
-        Map<String, Object> requestBodyJson = parseRequestBody(originalBody);
-        String model = requestBodyJson.get("model").toString();
+        val requestBodyJson: Map<String?, Object?> = parseRequestBody(originalBody)
+        val model: String? = requestBodyJson.get("model").toString()
 
 
-        return proceedWithEncryption(chain, request, requestBodyJson, model);
+        return proceedWithEncryption(chain, request, requestBodyJson, model)
     }
 
-    private Response proceedWithEncryption(Chain chain, Request request, Map<String, Object> requestBodyJson, String model) throws IOException {
-        CertificateManager.ServerCertificateInfo certInfo = getServerCertificate(this.apiKey, this.baseUrl, model);
+    @Throws(IOException::class)
+    private fun proceedWithEncryption(chain: Chain, request: Request, requestBodyJson: Map<String?, Object?>, model: String?): Response {
+        val certInfo: CertificateManager.ServerCertificateInfo = getServerCertificate(this.apiKey, this.baseUrl, model)
         if (certInfo == null) {
-            throw new IOException("Failed to get server certificate for encryption");
+            throw IOException("Failed to get server certificate for encryption")
         }
-        SessionData sessionData;
+        val sessionData: SessionData
         try {
-            sessionData = KeyAgreementUtil.generateEciesKeyPair(certInfo.getPublicKey());
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
+            sessionData = KeyAgreementUtil.generateEciesKeyPair(certInfo.getPublicKey())
+        } catch (e: GeneralSecurityException) {
+            throw RuntimeException(e)
         }
-        byte[] e2eKey = sessionData.getCryptoKey();
-        byte[] e2eNonce = sessionData.getCryptoNonce();
-        String sessionToken = sessionData.getSessionToken();
-        RequestBody encryptedBody = encryptRequestBody(requestBodyJson, e2eKey, e2eNonce);
+        val e2eKey: ByteArray? = sessionData.getCryptoKey()
+        val e2eNonce: ByteArray? = sessionData.getCryptoNonce()
+        val sessionToken: String? = sessionData.getSessionToken()
+        val encryptedBody: RequestBody = encryptRequestBody(requestBodyJson, e2eKey, e2eNonce)
 
-        Request.Builder requestBuilder = request.newBuilder()
-                .method(request.method(), encryptedBody);
+        val requestBuilder: Request.Builder = request.newBuilder()
+            .method(request.method(), encryptedBody)
 
-        addAiccEncryptionHeader(requestBuilder, certInfo);
+        addAiccEncryptionHeader(requestBuilder, certInfo)
 
-        requestBuilder.addHeader("X-Session-Token", sessionToken);
-        Request encryptedRequest = requestBuilder.build();
-        Response originalResponse = chain.proceed(encryptedRequest);
+        requestBuilder.addHeader("X-Session-Token", sessionToken)
+        val encryptedRequest: Request? = requestBuilder.build()
+        val originalResponse: Response = chain.proceed(encryptedRequest)
 
         if (!originalResponse.isSuccessful()) {
-            return handleErrorResponse(originalResponse);
+            return handleErrorResponse(originalResponse)
         }
 
-        return decryptResponse(e2eKey, e2eNonce, originalResponse);
+        return decryptResponse(e2eKey, e2eNonce, originalResponse)
     }
 
     /**
      * 解析请求体为Map对象
      */
-    private Map<String, Object> parseRequestBody(RequestBody body) throws IOException {
-        Buffer buffer = new Buffer();
-        body.writeTo(buffer);
-        String requestBodyStr = buffer.readString(StandardCharsets.UTF_8);
-        return mapper.readValue(requestBodyStr, new TypeReference<Map<String, Object>>() {
-        });
+    @Throws(IOException::class)
+    private fun parseRequestBody(body: RequestBody): Map<String?, Object?> {
+        val buffer: Buffer = Buffer()
+        body.writeTo(buffer)
+        val requestBodyStr: String? = buffer.readString(StandardCharsets.UTF_8)
+        return mapper.readValue(requestBodyStr, object : TypeReference<Map<String?, Object?>?>() {
+        })
     }
 
     /**
      * 加密请求体内容
      */
-    private RequestBody encryptRequestBody(Map<String, Object> requestBodyJson, byte[] e2eKey, byte[] e2eNonce) throws IOException {
+    @Throws(IOException::class)
+    private fun encryptRequestBody(requestBodyJson: Map<String?, Object?>, e2eKey: ByteArray?, e2eNonce: ByteArray?): RequestBody {
         try {
-            Object messagesObj = requestBodyJson.get("messages");
-            if (messagesObj instanceof List) {
-                List<?> messagesList = (List<?>) messagesObj;
-                List<Map<String, Object>> processedMessages = new ArrayList<>();
+            val messagesObj: Object? = requestBodyJson.get("messages")
+            if (messagesObj is List) {
+                val messagesList = messagesObj as List<*>
+                val processedMessages: List<Map<String?, Object?>?> = ArrayList()
 
-                for (Object message : messagesList) {
-                    if (message instanceof Map) {
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> messageMap = (Map<String, Object>) message;
-                        processedMessages.add(processMessage(messageMap, e2eKey, e2eNonce));
+                for (message in messagesList) {
+                    if (message is Map) {
+                        @SuppressWarnings("unchecked") val messageMap: Map<String?, Object?> = message as Map<String?, Object?>
+                        processedMessages.add(processMessage(messageMap, e2eKey, e2eNonce))
                     }
                 }
-                requestBodyJson.put("messages", processedMessages);
+                requestBodyJson.put("messages", processedMessages)
             }
 
-            String modifiedRequestBodyStr = mapper.writeValueAsString(requestBodyJson);
-            return RequestBody.create(MediaType.get("application/json"), modifiedRequestBodyStr);
-
-        } catch (Exception e) {
-            throw new IOException("Failed to process request body", e);
+            val modifiedRequestBodyStr: String? = mapper.writeValueAsString(requestBodyJson)
+            return RequestBody.create(MediaType.get("application/json"), modifiedRequestBodyStr)
+        } catch (e: Exception) {
+            throw IOException("Failed to process request body", e)
         }
     }
 
     /**
      * 处理单条消息
      */
-    private Map<String, Object> processMessage(Map<String, Object> message, byte[] e2eKey, byte[] e2eNonce) throws IOException {
-        Object content = message.get("content");
+    @Throws(IOException::class)
+    private fun processMessage(message: Map<String?, Object?>, e2eKey: ByteArray?, e2eNonce: ByteArray?): Map<String?, Object?> {
+        val content: Object? = message.get("content")
         if (content != null) {
-            message.put("content", processMessageContent(content, e2eKey, e2eNonce));
+            message.put("content", processMessageContent(content, e2eKey, e2eNonce))
         }
-        return message;
+        return message
     }
 
     /**
      * 处理消息内容
      */
-    private Object processMessageContent(Object content, byte[] e2eKey, byte[] e2eNonce) throws IOException {
-        if (content instanceof String) {
-            return encryptStringWithKey(e2eKey, e2eNonce, (String) content);
-        } else if (content instanceof Iterable) {
-            List<Object> processedParts = new ArrayList<>();
-            for (Object part : (Iterable<?>) content) {
-                if (part instanceof Map) {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> partMap = (Map<String, Object>) part;
-                    processedParts.add(processContentPart(partMap, e2eKey, e2eNonce));
+    @Throws(IOException::class)
+    private fun processMessageContent(content: Object, e2eKey: ByteArray?, e2eNonce: ByteArray?): Object {
+        if (content is String) {
+            return encryptStringWithKey(e2eKey, e2eNonce, content as String?)
+        } else if (content is Iterable) {
+            val processedParts: List<Object?> = ArrayList()
+            for (part in (content as Iterable<*>?)!!) {
+                if (part is Map) {
+                    @SuppressWarnings("unchecked") val partMap: Map<String?, Object?> = part as Map<String?, Object?>
+                    processedParts.add(processContentPart(partMap, e2eKey, e2eNonce))
                 } else {
-                    throw new IOException("encryption is not supported for content type " + part.getClass().getSimpleName());
+                    throw IOException("encryption is not supported for content type " + part.getClass().getSimpleName())
                 }
             }
-            return processedParts;
+            return processedParts
         } else {
-            throw new IOException("encryption is not supported for content type " + content.getClass().getSimpleName());
+            throw IOException("encryption is not supported for content type " + content.getClass().getSimpleName())
         }
     }
 
     /**
      * 处理内容部分
      */
-    private Map<String, Object> processContentPart(Map<String, Object> part, byte[] e2eKey, byte[] e2eNonce) throws IOException {
-        String type = part.get("type").toString();
+    @Throws(IOException::class)
+    private fun processContentPart(part: Map<String?, Object?>, e2eKey: ByteArray?, e2eNonce: ByteArray?): Map<String?, Object?> {
+        val type = part.get("type").toString()
 
-        switch (type) {
-            case "text":
-                part.put("text", encryptStringWithKey(e2eKey, e2eNonce, part.get("text").toString()));
-                break;
-            case "image_url":
-                @SuppressWarnings("unchecked")
-                Map<String, Object> imageUrl = (Map<String, Object>) part.get("image_url");
-                processImageUrl(imageUrl, e2eKey, e2eNonce);
-                break;
+        when (type) {
+            "text" -> part.put("text", encryptStringWithKey(e2eKey, e2eNonce, part.get("text").toString()))
+            "image_url" -> {
+                @SuppressWarnings("unchecked") val imageUrl: Map<String?, Object?> = part.get("image_url") as Map<String?, Object?>
+                processImageUrl(imageUrl, e2eKey, e2eNonce)
+            }
 
-            default:
-                throw new IOException("encryption is not supported for content type " + type);
+            else -> throw IOException("encryption is not supported for content type " + type)
         }
 
-        return part;
+        return part
     }
 
     /**
      * 处理图片URL
      */
-    private void processImageUrl(Map<String, Object> imageUrl, byte[] e2eKey, byte[] e2eNonce) throws IOException {
-        String url = imageUrl.get("url").toString();
+    @Throws(IOException::class)
+    private fun processImageUrl(imageUrl: Map<String?, Object?>, e2eKey: ByteArray?, e2eNonce: ByteArray?) {
+        val url = imageUrl.get("url").toString()
         try {
-            URI uri = new URI(url);
-            String scheme = uri.getScheme();
+            val uri: URI = URI(url)
+            val scheme: String? = uri.getScheme()
             if ("data".equals(scheme)) {
-                imageUrl.put("url", encryptStringWithKey(e2eKey, e2eNonce, url));
+                imageUrl.put("url", encryptStringWithKey(e2eKey, e2eNonce, url))
             } else if ("http".equals(scheme) || "https".equals(scheme)) {
-                System.err.println("WARNING: encryption is not supported for image url, please use base64 image if you want encryption");
+                System.err.println("WARNING: encryption is not supported for image url, please use base64 image if you want encryption")
             } else {
-                throw new IOException("encryption is not supported for image url scheme " + scheme);
+                throw IOException("encryption is not supported for image url scheme " + scheme)
             }
-
-        } catch (URISyntaxException e) {
+        } catch (e: URISyntaxException) {
             if (url.startsWith("data:")) {
-                imageUrl.put("url", encryptStringWithKey(e2eKey, e2eNonce, url));
+                imageUrl.put("url", encryptStringWithKey(e2eKey, e2eNonce, url))
             } else {
-                throw new IOException("Invalid image URL format: " + url, e);
+                throw IOException("Invalid image URL format: " + url, e)
             }
         }
     }
@@ -211,73 +188,74 @@ public class EncryptionInterceptor implements Interceptor {
     /**
      * 添加AICC加密信息头
      */
-    private void addAiccEncryptionHeader(Request.Builder requestBuilder, CertificateManager.ServerCertificateInfo certInfo) throws IOException {
-        String volcArkEncryption = System.getenv("VOLC_ARK_ENCRYPTION");
-        boolean aiccEnabled = "AICC".equals(volcArkEncryption);
+    @Throws(IOException::class)
+    private fun addAiccEncryptionHeader(requestBuilder: Request.Builder, certInfo: CertificateManager.ServerCertificateInfo) {
+        val volcArkEncryption: String? = System.getenv("VOLC_ARK_ENCRYPTION")
+        val aiccEnabled = "AICC".equals(volcArkEncryption)
         if (aiccEnabled) {
-            Map<String, String> info = new HashMap<>();
-            info.put("Version", "AICCv0.1");
-            info.put("RingID", certInfo.getRingId());
-            info.put("KeyID", certInfo.getKeyId());
-            String infoJson = mapper.writeValueAsString(info);
-            requestBuilder.addHeader("X-Encrypt-Info", infoJson);
+            val info: Map<String?, String?> = HashMap()
+            info.put("Version", "AICCv0.1")
+            info.put("RingID", certInfo.getRingId())
+            info.put("KeyID", certInfo.getKeyId())
+            val infoJson: String? = mapper.writeValueAsString(info)
+            requestBuilder.addHeader("X-Encrypt-Info", infoJson)
         }
     }
 
     /**
      * 处理错误响应
      */
-    private Response handleErrorResponse(Response response) throws IOException {
-        ResponseBody errorBody = response.body();
+    @Throws(IOException::class)
+    private fun handleErrorResponse(response: Response): Response {
+        val errorBody: ResponseBody? = response.body()
         if (errorBody != null) {
-            String errorResponseStr = errorBody.string();
-            MediaType contentType = errorBody.contentType();
+            val errorResponseStr: String? = errorBody.string()
+            var contentType: MediaType? = errorBody.contentType()
             if (contentType == null) {
-                contentType = MediaType.get("application/json; charset=utf-8");
+                contentType = MediaType.get("application/json; charset=utf-8")
             }
-            ResponseBody newErrorBody = ResponseBody.create(contentType, errorResponseStr);
-            return response.newBuilder().body(newErrorBody).build();
+            val newErrorBody: ResponseBody? = ResponseBody.create(contentType, errorResponseStr)
+            return response.newBuilder().body(newErrorBody).build()
         }
-        return response;
+        return response
     }
 
     /**
      * 解密响应内容
      */
-    private Response decryptResponse(byte[] key, byte[] nonce, Response response) {
+    private fun decryptResponse(key: ByteArray?, nonce: ByteArray?, response: Response): Response {
         try {
-            ResponseBody responseBody = response.body();
+            val responseBody: ResponseBody? = response.body()
             if (responseBody == null) {
-                return response;
+                return response
             }
-            MediaType contentType = responseBody.contentType();
-            boolean isStreaming = false;
+            val contentType: MediaType? = responseBody.contentType()
+            var isStreaming = false
             if (contentType != null) {
-                String contentTypeStr = contentType.toString();
-                isStreaming = contentTypeStr.contains("text/event-stream");
+                val contentTypeStr = contentType.toString()
+                isStreaming = contentTypeStr.contains("text/event-stream")
             }
             if (isStreaming) {
                 return response.newBuilder()
-                        .addHeader("X-Decryption-Key", Base64.getEncoder().encodeToString(key))
-                        .addHeader("X-Decryption-Nonce", Base64.getEncoder().encodeToString(nonce))
-                        .addHeader("X-Is-Encrypted", "true")
-                        .build();
+                    .addHeader("X-Decryption-Key", Base64.getEncoder().encodeToString(key))
+                    .addHeader("X-Decryption-Nonce", Base64.getEncoder().encodeToString(nonce))
+                    .addHeader("X-Is-Encrypted", "true")
+                    .build()
             } else {
                 try {
-                    String responseBodyStr = responseBody.string();
-                    Map<String, Object> responseJson = mapper.readValue(
-                            responseBodyStr,
-                            new TypeReference<Map<String, Object>>() {
-                            }
-                    );
-                    return handleNormalResponse(key, nonce, response, responseJson);
-                } catch (Exception e) {
-                    return response.newBuilder().build();
+                    val responseBodyStr: String? = responseBody.string()
+                    val responseJson: Map<String?, Object?> = mapper.readValue(
+                        responseBodyStr,
+                        object : TypeReference<Map<String?, Object?>?>() {
+                        }
+                    )
+                    return handleNormalResponse(key, nonce, response, responseJson)
+                } catch (e: Exception) {
+                    return response.newBuilder().build()
                 }
             }
-
-        } catch (Exception e) {
-            return response;
+        } catch (e: Exception) {
+            return response
         }
     }
 
@@ -285,35 +263,34 @@ public class EncryptionInterceptor implements Interceptor {
     /**
      * 处理普通响应解密
      */
-    private Response handleNormalResponse(byte[] key, byte[] nonce, Response response, Map<String, Object> responseJson) throws IOException {
-        if (responseJson.containsKey("choices") && responseJson.get("choices") instanceof List) {
-            @SuppressWarnings("unchecked")
-            List<Map<String, Object>> choices = (List<Map<String, Object>>) responseJson.get("choices");
+    @Throws(IOException::class)
+    private fun handleNormalResponse(key: ByteArray?, nonce: ByteArray?, response: Response, responseJson: Map<String?, Object?>): Response {
+        if (responseJson.containsKey("choices") && responseJson.get("choices") is List) {
+            @SuppressWarnings("unchecked") val choices: List<Map<String?, Object?>?> = responseJson.get("choices") as List<Map<String?, Object?>?>
 
-            for (Map<String, Object> choice : choices) {
+            for (choice in choices) {
                 if (ResponseDecryptUtil.shouldDecryptChoice(choice)) {
-                    ResponseDecryptUtil.decryptChoiceContent(key, nonce, choice);
+                    ResponseDecryptUtil.decryptChoiceContent(key, nonce, choice)
                 }
             }
         }
 
-        String decryptedContent = mapper.writeValueAsString(responseJson);
-        ResponseBody originalResponseBody = response.body();
-        MediaType contentType = null;
+        val decryptedContent: String = mapper.writeValueAsString(responseJson)
+        val originalResponseBody: ResponseBody? = response.body()
+        var contentType: MediaType? = null
         if (originalResponseBody != null) {
-            contentType = originalResponseBody.contentType();
+            contentType = originalResponseBody.contentType()
         }
         if (contentType == null) {
-            contentType = MediaType.get("application/json; charset=utf-8");
+            contentType = MediaType.get("application/json; charset=utf-8")
         }
-        ResponseBody decryptedBody = ResponseBody.create(
-                contentType,
-                decryptedContent.getBytes(StandardCharsets.UTF_8)
-        );
+        val decryptedBody: ResponseBody? = ResponseBody.create(
+            contentType,
+            decryptedContent.getBytes(StandardCharsets.UTF_8)
+        )
 
         return response.newBuilder()
-                .body(decryptedBody)
-                .build();
+            .body(decryptedBody)
+            .build()
     }
-
 }

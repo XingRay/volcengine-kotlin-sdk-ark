@@ -1,128 +1,92 @@
-package com.volcengine.ark.runtime.model.files;
+package com.volcengine.ark.runtime.model.files
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ListFilesResponse {
+class ListFilesResponse {
     @JsonProperty(value = "object")
-    private String object;
+    var `object`: String? = null
+        set(object) {
+            field = this.`object`
+        }
 
     @JsonProperty(value = "data")
-    private List<FileMeta> data;
+    private var data: List<FileMeta?>? = null
 
     @JsonProperty(value = "has_more")
-    private Boolean hasMore;
+    var hasMore: Boolean? = null
 
     @JsonProperty(value = "first_id")
-    private String firstId;
+    var firstId: String? = null
 
     @JsonProperty(value = "last_id")
-    private String lastId;
-
-    public ListFilesResponse() {
-    }
+    var lastId: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ListFilesResponse{" +
-                "object='" + object + '\'' +
+                "object='" + this.`object` + '\'' +
                 ", data=" + data +
                 ", hasMore=" + hasMore +
                 ", firstId='" + firstId + '\'' +
                 ", lastId='" + lastId + '\'' +
-                '}';
+                '}'
     }
 
-    public String getObject() {
-        return object;
+    fun getData(): List<FileMeta?>? {
+        return data
     }
 
-    public void setObject(String object) {
-        this.object = object;
+    fun setData(data: List<FileMeta?>?) {
+        this.data = data
     }
 
-    public List<FileMeta> getData() {
-        return data;
-    }
+    class ListFilesResponseBuilder private constructor() {
+        private var `object`: String? = null
+        private var data: List<FileMeta?>? = null
+        private var hasMore: Boolean? = null
+        private var firstId: String? = null
+        private var lastId: String? = null
 
-    public void setData(List<FileMeta> data) {
-        this.data = data;
-    }
-
-    public Boolean getHasMore() {
-        return hasMore;
-    }
-
-    public void setHasMore(Boolean hasMore) {
-        this.hasMore = hasMore;
-    }
-
-    public String getFirstId() {
-        return firstId;
-    }
-
-    public void setFirstId(String firstId) {
-        this.firstId = firstId;
-    }
-
-    public String getLastId() {
-        return lastId;
-    }
-
-    public void setLastId(String lastId) {
-        this.lastId = lastId;
-    }
-
-    public static final class ListFilesResponseBuilder {
-        private String object;
-        private List<FileMeta> data;
-        private Boolean hasMore;
-        private String firstId;
-        private String lastId;
-
-        private ListFilesResponseBuilder() {
+        fun `object`(`object`: String?): ListFilesResponseBuilder {
+            this.`object` = `object`
+            return this
         }
 
-        public static ListFilesResponseBuilder aListFilesResponse() {
-            return new ListFilesResponseBuilder();
+        fun data(data: List<FileMeta?>?): ListFilesResponseBuilder {
+            this.data = data
+            return this
         }
 
-        public ListFilesResponseBuilder object(String object) {
-            this.object = object;
-            return this;
+        fun hasMore(hasMore: Boolean?): ListFilesResponseBuilder {
+            this.hasMore = hasMore
+            return this
         }
 
-        public ListFilesResponseBuilder data(List<FileMeta> data) {
-            this.data = data;
-            return this;
+        fun firstId(firstId: String?): ListFilesResponseBuilder {
+            this.firstId = firstId
+            return this
         }
 
-        public ListFilesResponseBuilder hasMore(Boolean hasMore) {
-            this.hasMore = hasMore;
-            return this;
+        fun lastId(lastId: String?): ListFilesResponseBuilder {
+            this.lastId = lastId
+            return this
         }
 
-        public ListFilesResponseBuilder firstId(String firstId) {
-            this.firstId = firstId;
-            return this;
+        fun build(): ListFilesResponse {
+            val listFilesResponse: ListFilesResponse = com.volcengine.ark.runtime.model.files.ListFilesResponse()
+            listFilesResponse.object = `object`
+            listFilesResponse.setData(data)
+            listFilesResponse.hasMore = hasMore
+            listFilesResponse.firstId = firstId
+            listFilesResponse.lastId = lastId
+            return listFilesResponse
         }
 
-        public ListFilesResponseBuilder lastId(String lastId) {
-            this.lastId = lastId;
-            return this;
-        }
-
-        public ListFilesResponse build() {
-            ListFilesResponse listFilesResponse = new ListFilesResponse();
-            listFilesResponse.setObject(object);
-            listFilesResponse.setData(data);
-            listFilesResponse.setHasMore(hasMore);
-            listFilesResponse.setFirstId(firstId);
-            listFilesResponse.setLastId(lastId);
-            return listFilesResponse;
+        companion object {
+            fun aListFilesResponse(): ListFilesResponseBuilder {
+                return com.volcengine.ark.runtime.model.files.ListFilesResponse.ListFilesResponseBuilder()
+            }
         }
     }
 }

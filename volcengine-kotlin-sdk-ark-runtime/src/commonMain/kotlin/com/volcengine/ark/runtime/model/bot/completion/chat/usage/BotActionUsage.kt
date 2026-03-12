@@ -1,95 +1,69 @@
-package com.volcengine.ark.runtime.model.bot.completion.chat.usage;
+package com.volcengine.ark.runtime.model.bot.completion.chat.usage
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BotActionUsage {
-
+class BotActionUsage {
     /**
      * For Search Action: The source type name
      */
-    private String name;
+    var name: String? = null
 
     @JsonProperty("prompt_tokens")
-    private String promptTokens;
+    var promptTokens: String? = null
 
     @JsonProperty("completion_tokens")
-    private Integer completionTokens;
+    private var completionTokens: Integer? = null
 
     @JsonProperty("total_tokens")
-    private Integer totalTokens;
+    private var totalTokens: Integer? = null
 
     /**
      * For Search Action: return the search count from this source type
      */
     @JsonProperty("search_count")
-    private Integer searchCount;
+    private var searchCount: Integer? = null
 
     @JsonProperty("action_name")
-    private String actionName;
+    var actionName: String? = null
 
     @JsonProperty("count")
-    private Integer count;
+    private var count: Integer? = null
 
-    public String getName() {
-        return name;
+    fun getCompletionTokens(): Integer? {
+        return completionTokens
     }
 
-    public void setName(String name) {
-        this.name = name;
+    fun setCompletionTokens(completionTokens: Integer?) {
+        this.completionTokens = completionTokens
     }
 
-    public String getPromptTokens() {
-        return promptTokens;
+    fun getTotalTokens(): Integer? {
+        return totalTokens
     }
 
-    public void setPromptTokens(String promptTokens) {
-        this.promptTokens = promptTokens;
+    fun setTotalTokens(totalTokens: Integer?) {
+        this.totalTokens = totalTokens
     }
 
-    public Integer getCompletionTokens() {
-        return completionTokens;
+    fun getSearchCount(): Integer? {
+        return searchCount
     }
 
-    public void setCompletionTokens(Integer completionTokens) {
-        this.completionTokens = completionTokens;
+    fun setSearchCount(searchCount: Integer?) {
+        this.searchCount = searchCount
     }
 
-    public Integer getTotalTokens() {
-        return totalTokens;
+    fun getCount(): Integer? {
+        return count
     }
 
-    public void setTotalTokens(Integer totalTokens) {
-        this.totalTokens = totalTokens;
-    }
-
-    public Integer getSearchCount() {
-        return searchCount;
-    }
-
-    public void setSearchCount(Integer searchCount) {
-        this.searchCount = searchCount;
-    }
-
-    public String getActionName() {
-        return actionName;
-    }
-
-    public void setActionName(String actionName) {
-        this.actionName = actionName;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
+    fun setCount(count: Integer?) {
+        this.count = count
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "BotActionUsage{" +
                 "name='" + name + '\'' +
                 ", promptTokens='" + promptTokens + '\'' +
@@ -98,6 +72,6 @@ public class BotActionUsage {
                 ", searchCount=" + searchCount +
                 ", actionName='" + actionName + '\'' +
                 ", count=" + count +
-                '}';
+                '}'
     }
 }

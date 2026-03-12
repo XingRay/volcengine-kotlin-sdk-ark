@@ -1,48 +1,39 @@
-package com.volcengine.ark.runtime.model.multimodalembeddings;
+package com.volcengine.ark.runtime.model.multimodalembeddings
 
-public class SparseEmbeddingInput {
-    private String type;
-
-    public SparseEmbeddingInput() {}
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+class SparseEmbeddingInput {
+    var type: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "SparseEmbeddingInput{" +
                 "type='" + type + '\'' +
-                '}';
+                '}'
     }
 
-    public static SparseEmbeddingInput.Builder builder() {
-        return new SparseEmbeddingInput.Builder();
+    class Builder private constructor() {
+        private var type: String? = null
+
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
+        }
+
+        fun build(): SparseEmbeddingInput {
+            val sparseEmbeddingInput: SparseEmbeddingInput = com.volcengine.ark.runtime.model.multimodalembeddings.SparseEmbeddingInput()
+            sparseEmbeddingInput.type = type
+            return sparseEmbeddingInput
+        }
+
+        companion object {
+            fun SparseEmbeddingInput(): Builder {
+                return com.volcengine.ark.runtime.model.multimodalembeddings.SparseEmbeddingInput.Builder()
+            }
+        }
     }
 
-    public static final class Builder {
-        private String type;
-
-        private Builder() {
-        }
-
-        public static SparseEmbeddingInput.Builder SparseEmbeddingInput() {
-            return new Builder();
-        }
-
-        public SparseEmbeddingInput.Builder type(String type) {
-            this.type = type;
-            return this;
-        }
-
-        public SparseEmbeddingInput build() {
-            SparseEmbeddingInput sparseEmbeddingInput = new SparseEmbeddingInput();
-            sparseEmbeddingInput.setType(type);
-            return sparseEmbeddingInput;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.multimodalembeddings.SparseEmbeddingInput.Builder()
         }
     }
 }

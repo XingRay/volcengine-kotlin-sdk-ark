@@ -1,50 +1,38 @@
-package com.volcengine.ark.runtime.model.responses.item;
+package com.volcengine.ark.runtime.model.responses.item
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemReference extends BaseItem implements InputItem {
+class ItemReference : BaseItem(ResponsesConstants.ITEM_TYPE_ITEM_REFERENCE), InputItem {
     @JsonProperty("id")
-    private String id;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public ItemReference() {
-        super(ResponsesConstants.ITEM_TYPE_ITEM_REFERENCE);
-    }
+    var id: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ItemReference{" +
                 "id='" + id + '\'' +
                 ", type='" + getType() + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    class Builder {
+        private var id: String? = null
 
-    public static class Builder {
-        private String id;
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
+        fun id(id: String?): Builder {
+            this.id = id
+            return this
         }
 
-        public ItemReference build() {
-            ItemReference itemReference = new ItemReference();
-            itemReference.setId(id);
-            return itemReference;
+        fun build(): ItemReference {
+            val itemReference: ItemReference = com.volcengine.ark.runtime.model.responses.item.ItemReference()
+            itemReference.id = id
+            return itemReference
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.ItemReference.Builder()
         }
     }
 }

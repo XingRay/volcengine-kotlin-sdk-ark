@@ -1,55 +1,45 @@
-package com.volcengine.ark.runtime.interceptor;
+package com.volcengine.ark.runtime.interceptor
 
-import com.volcengine.ark.runtime.Const;
-import com.volcengine.ark.runtime.exception.ArkAPIError;
-import com.volcengine.ark.runtime.exception.ArkHttpException;
-import com.volcengine.version.Version;
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.apache.commons.lang.RandomStringUtils;
+import com.volcengine.ark.runtime.Const
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-public class RequestIdInterceptor implements Interceptor {
-
-    public RequestIdInterceptor() {}
-
+class RequestIdInterceptor : Interceptor {
     @Override
-    public Response intercept(Chain chain) throws IOException {
-        Request.Builder requestBuilder = chain.request().newBuilder();
+    @Throws(IOException::class)
+    fun intercept(chain: Chain): Response {
+        var requestBuilder: Request.Builder = chain.request().newBuilder()
 
-        if (chain.request().header(Const.CLIENT_REQUEST_HEADER) == null || chain.request().header(Const.CLIENT_REQUEST_HEADER).length() == 0) {
-            requestBuilder = requestBuilder.header(Const.CLIENT_REQUEST_HEADER, genRequestId());
+        if (chain.request().header(Const.CLIENT_REQUEST_HEADER) == null || chain.request().header(Const.CLIENT_REQUEST_HEADER).length() === 0) {
+            requestBuilder = requestBuilder.header(Const.CLIENT_REQUEST_HEADER, genRequestId())
         }
-        requestBuilder.header("User-Agent", getUserAgent());
+        requestBuilder.header("User-Agent", com.volcengine.ark.runtime.interceptor.RequestIdInterceptor.Companion.getUserAgent())
 
-        Request request = requestBuilder.build();
+        val request: Request = requestBuilder.build()
 
         try {
-            return chain.proceed(request);
-        } catch (Exception e) {
-            String requestId = request.header(Const.CLIENT_REQUEST_HEADER);
-            ArkAPIError arkAPIError = new ArkAPIError(new ArkAPIError.ArkErrorDetails(e.getMessage(), "", "", ""));
-            throw new ArkHttpException(arkAPIError, e, ArkHttpException.INTERNAL_SERVICE_CODE, requestId);
+            return chain.proceed(request)
+        } catch (e: Exception) {
+            val requestId: String? = request.header(Const.CLIENT_REQUEST_HEADER)
+            val arkAPIError: ArkAPIError = ArkAPIError(ArkErrorDetails(e.getMessage(), "", "", ""))
+            throw ArkHttpException(arkAPIError, e, ArkHttpException.INTERNAL_SERVICE_CODE, requestId)
         }
     }
 
-    private String genRequestId() {
-        Date date = new Date();
-        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddhhmmss");
-        return dateFormat.format(date) + RandomStringUtils.randomAlphanumeric(20);
+    private fun genRequestId(): String {
+        val date: Date = Date()
+        val dateFormat: SimpleDateFormat = SimpleDateFormat("yyyyMMddhhmmss")
+        return dateFormat.format(date) + RandomStringUtils.randomAlphanumeric(20)
     }
 
-    private static String getUserAgent() {
-        String format = "%s/%s/(%s;%s;%s)";
+    companion object {
+        private val userAgent: String
+            get() {
+                val format = "%s/%s/(%s;%s;%s)"
 
-        String osInfo = System.getProperty("os.name") + "-" + System.getProperty("os.version");
-        String jdkInfo = "java-" + System.getProperty("java.version");
-        String arch = System.getProperty("os.arch");
+                val osInfo: String = System.getProperty("os.name") + "-" + System.getProperty("os.version")
+                val jdkInfo = "java-" + System.getProperty("java.version")
+                val arch: String? = System.getProperty("os.arch")
 
-        return String.format(format, Version.SDK_NAME, Version.SDK_VERSION, jdkInfo, osInfo, arch);
+                return String.format(format, Version.SDK_NAME, Version.SDK_VERSION, jdkInfo, osInfo, arch)
+            }
     }
 }

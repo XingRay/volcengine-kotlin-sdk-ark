@@ -1,238 +1,126 @@
-package com.volcengine.ark.runtime.model.responses.request;
+package com.volcengine.ark.runtime.model.responses.request
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.common.ResponsesCaching;
-import com.volcengine.ark.runtime.model.responses.common.ResponsesReasoning;
-import com.volcengine.ark.runtime.model.responses.common.ResponsesText;
-import com.volcengine.ark.runtime.model.responses.common.ResponsesThinking;
-import com.volcengine.ark.runtime.model.responses.tool.ResponsesTool;
-import com.volcengine.ark.runtime.model.responses.tool.ResponsesToolChoice;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.List;
-
-public class CreateResponsesRequest {
+class CreateResponsesRequest {
     @JsonProperty("input")
-    private ResponsesInput input;
+    private var input: ResponsesInput? = null
 
     @JsonProperty("model")
-    private String model;
+    var model: String? = null
 
     @JsonProperty("max_output_tokens")
-    private Long maxOutputTokens;
+    var maxOutputTokens: Long? = null
 
     @JsonProperty("previous_response_id")
-    private String previousResponseId;
+    var previousResponseId: String? = null
 
     @JsonProperty("thinking")
-    private ResponsesThinking thinking;
+    private var thinking: ResponsesThinking? = null
 
     @JsonProperty("reasoning")
-    private ResponsesReasoning reasoning;
+    private var reasoning: ResponsesReasoning? = null
 
     @JsonProperty("service_tier")
-    private String serviceTier;
+    var serviceTier: String? = null
 
     @JsonProperty("store")
-    private Boolean store;
+    var store: Boolean? = null
 
     @JsonProperty("stream")
-    private Boolean stream;
+    var stream: Boolean? = null
 
     @JsonProperty("temperature")
-    private Double temperature;
+    var temperature: Double? = null
 
     @JsonProperty("tools")
-    private List<ResponsesTool> tools;
+    private var tools: List<ResponsesTool?>? = null
 
     @JsonProperty("top_p")
-    private Double topP;
+    var topP: Double? = null
 
     @JsonProperty("instructions")
-    private String instructions;
+    var instructions: String? = null
 
     @JsonProperty("include")
-    private List<String> include;
+    var include: List<String?>? = null
 
     @JsonProperty("caching")
-    private ResponsesCaching caching;
+    private var caching: ResponsesCaching? = null
 
     @JsonProperty("text")
-    private ResponsesText text;
+    private var text: ResponsesText? = null
 
     @JsonProperty("expire_at")
-    private Long expireAt;
+    var expireAt: Long? = null
 
     @JsonProperty("tool_choice")
-    private ResponsesToolChoice toolChoice;
+    private var toolChoice: ResponsesToolChoice? = null
 
     @JsonProperty("parallel_tool_calls")
-    private Boolean parallelToolCalls;
+    var parallelToolCalls: Boolean? = null
 
     @JsonProperty("max_tool_calls")
-    private Long maxToolCalls;
+    var maxToolCalls: Long? = null
 
-    public ResponsesInput getInput() {
-        return input;
+    fun getInput(): ResponsesInput? {
+        return input
     }
 
-    public void setInput(ResponsesInput input) {
-        this.input = input;
+    fun setInput(input: ResponsesInput?) {
+        this.input = input
     }
 
-    public String getModel() {
-        return model;
+    fun getThinking(): ResponsesThinking? {
+        return thinking
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    fun setThinking(thinking: ResponsesThinking?) {
+        this.thinking = thinking
     }
 
-    public Long getMaxOutputTokens() {
-        return maxOutputTokens;
+    fun getReasoning(): ResponsesReasoning? {
+        return reasoning
     }
 
-    public void setMaxOutputTokens(Long maxOutputTokens) {
-        this.maxOutputTokens = maxOutputTokens;
+    fun setReasoning(reasoning: ResponsesReasoning?) {
+        this.reasoning = reasoning
     }
 
-    public String getPreviousResponseId() {
-        return previousResponseId;
+    fun getTools(): List<ResponsesTool?>? {
+        return tools
     }
 
-    public void setPreviousResponseId(String previousResponseId) {
-        this.previousResponseId = previousResponseId;
+    fun setTools(tools: List<ResponsesTool?>?) {
+        this.tools = tools
     }
 
-    public ResponsesThinking getThinking() {
-        return thinking;
+    fun getCaching(): ResponsesCaching? {
+        return caching
     }
 
-    public void setThinking(ResponsesThinking thinking) {
-        this.thinking = thinking;
+    fun setCaching(caching: ResponsesCaching?) {
+        this.caching = caching
     }
 
-    public ResponsesReasoning getReasoning() {
-        return reasoning;
+    fun getText(): ResponsesText? {
+        return text
     }
 
-    public void setReasoning(ResponsesReasoning reasoning) {
-        this.reasoning = reasoning;
+    fun setText(text: ResponsesText?) {
+        this.text = text
     }
 
-    public String getServiceTier() {
-        return serviceTier;
+    fun getToolChoice(): ResponsesToolChoice? {
+        return toolChoice
     }
 
-    public void setServiceTier(String serviceTier) {
-        this.serviceTier = serviceTier;
-    }
-
-    public Boolean getStore() {
-        return store;
-    }
-
-    public void setStore(Boolean store) {
-        this.store = store;
-    }
-
-    public Boolean getStream() {
-        return stream;
-    }
-
-    public void setStream(Boolean stream) {
-        this.stream = stream;
-    }
-
-    public Double getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(Double temperature) {
-        this.temperature = temperature;
-    }
-
-    public List<ResponsesTool> getTools() {
-        return tools;
-    }
-
-    public void setTools(List<ResponsesTool> tools) {
-        this.tools = tools;
-    }
-
-    public Double getTopP() {
-        return topP;
-    }
-
-    public void setTopP(Double topP) {
-        this.topP = topP;
-    }
-
-    public String getInstructions() {
-        return instructions;
-    }
-
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
-    }
-
-    public List<String> getInclude() {
-        return include;
-    }
-
-    public void setInclude(List<String> include) {
-        this.include = include;
-    }
-
-    public ResponsesCaching getCaching() {
-        return caching;
-    }
-
-    public void setCaching(ResponsesCaching caching) {
-        this.caching = caching;
-    }
-
-    public ResponsesText getText() {
-        return text;
-    }
-
-    public void setText(ResponsesText text) {
-        this.text = text;
-    }
-
-    public Long getExpireAt() {
-        return expireAt;
-    }
-
-    public void setExpireAt(Long expireAt) {
-        this.expireAt = expireAt;
-    }
-
-    public ResponsesToolChoice getToolChoice() {
-        return toolChoice;
-    }
-
-    public void setToolChoice(ResponsesToolChoice toolChoice) {
-        this.toolChoice = toolChoice;
-    }
-
-    public Boolean getParallelToolCalls() {
-        return parallelToolCalls;
-    }
-
-    public void setParallelToolCalls(Boolean parallelToolCalls) {
-        this.parallelToolCalls = parallelToolCalls;
-    }
-
-    public Long getMaxToolCalls() {
-        return maxToolCalls;
-    }
-
-    public void setMaxToolCalls(Long maxToolCalls) {
-        this.maxToolCalls = maxToolCalls;
+    fun setToolChoice(toolChoice: ResponsesToolChoice?) {
+        this.toolChoice = toolChoice
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ResponsesRequest{" +
                 "input=" + input +
                 ", model='" + model + '\'' +
@@ -254,158 +142,160 @@ public class CreateResponsesRequest {
                 ", toolChoice=" + toolChoice +
                 ", parallelToolCalls=" + parallelToolCalls +
                 ", maxToolCalls=" + maxToolCalls +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var input: ResponsesInput? = null
+        private var model: String? = null
+        private var maxOutputTokens: Long? = null
+        private var previousResponseId: String? = null
+        private var thinking: ResponsesThinking? = null
+        private var reasoning: ResponsesReasoning? = null
+        private var serviceTier: String? = null
+        private var store: Boolean? = null
+        private var stream: Boolean? = null
+        private var temperature: Double? = null
+        private var tools: List<ResponsesTool?>? = null
+        private var topP: Double? = null
+        private var instructions: String? = null
+        private var include: List<String?>? = null
+        private var caching: ResponsesCaching? = null
+        private var text: ResponsesText? = null
+        private var expireAt: Long? = null
+        private var toolChoice: ResponsesToolChoice? = null
+        private var parallelToolCalls: Boolean? = null
+        private var maxToolCalls: Long? = null
+
+        fun input(input: ResponsesInput?): Builder {
+            this.input = input
+            return this
+        }
+
+        fun model(model: String?): Builder {
+            this.model = model
+            return this
+        }
+
+        fun maxOutputTokens(maxOutputTokens: Long?): Builder {
+            this.maxOutputTokens = maxOutputTokens
+            return this
+        }
+
+        fun previousResponseId(previousResponseId: String?): Builder {
+            this.previousResponseId = previousResponseId
+            return this
+        }
+
+        fun thinking(thinking: ResponsesThinking?): Builder {
+            this.thinking = thinking
+            return this
+        }
+
+        fun reasoning(reasoning: ResponsesReasoning?): Builder {
+            this.reasoning = reasoning
+            return this
+        }
+
+        fun serviceTier(serviceTier: String?): Builder {
+            this.serviceTier = serviceTier
+            return this
+        }
+
+        fun store(store: Boolean?): Builder {
+            this.store = store
+            return this
+        }
+
+        fun stream(stream: Boolean?): Builder {
+            this.stream = stream
+            return this
+        }
+
+        fun temperature(temperature: Double?): Builder {
+            this.temperature = temperature
+            return this
+        }
+
+        fun tools(tools: List<ResponsesTool?>?): Builder {
+            this.tools = tools
+            return this
+        }
+
+        fun topP(topP: Double?): Builder {
+            this.topP = topP
+            return this
+        }
+
+        fun instructions(instructions: String?): Builder {
+            this.instructions = instructions
+            return this
+        }
+
+        fun include(include: List<String?>?): Builder {
+            this.include = include
+            return this
+        }
+
+        fun caching(caching: ResponsesCaching?): Builder {
+            this.caching = caching
+            return this
+        }
+
+        fun text(text: ResponsesText?): Builder {
+            this.text = text
+            return this
+        }
+
+        fun expireAt(expireAt: Long?): Builder {
+            this.expireAt = expireAt
+            return this
+        }
+
+        fun toolChoice(toolChoice: ResponsesToolChoice?): Builder {
+            this.toolChoice = toolChoice
+            return this
+        }
+
+        fun parallelToolCalls(parallelToolCalls: Boolean?): Builder {
+            this.parallelToolCalls = parallelToolCalls
+            return this
+        }
+
+        fun maxToolCalls(maxToolCalls: Long?): Builder {
+            this.maxToolCalls = maxToolCalls
+            return this
+        }
+
+        fun build(): CreateResponsesRequest {
+            val responsesRequest: CreateResponsesRequest = com.volcengine.ark.runtime.model.responses.request.CreateResponsesRequest()
+            responsesRequest.setInput(input)
+            responsesRequest.model = model
+            responsesRequest.maxOutputTokens = maxOutputTokens
+            responsesRequest.previousResponseId = previousResponseId
+            responsesRequest.setThinking(thinking)
+            responsesRequest.setReasoning(reasoning)
+            responsesRequest.serviceTier = serviceTier
+            responsesRequest.store = store
+            responsesRequest.stream = stream
+            responsesRequest.temperature = temperature
+            responsesRequest.setTools(tools)
+            responsesRequest.topP = topP
+            responsesRequest.instructions = instructions
+            responsesRequest.include = include
+            responsesRequest.setCaching(caching)
+            responsesRequest.setText(text)
+            responsesRequest.expireAt = expireAt
+            responsesRequest.setToolChoice(toolChoice)
+            responsesRequest.parallelToolCalls = parallelToolCalls
+            responsesRequest.maxToolCalls = maxToolCalls
+            return responsesRequest
+        }
     }
 
-    public static class Builder {
-        private ResponsesInput input;
-        private String model;
-        private Long maxOutputTokens;
-        private String previousResponseId;
-        private ResponsesThinking thinking;
-        private ResponsesReasoning reasoning;
-        private String serviceTier;
-        private Boolean store;
-        private Boolean stream;
-        private Double temperature;
-        private List<ResponsesTool> tools;
-        private Double topP;
-        private String instructions;
-        private List<String> include;
-        private ResponsesCaching caching;
-        private ResponsesText text;
-        private Long expireAt;
-        private ResponsesToolChoice toolChoice;
-        private Boolean parallelToolCalls;
-        private Long maxToolCalls;
-
-        public Builder input(ResponsesInput input) {
-            this.input = input;
-            return this;
-        }
-
-        public Builder model(String model) {
-            this.model = model;
-            return this;
-        }
-
-        public Builder maxOutputTokens(Long maxOutputTokens) {
-            this.maxOutputTokens = maxOutputTokens;
-            return this;
-        }
-
-        public Builder previousResponseId(String previousResponseId) {
-            this.previousResponseId = previousResponseId;
-            return this;
-        }
-
-        public Builder thinking(ResponsesThinking thinking) {
-            this.thinking = thinking;
-            return this;
-        }
-
-        public Builder reasoning(ResponsesReasoning reasoning) {
-            this.reasoning = reasoning;
-            return this;
-        }
-
-        public Builder serviceTier(String serviceTier) {
-            this.serviceTier = serviceTier;
-            return this;
-        }
-
-        public Builder store(Boolean store) {
-            this.store = store;
-            return this;
-        }
-
-        public Builder stream(Boolean stream) {
-            this.stream = stream;
-            return this;
-        }
-
-        public Builder temperature(Double temperature) {
-            this.temperature = temperature;
-            return this;
-        }
-
-        public Builder tools(List<ResponsesTool> tools) {
-            this.tools = tools;
-            return this;
-        }
-
-        public Builder topP(Double topP) {
-            this.topP = topP;
-            return this;
-        }
-
-        public Builder instructions(String instructions) {
-            this.instructions = instructions;
-            return this;
-        }
-
-        public Builder include(List<String> include) {
-            this.include = include;
-            return this;
-        }
-
-        public Builder caching(ResponsesCaching caching) {
-            this.caching = caching;
-            return this;
-        }
-
-        public Builder text(ResponsesText text) {
-            this.text = text;
-            return this;
-        }
-
-        public Builder expireAt(Long expireAt) {
-            this.expireAt = expireAt;
-            return this;
-        }
-
-        public Builder toolChoice(ResponsesToolChoice toolChoice) {
-            this.toolChoice = toolChoice;
-            return this;
-        }
-
-        public Builder parallelToolCalls(Boolean parallelToolCalls) {
-            this.parallelToolCalls = parallelToolCalls;
-            return this;
-        }
-
-        public Builder maxToolCalls(Long maxToolCalls) {
-            this.maxToolCalls = maxToolCalls;
-            return this;
-        }
-
-        public CreateResponsesRequest build() {
-            CreateResponsesRequest responsesRequest = new CreateResponsesRequest();
-            responsesRequest.setInput(input);
-            responsesRequest.setModel(model);
-            responsesRequest.setMaxOutputTokens(maxOutputTokens);
-            responsesRequest.setPreviousResponseId(previousResponseId);
-            responsesRequest.setThinking(thinking);
-            responsesRequest.setReasoning(reasoning);
-            responsesRequest.setServiceTier(serviceTier);
-            responsesRequest.setStore(store);
-            responsesRequest.setStream(stream);
-            responsesRequest.setTemperature(temperature);
-            responsesRequest.setTools(tools);
-            responsesRequest.setTopP(topP);
-            responsesRequest.setInstructions(instructions);
-            responsesRequest.setInclude(include);
-            responsesRequest.setCaching(caching);
-            responsesRequest.setText(text);
-            responsesRequest.setExpireAt(expireAt);
-            responsesRequest.setToolChoice(toolChoice);
-            responsesRequest.setParallelToolCalls(parallelToolCalls);
-            responsesRequest.setMaxToolCalls(maxToolCalls);
-            return responsesRequest;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.request.CreateResponsesRequest.Builder()
         }
     }
 }

@@ -1,23 +1,13 @@
-package com.volcengine.ark.runtime.utils;
+package com.volcengine.ark.runtime.utils
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
+import okhttp3.MediaType
 
-import java.io.File;
+object MultipartBodyUtils {
+    val TYPE: MediaType? = MediaType.parse("multipart/form-data")
+    val JSON: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
-public class MultipartBodyUtils
-{
-    public static final MediaType TYPE = MediaType.parse("multipart/form-data");
-    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
-    private MultipartBodyUtils()
-    {
-    }
-
-    public static MultipartBody.Part getPart(File image, String name)
-    {
-        RequestBody body = RequestBody.create(TYPE, image);
-        return MultipartBody.Part.createFormData(name, image.getName(), body);
+    fun getPart(image: File, name: String?): MultipartBody.Part {
+        val body: RequestBody? = RequestBody.create(com.volcengine.ark.runtime.utils.MultipartBodyUtils.TYPE, image)
+        return MultipartBody.Part.createFormData(name, image.getName(), body)
     }
 }

@@ -1,33 +1,19 @@
-package com.volcengine.ark.runtime.model.responses.event.functioncall;
+package com.volcengine.ark.runtime.model.responses.event.functioncall
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class FunctionCallArgumentsDoneEvent extends ItemEvent {
+class FunctionCallArgumentsDoneEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_FUNCTION_CALL_ARGUMENTS_DONE) {
     @JsonProperty("arguments")
-    private String arguments;
-
-    public String getArguments() {
-        return arguments;
-    }
-
-    public void setArguments(String arguments) {
-        this.arguments = arguments;
-    }
-
-    public FunctionCallArgumentsDoneEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_FUNCTION_CALL_ARGUMENTS_DONE);
-    }
+    var arguments: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "FunctionCallArgumentsDoneEvent{" +
                 "arguments='" + arguments + '\'' +
                 ", itemId='" + itemId + '\'' +
                 ", outputIndex=" + outputIndex +
                 ", type='" + type + '\'' +
                 ", sequenceNumber=" + sequenceNumber +
-                '}';
+                '}'
     }
 }

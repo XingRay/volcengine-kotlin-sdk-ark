@@ -1,49 +1,37 @@
-package com.volcengine.ark.runtime.model.responses.content;
+package com.volcengine.ark.runtime.model.responses.content
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class InputContentItemText extends InputContentItem {
-
+class InputContentItemText : InputContentItem(ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_TEXT) {
     @JsonProperty("text")
-    private String text;
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public InputContentItemText() {
-        super(ResponsesConstants.CONTENT_ITEM_TYPE_INPUT_TEXT);
-    }
+    var text: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "InputContentItemText {\n{" +
                 "type='" + getType() + '\'' +
                 ", text='" + text + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    class Builder {
+        private var text: String? = null
 
-    public static class Builder {
-        private String text;
-
-        public Builder text(String text) {
-            this.text = text;
-            return this;
+        fun text(text: String?): Builder {
+            this.text = text
+            return this
         }
 
-        public InputContentItemText build() {
-            InputContentItemText responsesContentItemText = new InputContentItemText();
-            responsesContentItemText.setText(text);
-            return responsesContentItemText;
+        fun build(): InputContentItemText {
+            val responsesContentItemText: InputContentItemText = com.volcengine.ark.runtime.model.responses.content.InputContentItemText()
+            responsesContentItemText.text = text
+            return responsesContentItemText
+        }
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.content.InputContentItemText.Builder()
         }
     }
 }

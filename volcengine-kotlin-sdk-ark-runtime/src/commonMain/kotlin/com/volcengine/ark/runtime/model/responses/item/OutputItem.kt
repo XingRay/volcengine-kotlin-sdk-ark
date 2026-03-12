@@ -1,5 +1,5 @@
-package com.volcengine.ark.runtime.model.responses.item;
+package com.volcengine.ark.runtime.model.responses.item
 
-public interface OutputItem {
-    String getType();
+interface OutputItem {
+    val type: String?
 }

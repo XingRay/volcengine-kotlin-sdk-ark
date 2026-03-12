@@ -1,42 +1,24 @@
-package com.volcengine.ark.runtime.model.responses.event.doubaoapp;
+package com.volcengine.ark.runtime.model.responses.event.doubaoapp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
-import com.volcengine.ark.runtime.model.responses.event.ItemEvent;
-import com.volcengine.ark.runtime.model.responses.item.doubaoapp.DoubaoAppCallBlock;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.List;
-
-public class DoubaoAppCallCompletedEvent extends ItemEvent {
-
+class DoubaoAppCallCompletedEvent : ItemEvent(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_COMPLETED) {
     @JsonProperty("feature")
-    private String feature;
+    var feature: String? = null
 
     @JsonProperty("blocks")
-    private List<DoubaoAppCallBlock> blocks;
+    private var blocks: List<DoubaoAppCallBlock?>? = null
 
-    public DoubaoAppCallCompletedEvent() {
-        super(ResponsesConstants.EVENT_TYPE_RESPONSE_DOUBAO_APP_CALL_COMPLETED);
+    fun getBlocks(): List<DoubaoAppCallBlock?>? {
+        return blocks
     }
 
-    public String getFeature() {
-        return feature;
-    }
-
-    public void setFeature(String feature) {
-        this.feature = feature;
-    }
-
-    public List<DoubaoAppCallBlock> getBlocks() {
-        return blocks;
-    }
-
-    public void setBlocks(List<DoubaoAppCallBlock> blocks) {
-        this.blocks = blocks;
+    fun setBlocks(blocks: List<DoubaoAppCallBlock?>?) {
+        this.blocks = blocks
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DoubaoAppCallCompletedEvent{" +
                 "type='" + getType() + '\'' +
                 ", feature='" + feature + '\'' +
@@ -44,29 +26,30 @@ public class DoubaoAppCallCompletedEvent extends ItemEvent {
                 ", itemId='" + getItemId() + '\'' +
                 ", outputIndex=" + getOutputIndex() +
                 ", sequenceNumber=" + getSequenceNumber() +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private val event: DoubaoAppCallCompletedEvent = com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallCompletedEvent()
+
+        fun feature(feature: String?): Builder {
+            event.feature = feature
+            return this
+        }
+
+        fun blocks(blocks: List<DoubaoAppCallBlock?>?): Builder {
+            event.setBlocks(blocks)
+            return this
+        }
+
+        fun build(): DoubaoAppCallCompletedEvent {
+            return event
+        }
     }
 
-    public static class Builder {
-
-        private DoubaoAppCallCompletedEvent event = new DoubaoAppCallCompletedEvent();
-
-        public Builder feature(String feature) {
-            event.setFeature(feature);
-            return this;
-        }
-
-        public Builder blocks(List<DoubaoAppCallBlock> blocks) {
-            event.setBlocks(blocks);
-            return this;
-        }
-
-        public DoubaoAppCallCompletedEvent build() {
-            return event;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.event.doubaoapp.DoubaoAppCallCompletedEvent.Builder()
         }
     }
 }

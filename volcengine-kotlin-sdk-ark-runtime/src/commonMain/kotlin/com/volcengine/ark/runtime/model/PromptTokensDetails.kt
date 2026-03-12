@@ -1,38 +1,36 @@
-package com.volcengine.ark.runtime.model;
+package com.volcengine.ark.runtime.model
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PromptTokensDetails {
-
+class PromptTokensDetails {
     @JsonProperty("cached_tokens")
-    private Integer cachedTokens;
+    private var cachedTokens: Integer? = null
 
     @JsonProperty("provisioned_tokens")
-    private Integer provisionedTokens;
+    private var provisionedTokens: Integer? = null
 
-    public Integer getCachedTokens() {
-        return cachedTokens;
+    fun getCachedTokens(): Integer? {
+        return cachedTokens
     }
 
-    public void setCachedTokens(Integer cachedTokens) {
-        this.cachedTokens = cachedTokens;
+    fun setCachedTokens(cachedTokens: Integer?) {
+        this.cachedTokens = cachedTokens
     }
 
-    public Integer getProvisionedTokens() {
-        return provisionedTokens;
+    fun getProvisionedTokens(): Integer? {
+        return provisionedTokens
     }
 
-    public void setProvisionedTokens(Integer provisionedTokens) {
-        this.provisionedTokens = provisionedTokens;
+    fun setProvisionedTokens(provisionedTokens: Integer?) {
+        this.provisionedTokens = provisionedTokens
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "PromptTokensDetails{" +
                 "cachedTokens=" + cachedTokens +
                 ", provisionedTokens=" + provisionedTokens +
-                '}';
+                '}'
     }
 }

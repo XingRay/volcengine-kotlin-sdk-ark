@@ -1,90 +1,67 @@
-package com.volcengine.ark.runtime.model.responses.tool;
+package com.volcengine.ark.runtime.model.responses.tool
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.common.UserLocation;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.List;
-
-public class ToolWebSearch extends ResponsesTool {
-
+class ToolWebSearch : ResponsesTool(ResponsesConstants.TOOL_TYPE_WEB_SEARCH) {
     @JsonProperty("limit")
-    private Long limit;
+    var limit: Long? = null
 
     @JsonProperty("user_location")
-    private UserLocation userLocation;
+    private var userLocation: UserLocation? = null
 
     @JsonProperty("sources")
-    private List<String> sources;
+    var sources: List<String?>? = null
 
-    public Long getLimit() {
-        return limit;
+    fun getUserLocation(): UserLocation? {
+        return userLocation
     }
 
-    public void setLimit(Long limit) {
-        this.limit = limit;
-    }
-
-    public UserLocation getUserLocation() {
-        return userLocation;
-    }
-
-    public void setUserLocation(UserLocation userLocation) {
-        this.userLocation = userLocation;
-    }
-
-    public List<String> getSources() {
-        return sources;
-    }
-
-    public void setSources(List<String> sources) {
-        this.sources = sources;
-    }
-
-    public ToolWebSearch() {
-        super(ResponsesConstants.TOOL_TYPE_WEB_SEARCH);
+    fun setUserLocation(userLocation: UserLocation?) {
+        this.userLocation = userLocation
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ToolWebSearch{" +
                 "type='" + getType() + '\'' +
                 ", limit=" + limit +
                 ", userLocation=" + userLocation +
                 ", sources=" + sources +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var limit: Long? = null
+        private var userLocation: UserLocation? = null
+        private var sources: List<String?>? = null
+
+        fun limit(limit: Long?): Builder {
+            this.limit = limit
+            return this
+        }
+
+        fun userLocation(userLocation: UserLocation?): Builder {
+            this.userLocation = userLocation
+            return this
+        }
+
+        fun sources(sources: List<String?>?): Builder {
+            this.sources = sources
+            return this
+        }
+
+        fun build(): ToolWebSearch {
+            val toolWebSearch: ToolWebSearch = com.volcengine.ark.runtime.model.responses.tool.ToolWebSearch()
+            toolWebSearch.limit = limit
+            toolWebSearch.setUserLocation(userLocation)
+            toolWebSearch.sources = sources
+            return toolWebSearch
+        }
     }
 
-    public static class Builder {
-        private Long limit;
-        private UserLocation userLocation;
-        private List<String> sources;
-
-        public Builder limit(Long limit) {
-            this.limit = limit;
-            return this;
-        }
-
-        public Builder userLocation(UserLocation userLocation) {
-            this.userLocation = userLocation;
-            return this;
-        }
-
-        public Builder sources(List<String> sources) {
-            this.sources = sources;
-            return this;
-        }
-
-        public ToolWebSearch build() {
-            ToolWebSearch toolWebSearch = new ToolWebSearch();
-            toolWebSearch.setLimit(limit);
-            toolWebSearch.setUserLocation(userLocation);
-            toolWebSearch.setSources(sources);
-            return toolWebSearch;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.ToolWebSearch.Builder()
         }
     }
 }

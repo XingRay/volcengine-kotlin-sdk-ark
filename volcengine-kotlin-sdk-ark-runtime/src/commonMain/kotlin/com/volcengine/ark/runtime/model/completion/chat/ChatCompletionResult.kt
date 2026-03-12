@@ -1,130 +1,88 @@
-package com.volcengine.ark.runtime.model.completion.chat;
+package com.volcengine.ark.runtime.model.completion.chat
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.volcengine.ark.runtime.model.Usage;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonAlias
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChatCompletionResult {
-
+class ChatCompletionResult {
     /**
      * Unique id assigned to this chat completion.
      */
-    String id;
+    var id: String? = null
 
     /**
      * The type of object returned, should be "chat.completion"
      */
-    String object;
+    var `object`: String? = null
+        set(object) {
+            field = this.`object`
+        }
 
     /**
      * The creation time in epoch seconds.
      */
-    long created;
-    
+    var created: Long = 0
+
     /**
      * The GPT model used.
      */
-    String model;
+    var model: String? = null
 
     /**
      * Specifies the latency tier to use for processing the request.
-     *
-     *     This parameter is relevant for customers subscribed to the scale tier service:
-     *
-     *     - If set to 'auto', and the endpoint is Scale tier enabled, the system will
-     *       utilize scale tier credits until they are exhausted.
-     *     - If set to 'auto', and the endpoint is not Scale tier enabled, the request will
-     *       be processed using the default service tier with a lower uptime SLA and no
-     *       latency guarentee.
-     *     - If set to 'default', the request will be processed using the default service
-     *       tier with a lower uptime SLA and no latency guarentee.
-     *     - When not set, the default behavior is 'auto'.
-     *
-     *     When this parameter is set, the response body will include the `service_tier`
-     *     utilized.
+     * 
+     * This parameter is relevant for customers subscribed to the scale tier service:
+     * 
+     * - If set to 'auto', and the endpoint is Scale tier enabled, the system will
+     * utilize scale tier credits until they are exhausted.
+     * - If set to 'auto', and the endpoint is not Scale tier enabled, the request will
+     * be processed using the default service tier with a lower uptime SLA and no
+     * latency guarentee.
+     * - If set to 'default', the request will be processed using the default service
+     * tier with a lower uptime SLA and no latency guarentee.
+     * - When not set, the default behavior is 'auto'.
+     * 
+     * When this parameter is set, the response body will include the `service_tier`
+     * utilized.
      */
     @JsonAlias("service_tier")
-    String serviceTier;
+    var serviceTier: String? = null
 
     /**
      * A list of all generated completions.
      */
-    List<ChatCompletionChoice> choices;
+    var choices: List<ChatCompletionChoice?>? = null
 
     /**
      * The API usage for this request.
      */
-    Usage usage;
+    var usage: Usage? = null
 
-    public String getId() {
-        return id;
+    fun getChoices(): List<ChatCompletionChoice?>? {
+        return choices
     }
 
-    public void setId(String id) {
-        this.id = id;
+    fun setChoices(choices: List<ChatCompletionChoice?>?) {
+        this.choices = choices
     }
 
-    public String getObject() {
-        return object;
+    fun getUsage(): Usage? {
+        return usage
     }
 
-    public void setObject(String object) {
-        this.object = object;
-    }
-
-    public long getCreated() {
-        return created;
-    }
-
-    public void setCreated(long created) {
-        this.created = created;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getServiceTier() {
-        return serviceTier;
-    }
-
-    public void setServiceTier(String serviceTier) {
-        this.serviceTier = serviceTier;
-    }
-
-    public List<ChatCompletionChoice> getChoices() {
-        return choices;
-    }
-
-    public void setChoices(List<ChatCompletionChoice> choices) {
-        this.choices = choices;
-    }
-
-    public Usage getUsage() {
-        return usage;
-    }
-
-    public void setUsage(Usage usage) {
-        this.usage = usage;
+    fun setUsage(usage: Usage?) {
+        this.usage = usage
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ChatCompletionResult{" +
                 "id='" + id + '\'' +
-                ", object='" + object + '\'' +
+                ", object='" + this.`object` + '\'' +
                 ", created=" + created +
                 ", model='" + model + '\'' +
                 ", service_tier='" + serviceTier + '\'' +
                 ", choices=" + choices +
                 ", usage=" + usage +
-                '}';
+                '}'
     }
 }

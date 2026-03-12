@@ -1,28 +1,13 @@
-package com.volcengine.ark.runtime.utils;
+package com.volcengine.ark.runtime.utils
 
-public class Pair<X, Y> {
-    private X name;
-    private Y value;
+class Pair<X, Y>(name: X?, value: Y?) {
+    var name: X? = null
+        private set
+    var value: Y? = null
+        private set
 
-    public Pair(X name, Y value) {
-        this.setName(name);
-        this.setValue(value);
+    init {
+        this.name = name
+        this.value = value
     }
-
-    private void setName(X name) {
-        this.name = name;
-    }
-
-    private void setValue(Y value) {
-        this.value = value;
-    }
-
-    public X getName() {
-        return this.name;
-    }
-
-    public Y getValue() {
-        return this.value;
-    }
-
 }

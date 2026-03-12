@@ -1,101 +1,86 @@
-package com.volcengine.ark.runtime.model.responses.tool;
+package com.volcengine.ark.runtime.model.responses.tool
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonSerialize(using = ResponsesToolChoice.ResponsesToolChoiceSerializer.class)
-@JsonDeserialize(using = ResponsesToolChoice.ResponsesToolChoiceDeserializer.class)
-public class ResponsesToolChoice {
-    private String mode;
-    private FunctionToolChoice functionToolChoice;
+@JsonSerialize(using = com.volcengine.ark.runtime.model.responses.tool.ResponsesToolChoice.ResponsesToolChoiceSerializer::class)
+@JsonDeserialize(using = com.volcengine.ark.runtime.model.responses.tool.ResponsesToolChoice.ResponsesToolChoiceDeserializer::class)
+class ResponsesToolChoice {
+    var mode: String? = null
+    private var functionToolChoice: FunctionToolChoice? = null
 
-    public String getMode() {
-        return mode;
+    fun getFunctionToolChoice(): FunctionToolChoice? {
+        return functionToolChoice
     }
 
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
-
-    public FunctionToolChoice getFunctionToolChoice() {
-        return functionToolChoice;
-    }
-
-    public void setFunctionToolChoice(FunctionToolChoice functionToolChoice) {
-        this.functionToolChoice = functionToolChoice;
-    }
-
-    public ResponsesToolChoice() {
+    fun setFunctionToolChoice(functionToolChoice: FunctionToolChoice?) {
+        this.functionToolChoice = functionToolChoice
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ResponsesToolChoice{" +
                 "mode='" + mode + '\'' +
                 ", functionToolChoice=" + functionToolChoice +
-                '}';
+                '}'
     }
 
-    public static class ResponsesToolChoiceSerializer extends JsonSerializer<ResponsesToolChoice> {
+    class ResponsesToolChoiceSerializer : JsonSerializer<ResponsesToolChoice?>() {
         @Override
-        public void serialize(ResponsesToolChoice value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        @Throws(IOException::class)
+        fun serialize(value: ResponsesToolChoice, gen: JsonGenerator, serializers: SerializerProvider?) {
             if (value.mode != null) {
-                gen.writeString(value.mode);
+                gen.writeString(value.mode)
             } else if (value.functionToolChoice != null) {
-                gen.writeObject(value.functionToolChoice);
+                gen.writeObject(value.functionToolChoice)
             } else {
-                gen.writeNull();
+                gen.writeNull()
             }
         }
     }
 
-    public static class ResponsesToolChoiceDeserializer extends JsonDeserializer<ResponsesToolChoice> {
+    class ResponsesToolChoiceDeserializer : JsonDeserializer<ResponsesToolChoice?>() {
         @Override
-        public ResponsesToolChoice deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-            JsonNode node = p.getCodec().readTree(p);
+        @Throws(IOException::class, JsonProcessingException::class)
+        fun deserialize(p: JsonParser, ctxt: DeserializationContext?): ResponsesToolChoice? {
+            val node: JsonNode = p.getCodec().readTree(p)
             if (node.isTextual()) {
-                return ResponsesToolChoice.builder().mode(node.asText()).build();
+                return com.volcengine.ark.runtime.model.responses.tool.ResponsesToolChoice.Companion.builder().mode(node.asText()).build()
             } else if (node.isObject()) {
-                FunctionToolChoice functionToolChoice = p.getCodec().treeToValue(node, FunctionToolChoice.class);
-                return ResponsesToolChoice.builder().functionToolChoice(functionToolChoice).build();
+                val functionToolChoice: FunctionToolChoice? = p.getCodec().treeToValue(node, FunctionToolChoice::class.java)
+                return com.volcengine.ark.runtime.model.responses.tool.ResponsesToolChoice.Companion.builder().functionToolChoice(functionToolChoice).build()
             } else {
                 // avoid exception
-                return null;
+                return null
             }
         }
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var mode: String? = null
+        private var functionToolChoice: FunctionToolChoice? = null
+
+        fun mode(mode: String?): Builder {
+            this.mode = mode
+            return this
+        }
+
+        fun functionToolChoice(functionToolChoice: FunctionToolChoice?): Builder {
+            this.functionToolChoice = functionToolChoice
+            return this
+        }
+
+        fun build(): ResponsesToolChoice {
+            val responsesToolChoice: ResponsesToolChoice = com.volcengine.ark.runtime.model.responses.tool.ResponsesToolChoice()
+            responsesToolChoice.mode = mode
+            responsesToolChoice.setFunctionToolChoice(functionToolChoice)
+            return responsesToolChoice
+        }
     }
 
-    public static class Builder {
-        private String mode;
-        private FunctionToolChoice functionToolChoice;
-
-        public Builder mode(String mode) {
-            this.mode = mode;
-            return this;
-        }
-
-        public Builder functionToolChoice(FunctionToolChoice functionToolChoice) {
-            this.functionToolChoice = functionToolChoice;
-            return this;
-        }
-
-        public ResponsesToolChoice build() {
-            ResponsesToolChoice responsesToolChoice = new ResponsesToolChoice();
-            responsesToolChoice.setMode(mode);
-            responsesToolChoice.setFunctionToolChoice(functionToolChoice);
-            return responsesToolChoice;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.ResponsesToolChoice.Builder()
         }
     }
 }

@@ -1,161 +1,135 @@
-package com.volcengine.ark.runtime.utils;
+package com.volcengine.ark.runtime.utils
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.volcengine.ark.runtime.Const;
-import com.volcengine.ark.runtime.SSEFormatException;
-import com.volcengine.ark.runtime.exception.ArkAPIError;
-import com.volcengine.ark.runtime.exception.ArkHttpException;
-import com.volcengine.ark.runtime.service.ArkService;
-import io.reactivex.FlowableEmitter;
-import okhttp3.Headers;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.HttpException;
-import retrofit2.Response;
+import com.fasterxml.jackson.databind.ObjectMapper
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+class ResponseBodyCallback(emitter: FlowableEmitter<SSE?>, emitDone: Boolean, key: ByteArray?, nonce: ByteArray?, isEncrypted: Boolean) : Callback<ResponseBody?> {
+    private val emitter: FlowableEmitter<SSE?>
+    private val emitDone: Boolean
+    private var key: ByteArray?
+    private var nonce: ByteArray?
+    private var isEncrypted: Boolean
 
-public class ResponseBodyCallback implements Callback<ResponseBody> {
-    private static final ObjectMapper mapper = ArkService.defaultObjectMapper();
+    constructor(emitter: FlowableEmitter<SSE?>, emitDone: Boolean) : this(emitter, emitDone, null, null, false)
 
-    private FlowableEmitter<SSE> emitter;
-    private boolean emitDone;
-    private byte[] key;
-    private byte[] nonce;
-    private boolean isEncrypted;
-
-    public ResponseBodyCallback(FlowableEmitter<SSE> emitter, boolean emitDone) {
-        this(emitter, emitDone, null, null, false);
-    }
-
-    public ResponseBodyCallback(FlowableEmitter<SSE> emitter, boolean emitDone, byte[] key, byte[] nonce, boolean isEncrypted) {
-        this.emitter = emitter;
-        this.emitDone = emitDone;
-        this.key = key != null ? key.clone() : null;
-        this.nonce = nonce != null ? nonce.clone() : null;
-        this.isEncrypted = isEncrypted;
+    init {
+        this.emitter = emitter
+        this.emitDone = emitDone
+        this.key = if (key != null) key.clone() else null
+        this.nonce = if (nonce != null) nonce.clone() else null
+        this.isEncrypted = isEncrypted
     }
 
     @Override
-    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-        BufferedReader reader = null;
+    fun onResponse(call: Call<ResponseBody?>?, response: Response<ResponseBody?>) {
+        var reader: BufferedReader? = null
 
-        String requestId = "";
+        var requestId: String? = ""
         try {
-            Headers headers = response.raw().request().headers();
-            requestId = headers.get(Const.CLIENT_REQUEST_HEADER);
-        } catch (Exception ignored) {
-
+            val headers: Headers = response.raw().request().headers()
+            requestId = headers.get(Const.CLIENT_REQUEST_HEADER)
+        } catch (ignored: Exception) {
         }
 
         try {
-            Headers responseHeaders = response.raw().headers();
-            String encryptedHeader = responseHeaders.get("X-Is-Encrypted");
+            val responseHeaders: Headers = response.raw().headers()
+            val encryptedHeader: String? = responseHeaders.get("X-Is-Encrypted")
             if ("true".equals(encryptedHeader)) {
-                this.isEncrypted = true;
+                this.isEncrypted = true
 
-                String keyHeader = responseHeaders.get("X-Decryption-Key");
+                val keyHeader: String? = responseHeaders.get("X-Decryption-Key")
                 if (keyHeader != null) {
-                    this.key = Base64.getDecoder().decode(keyHeader);
+                    this.key = Base64.getDecoder().decode(keyHeader)
                 }
 
-                String nonceHeader = responseHeaders.get("X-Decryption-Nonce");
+                val nonceHeader: String? = responseHeaders.get("X-Decryption-Nonce")
                 if (nonceHeader != null) {
-                    this.nonce = Base64.getDecoder().decode(nonceHeader);
+                    this.nonce = Base64.getDecoder().decode(nonceHeader)
                 }
             }
-        } catch (Exception ignored) {
+        } catch (ignored: Exception) {
             // 忽略解密参数读取错误，保持原有配置
         }
 
         try {
             if (!response.isSuccessful()) {
-                HttpException e = new HttpException(response);
-                ResponseBody errorBody = response.errorBody();
+                val e: HttpException = HttpException(response)
+                val errorBody: ResponseBody = response.errorBody()
 
                 if (errorBody == null) {
-                    throw e;
+                    throw e
                 } else {
                     try {
-                        ArkAPIError error = mapper.readValue(
-                                errorBody.string(),
-                                ArkAPIError.class
-                        );
-                        throw new ArkHttpException(error, e, e.code(), requestId);
-                    } catch (ArkHttpException httpException) {
-                        throw httpException;
-                    } catch (Exception ignore) {
-                        throw new ArkHttpException(new ArkAPIError(new ArkAPIError.ArkErrorDetails(e.getMessage(), "", "", "InternalServiceError")), e, e.code(), requestId);
+                        val error: ArkAPIError = com.volcengine.ark.runtime.utils.ResponseBodyCallback.Companion.mapper.readValue(
+                            errorBody.string(),
+                            ArkAPIError::class.java
+                        )
+                        throw ArkHttpException(error, e, e.code(), requestId)
+                    } catch (httpException: ArkHttpException) {
+                        throw httpException
+                    } catch (ignore: Exception) {
+                        throw ArkHttpException(ArkAPIError(ArkErrorDetails(e.getMessage(), "", "", "InternalServiceError")), e, e.code(), requestId)
                     }
                 }
             }
 
-            InputStream in = response.body().byteStream();
-            reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            String line;
-            SSE sse = null;
+            val `in`: InputStream? = response.body().byteStream()
+            reader = BufferedReader(InputStreamReader(`in`, StandardCharsets.UTF_8))
+            var line: String?
+            var sse: SSE? = null
 
-            while (!emitter.isCancelled() && (line = reader.readLine()) != null) {
-                if (line.startsWith("event:")) {
+            while (!emitter.isCancelled() && (reader.readLine().also { line = it }) != null) {
+                if (line!!.startsWith("event:")) {
                     // do nothing
-                    continue;
+                    continue
                 } else if (line.startsWith("data:")) {
-                    String data = line.substring(5).trim();
+                    val data = line.substring(5).trim()
                     try {
-                        ArkAPIError err = mapper.readValue(data, ArkAPIError.class);
+                        val err: ArkAPIError = com.volcengine.ark.runtime.utils.ResponseBodyCallback.Companion.mapper.readValue(data, ArkAPIError::class.java)
                         if (err.getError() != null) {
-                            throw new ArkHttpException(err, null, -1, requestId);
+                            throw ArkHttpException(err, null, -1, requestId)
                         }
-                    } catch (ArkHttpException e) {
-                        throw e;
-                    } catch (Exception ignored) {
+                    } catch (e: ArkHttpException) {
+                        throw e
+                    } catch (ignored: Exception) {
                     }
 
                     if (data.startsWith("[DONE]")) {
-                        break;
+                        break
                     }
 
                     // 解密数据（如果需要）
-                    String processedData = data;
+                    var processedData: String? = data
                     if (isEncrypted && key != null && nonce != null) {
                         try {
-                            processedData = ResponseDecryptUtil.decryptStreamChunk(data, key, nonce);
-
-                        } catch (Exception ignored) {
+                            processedData = ResponseDecryptUtil.decryptStreamChunk(data, key, nonce)
+                        } catch (ignored: Exception) {
                             // 如果解密失败，使用原始数据
                         }
                     }
-                    sse = new SSE(processedData);
+                    sse = SSE(processedData)
                 } else if (line.equals("") && sse != null) {
                     if (sse.isDone()) {
                         if (emitDone) {
-                            emitter.onNext(sse);
+                            emitter.onNext(sse)
                         }
-                        break;
+                        break
                     }
 
-                    emitter.onNext(sse);
-                    sse = null;
+                    emitter.onNext(sse)
+                    sse = null
                 } else {
-                    throw new SSEFormatException("Invalid sse format! " + line);
+                    throw SSEFormatException("Invalid sse format! " + line)
                 }
             }
 
-            emitter.onComplete();
-
-        } catch (Throwable t) {
-            onFailure(call, t);
+            emitter.onComplete()
+        } catch (t: Throwable) {
+            onFailure(call, t)
         } finally {
             if (reader != null) {
                 try {
-                    reader.close();
-                } catch (IOException e) {
+                    reader.close()
+                } catch (e: IOException) {
                     // do nothing
                 }
             }
@@ -163,7 +137,11 @@ public class ResponseBodyCallback implements Callback<ResponseBody> {
     }
 
     @Override
-    public void onFailure(Call<ResponseBody> call, Throwable t) {
-        emitter.onError(t);
+    fun onFailure(call: Call<ResponseBody?>?, t: Throwable?) {
+        emitter.onError(t)
+    }
+
+    companion object {
+        private val mapper: ObjectMapper = ArkService.defaultObjectMapper()
     }
 }

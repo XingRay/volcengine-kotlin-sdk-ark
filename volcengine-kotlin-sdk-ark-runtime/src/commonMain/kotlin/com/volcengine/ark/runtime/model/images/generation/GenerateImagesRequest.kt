@@ -1,302 +1,169 @@
-package com.volcengine.ark.runtime.model.images.generation;
+package com.volcengine.ark.runtime.model.images.generation
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonIgnore
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class GenerateImagesRequest {
-
+class GenerateImagesRequest {
     @JsonProperty("model")
-    private String model;
+    var model: String? = null
 
     @JsonProperty("prompt")
-    private String prompt;
+    var prompt: String? = null
 
     @JsonProperty("image")
-    @JsonDeserialize(using = ImageDeserializer.class)
-    private List<String> image;
+    @JsonDeserialize(using = com.volcengine.ark.runtime.model.images.generation.ImageDeserializer::class)
+    var image: List<String?>? = null
 
     @JsonProperty("response_format")
-    private String responseFormat;
+    var responseFormat: String? = null
 
     @JsonProperty("seed")
-    private Integer seed;
+    private var seed: Integer? = null
 
     @JsonProperty("guidance_scale")
-    private Double guidanceScale;
+    var guidanceScale: Double? = null
 
     @JsonProperty("size")
-    private String size;
+    var size: String? = null
 
     @JsonProperty("watermark")
-    private Boolean watermark;
+    var watermark: Boolean? = null
 
     @JsonProperty("optimize_prompt")
-    private Boolean optimizePrompt;
+    var optimizePrompt: Boolean? = null
 
     @JsonProperty("optimize_prompt_options")
-    private OptimizePromptOptions optimizePromptOptions;
+    var optimizePromptOptions: OptimizePromptOptions? = null
 
     @JsonProperty("sequential_image_generation")
-    private String sequentialImageGeneration;
+    var sequentialImageGeneration: String? = null
 
     @JsonProperty("sequential_image_generation_options")
-    private SequentialImageGenerationOptions sequentialImageGenerationOptions;
+    var sequentialImageGenerationOptions: SequentialImageGenerationOptions? = null
 
     @JsonProperty("stream")
-    private Boolean stream;
+    var stream: Boolean? = null
 
     @JsonProperty("tools")
-    private List<ContentGenerationTool> tools;
+    var tools: List<ContentGenerationTool?>? = null
 
     @JsonProperty("output_format")
-    private String outputFormat;
+    var outputFormat: String? = null
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class ContentGenerationTool {
+    class ContentGenerationTool {
         @JsonProperty("type")
-        private String type;
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
+        var type: String? = null
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "ContentGenerationTool{" +
                     "type='" + type + '\'' +
-                    '}';
+                    '}'
         }
 
-        public static ContentGenerationTool.Builder builder() {
-            return new ContentGenerationTool.Builder();
+        class Builder {
+            private val type: String? = null
         }
 
-        public static class Builder {
-            private String type;
+        fun build(): ContentGenerationTool {
+            val contentGenerationTool: ContentGenerationTool = com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest.ContentGenerationTool()
+            contentGenerationTool.type = type
+            return contentGenerationTool
         }
 
-        public ContentGenerationTool build() {
-            ContentGenerationTool contentGenerationTool = new ContentGenerationTool();
-            contentGenerationTool.setType(type);
-            return contentGenerationTool;
+        companion object {
+            fun builder(): Builder {
+                return com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest.ContentGenerationTool.Builder()
+            }
         }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class OptimizePromptOptions {
-        private String thinking;
+    class OptimizePromptOptions {
+        var thinking: String? = null
 
-        private String mode;
-
-        public String getThinking() {
-            return thinking;
-        }
-
-        public void setThinking(String thinking) {
-            this.thinking = thinking;
-        }
-
-        public String getMode() {
-            return mode;
-        }
-
-        public void setMode(String mode) {
-            this.mode = mode;
-        }
+        var mode: String? = null
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "OptimizePromptOptions{" +
                     "thinking=" + thinking +
                     "mode=" + mode +
-                    '}';
+                    '}'
         }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class SequentialImageGenerationOptions {
-        private Integer maxImages;
+    class SequentialImageGenerationOptions {
+        private var maxImages: Integer? = null
 
-        public Integer getMaxImages() {
-            return maxImages;
+        fun getMaxImages(): Integer? {
+            return maxImages
         }
 
-        public void setMaxImages(Integer maxImages) {
-            this.maxImages = maxImages;
+        fun setMaxImages(maxImages: Integer?) {
+            this.maxImages = maxImages
         }
 
         @Override
-        public String toString() {
+        fun toString(): String? {
             return "SequentialImageGenerationOptions{" +
                     "maxImages=" + maxImages +
-                    '}';
+                    '}'
         }
     }
 
-    public GenerateImagesRequest() {
-    }
+    constructor()
 
-    public GenerateImagesRequest(String model, String prompt, List<String> image, String responseFormat, Integer seed, Double guidanceScale, String size, Boolean watermark, String sequentialImageGeneration, SequentialImageGenerationOptions sequentialImageGenerationOptions, Boolean optimizePrompt, OptimizePromptOptions optimizePromptOptions, Boolean stream, List<ContentGenerationTool> tools, String outputFormat) {
-        this.model = model;
-        this.prompt = prompt;
-        this.image = image;
-        this.responseFormat = responseFormat;
-        this.seed = seed;
-        this.guidanceScale = guidanceScale;
-        this.size = size;
-        this.watermark = watermark;
-        this.optimizePrompt = optimizePrompt;
-        this.optimizePromptOptions = optimizePromptOptions;
-        this.sequentialImageGeneration = sequentialImageGeneration;
-        this.sequentialImageGenerationOptions = sequentialImageGenerationOptions;
-        this.stream = stream;
-        this.tools = tools;
-        this.outputFormat = outputFormat;
-    }
-
-    public String getModel() {
-        return this.model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getPrompt() {
-        return this.prompt;
-    }
-
-    public void setPrompt(String prompt) {
-        this.prompt = prompt;
-    }
-
-    public List<String> getImage() {
-        return this.image;
-    }
-
-    public void setImage(List<String> image) {
-        this.image = image;
+    constructor(
+        model: String?,
+        prompt: String?,
+        image: List<String?>?,
+        responseFormat: String?,
+        seed: Integer?,
+        guidanceScale: Double?,
+        size: String?,
+        watermark: Boolean?,
+        sequentialImageGeneration: String?,
+        sequentialImageGenerationOptions: SequentialImageGenerationOptions?,
+        optimizePrompt: Boolean?,
+        optimizePromptOptions: OptimizePromptOptions?,
+        stream: Boolean?,
+        tools: List<ContentGenerationTool?>?,
+        outputFormat: String?
+    ) {
+        this.model = model
+        this.prompt = prompt
+        this.image = image
+        this.responseFormat = responseFormat
+        this.seed = seed
+        this.guidanceScale = guidanceScale
+        this.size = size
+        this.watermark = watermark
+        this.optimizePrompt = optimizePrompt
+        this.optimizePromptOptions = optimizePromptOptions
+        this.sequentialImageGeneration = sequentialImageGeneration
+        this.sequentialImageGenerationOptions = sequentialImageGenerationOptions
+        this.stream = stream
+        this.tools = tools
+        this.outputFormat = outputFormat
     }
 
     @JsonIgnore
-    public void setImage(String image) {
-        this.image = image == null ? null : Collections.singletonList(image);
+    fun setImage(image: String?) {
+        this.image = if (image == null) null else Collections.singletonList(image)
     }
 
-    public String getResponseFormat() {
-        return this.responseFormat;
+    fun getSeed(): Integer? {
+        return this.seed
     }
 
-    public void setResponseFormat(String responseFormat) {
-        this.responseFormat = responseFormat;
-    }
-
-    public Integer getSeed() {
-        return this.seed;
-    }
-
-    public void setSeed(Integer seed) {
-        this.seed = seed;
-    }
-
-    public Double getGuidanceScale() {
-        return this.guidanceScale;
-    }
-
-    public void setGuidanceScale(Double guidanceScale) {
-        this.guidanceScale = guidanceScale;
-    }
-
-    public String getSize() {
-        return this.size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public Boolean getWatermark() {
-        return this.watermark;
-    }
-
-    public void setWatermark(Boolean watermark) {
-        this.watermark = watermark;
-    }
-
-    public Boolean getOptimizePrompt() {
-        return this.optimizePrompt;
-    }
-
-    public void setOptimizePrompt(Boolean optimizePrompt) {
-        this.optimizePrompt = optimizePrompt;
-    }
-
-    public OptimizePromptOptions getOptimizePromptOptions() {
-        return this.optimizePromptOptions;
-    }
-
-    public void setOptimizePromptOptions(OptimizePromptOptions optimizePromptOptions) {
-        this.optimizePromptOptions = optimizePromptOptions;
-    }
-
-    public List<ContentGenerationTool> getTools() {
-        return this.tools;
-    }
-
-    public void setTools(List<ContentGenerationTool> tools) {
-        this.tools = tools;
-    }
-
-    public String getOutputFormat() {
-        return this.outputFormat;
-    }
-
-    public void setOutputFormat(String outputFormat) {
-        this.outputFormat = outputFormat;
-    }
-
-    public Boolean getStream() {
-        return this.stream;
-    }
-
-    public void setStream(Boolean stream) {
-        this.stream = stream;
-    }
-
-    public SequentialImageGenerationOptions getSequentialImageGenerationOptions() {
-        return this.sequentialImageGenerationOptions;
-    }
-
-    public void setSequentialImageGenerationOptions(SequentialImageGenerationOptions sequentialImageGenerationOptions) {
-        this.sequentialImageGenerationOptions = sequentialImageGenerationOptions;
-    }
-
-    public String getSequentialImageGeneration() {
-        return sequentialImageGeneration;
-    }
-
-    public void setSequentialImageGeneration(String sequentialImageGeneration) {
-        this.sequentialImageGeneration = sequentialImageGeneration;
+    fun setSeed(seed: Integer?) {
+        this.seed = seed
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "GenerateImagesRequest{" +
                 "model='" + model + '\'' +
                 ", prompt=" + prompt +
@@ -313,162 +180,161 @@ public class GenerateImagesRequest {
                 ", sequentialImageGenerationOptions=" + sequentialImageGenerationOptions +
                 ", tools=" + tools +
                 ", outputFormat=" + outputFormat +
-                '}';
+                '}'
     }
 
-    public static GenerateImagesRequest.Builder builder() {
-        return new GenerateImagesRequest.Builder();
+    class Builder private constructor() {
+        private var model: String? = null
+        private var prompt: String? = null
+
+        @JsonDeserialize(using = com.volcengine.ark.runtime.model.images.generation.ImageDeserializer::class)
+        private var image: List<String?>? = null
+        private var responseFormat: String? = null
+        private var seed: Integer? = null
+        private var guidanceScale: Double? = null
+        private var size: String? = null
+        private var watermark: Boolean? = null
+        private var optimizePrompt: Boolean? = null
+        private var optimizePromptOptions: OptimizePromptOptions? = null
+        private var sequentialImageGeneration: String? = null
+
+        private var sequentialImageGenerationOptions: SequentialImageGenerationOptions? = null
+
+        private var tools: List<ContentGenerationTool?>? = null
+
+        private var outputFormat: String? = null
+
+        private var stream: Boolean? = null
+
+        fun model(model: String?): Builder {
+            this.model = model
+            return this
+        }
+
+        fun prompt(prompt: String?): Builder {
+            this.prompt = prompt
+            return this
+        }
+
+        fun image(image: List<String?>?): Builder {
+            this.image = image
+            return this
+        }
+
+        fun image(image: String?): Builder {
+            this.image = if (image == null) null else Collections.singletonList(image)
+            return this
+        }
+
+        fun responseFormat(responseFormat: String?): Builder {
+            this.responseFormat = responseFormat
+            return this
+        }
+
+        fun seed(seed: Integer?): Builder {
+            this.seed = seed
+            return this
+        }
+
+        fun guidanceScale(guidanceScale: Double?): Builder {
+            this.guidanceScale = guidanceScale
+            return this
+        }
+
+        fun size(size: String?): Builder {
+            this.size = size
+            return this
+        }
+
+        fun watermark(watermark: Boolean?): Builder {
+            this.watermark = watermark
+            return this
+        }
+
+        fun optimizePrompt(optimizePrompt: Boolean?): Builder {
+            this.optimizePrompt = optimizePrompt
+            return this
+        }
+
+        fun optimizePromptOptions(optimizePromptOptions: OptimizePromptOptions?): Builder {
+            this.optimizePromptOptions = optimizePromptOptions
+            return this
+        }
+
+        fun sequentialImageGeneration(sequentialImageGeneration: String?): Builder {
+            this.sequentialImageGeneration = sequentialImageGeneration
+            return this
+        }
+
+        fun sequentialImageGenerationOptions(sequentialImageGenerationOptions: SequentialImageGenerationOptions?): Builder {
+            this.sequentialImageGenerationOptions = sequentialImageGenerationOptions
+            return this
+        }
+
+        fun stream(stream: Boolean?): Builder {
+            this.stream = stream
+            return this
+        }
+
+        fun tools(tools: List<ContentGenerationTool?>?): Builder {
+            this.tools = tools
+            return this
+        }
+
+        fun outputFormat(outputFormat: String?): Builder {
+            this.outputFormat = outputFormat
+            return this
+        }
+
+        fun build(): GenerateImagesRequest {
+            val generateImagesRequest: GenerateImagesRequest = com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest()
+            generateImagesRequest.model = model
+            generateImagesRequest.prompt = prompt
+            generateImagesRequest.image = image
+            generateImagesRequest.responseFormat = responseFormat
+            generateImagesRequest.setSeed(seed)
+            generateImagesRequest.guidanceScale = guidanceScale
+            generateImagesRequest.size = size
+            generateImagesRequest.watermark = watermark
+            generateImagesRequest.optimizePrompt = optimizePrompt
+            generateImagesRequest.optimizePromptOptions = optimizePromptOptions
+            generateImagesRequest.sequentialImageGeneration = sequentialImageGeneration
+            generateImagesRequest.sequentialImageGenerationOptions = sequentialImageGenerationOptions
+            generateImagesRequest.stream = stream
+            generateImagesRequest.tools = tools
+            generateImagesRequest.outputFormat = outputFormat
+            return generateImagesRequest
+        }
     }
 
-    public static class Builder {
-        private String model;
-        private String prompt;
-        @JsonDeserialize(using = ImageDeserializer.class)
-        private List<String> image;
-        private String responseFormat;
-        private Integer seed;
-        private Double guidanceScale;
-        private String size;
-        private Boolean watermark;
-        private Boolean optimizePrompt;
-        private OptimizePromptOptions optimizePromptOptions;
-        private String sequentialImageGeneration;
-
-        private SequentialImageGenerationOptions sequentialImageGenerationOptions;
-
-        private List<ContentGenerationTool> tools;
-
-        private String outputFormat;
-
-        private Boolean stream;
-
-        private Builder() {
-        }
-
-        public GenerateImagesRequest.Builder model(String model) {
-            this.model = model;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder prompt(String prompt) {
-            this.prompt = prompt;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder image(List<String> image) {
-            this.image = image;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder image(String image) {
-            this.image = image == null ? null : Collections.singletonList(image);
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder responseFormat(String responseFormat) {
-            this.responseFormat = responseFormat;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder seed(Integer seed) {
-            this.seed = seed;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder guidanceScale(Double guidanceScale) {
-            this.guidanceScale = guidanceScale;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder size(String size) {
-            this.size = size;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder watermark(Boolean watermark) {
-            this.watermark = watermark;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder optimizePrompt(Boolean optimizePrompt) {
-            this.optimizePrompt = optimizePrompt;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder optimizePromptOptions(OptimizePromptOptions optimizePromptOptions) {
-            this.optimizePromptOptions = optimizePromptOptions;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder sequentialImageGeneration(String sequentialImageGeneration) {
-            this.sequentialImageGeneration = sequentialImageGeneration;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder sequentialImageGenerationOptions(SequentialImageGenerationOptions sequentialImageGenerationOptions) {
-            this.sequentialImageGenerationOptions = sequentialImageGenerationOptions;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder stream(Boolean stream) {
-            this.stream = stream;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder tools(List<ContentGenerationTool> tools) {
-            this.tools = tools;
-            return this;
-        }
-
-        public GenerateImagesRequest.Builder outputFormat(String outputFormat) {
-            this.outputFormat = outputFormat;
-            return this;
-        }
-
-        public GenerateImagesRequest build() {
-            GenerateImagesRequest generateImagesRequest = new GenerateImagesRequest();
-            generateImagesRequest.setModel(model);
-            generateImagesRequest.setPrompt(prompt);
-            generateImagesRequest.setImage(image);
-            generateImagesRequest.setResponseFormat(responseFormat);
-            generateImagesRequest.setSeed(seed);
-            generateImagesRequest.setGuidanceScale(guidanceScale);
-            generateImagesRequest.setSize(size);
-            generateImagesRequest.setWatermark(watermark);
-            generateImagesRequest.setOptimizePrompt(optimizePrompt);
-            generateImagesRequest.setOptimizePromptOptions(optimizePromptOptions);
-            generateImagesRequest.setSequentialImageGeneration(sequentialImageGeneration);
-            generateImagesRequest.setSequentialImageGenerationOptions(sequentialImageGenerationOptions);
-            generateImagesRequest.setStream(stream);
-            generateImagesRequest.setTools(tools);
-            generateImagesRequest.setOutputFormat(outputFormat);
-            return generateImagesRequest;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest.Builder()
         }
     }
 }
 
-class ImageDeserializer extends JsonDeserializer<List<String>> {
+internal class ImageDeserializer : JsonDeserializer<List<String?>?>() {
     @Override
-    public List<String> deserialize(JsonParser p, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
-
-        JsonNode node = p.getCodec().readTree(p);
+    @Throws(IOException::class, JsonProcessingException::class)
+    fun deserialize(p: JsonParser, ctxt: DeserializationContext?): List<String?> {
+        val node: JsonNode = p.getCodec().readTree(p)
 
         // 如果是单个 string
         if (node.isTextual()) {
-            return Collections.singletonList(node.asText());
+            return Collections.singletonList(node.asText())
         }
 
         // 如果是数组
         if (node.isArray()) {
-            List<String> list = new ArrayList<>();
-            for (JsonNode element : node) {
-                list.add(element.asText());
+            val list: List<String?> = ArrayList()
+            for (element in node) {
+                list.add(element.asText())
             }
-            return list;
+            return list
         }
 
         // 其他情况（null、对象等）返回空
-        return Collections.emptyList();
+        return Collections.emptyList()
     }
 }

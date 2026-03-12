@@ -1,61 +1,47 @@
-package com.volcengine.ark.runtime.model.responses.tool;
+package com.volcengine.ark.runtime.model.responses.tool
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class FunctionToolChoice {
+class FunctionToolChoice {
     @JsonProperty("type")
-    private String type;
+    var type: String? = null
 
     @JsonProperty("name")
-    private String name;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    var name: String? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "FunctionToolChoice{" +
                 "type='" + type + '\'' +
                 ", name='" + name + '\'' +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var type: String? = null
+        private var name: String? = null
+
+        fun type(type: String?): Builder {
+            this.type = type
+            return this
+        }
+
+        fun name(name: String?): Builder {
+            this.name = name
+            return this
+        }
+
+        fun build(): FunctionToolChoice {
+            val functionToolChoice: FunctionToolChoice = com.volcengine.ark.runtime.model.responses.tool.FunctionToolChoice()
+            functionToolChoice.type = type
+            functionToolChoice.name = name
+            return functionToolChoice
+        }
     }
 
-    public static class Builder {
-        private String type;
-        private String name;
-
-        public Builder type(String type) {
-            this.type = type;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public FunctionToolChoice build() {
-            FunctionToolChoice functionToolChoice = new FunctionToolChoice();
-            functionToolChoice.setType(type);
-            functionToolChoice.setName(name);
-            return functionToolChoice;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.tool.FunctionToolChoice.Builder()
         }
     }
 }

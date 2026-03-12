@@ -1,84 +1,53 @@
-package com.volcengine.ark.runtime.model.tokenization;
+package com.volcengine.ark.runtime.model.tokenization
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TokenizationResult {
+class TokenizationResult {
     /**
      * Unique id assigned to this tokenization
      */
-    String id;
+    var id: String? = null
 
     /**
      * The creation time in epoch seconds.
      */
-    String created;
+    var created: String? = null
 
     /**
      * The model used for generating tokenization
      */
-    String model;
+    var model: String? = null
 
     /**
      * The type of object returned, should be "list"
      */
-    String object;
+    var `object`: String? = null
+        set(object) {
+            field = this.`object`
+        }
 
     /**
      * A list of the calculated tokenization
      */
-    List<Tokenization> data;
+    var data: List<Tokenization?>? = null
 
-    public String getId() {
-        return id;
+    fun getData(): List<Tokenization?>? {
+        return data
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getCreated() {
-        return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getObject() {
-        return object;
-    }
-
-    public void setObject(String object) {
-        this.object = object;
-    }
-
-    public List<Tokenization> getData() {
-        return data;
-    }
-
-    public void setData(List<Tokenization> data) {
-        this.data = data;
+    fun setData(data: List<Tokenization?>?) {
+        this.data = data
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "TokenizationResult{" +
                 "id='" + id + '\'' +
                 ", created='" + created + '\'' +
                 ", model='" + model + '\'' +
-                ", object='" + object + '\'' +
+                ", object='" + this.`object` + '\'' +
                 ", data=" + data +
-                '}';
+                '}'
     }
 }

@@ -1,148 +1,89 @@
-package com.volcengine.ark.runtime.model.responses.item.doubaoapp;
+package com.volcengine.ark.runtime.model.responses.item.doubaoapp
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volcengine.ark.runtime.model.responses.constant.ResponsesConstants;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.List;
-
-public class DoubaoAppCallBlockReasoningSearch extends DoubaoAppCallBlock {
-
+class DoubaoAppCallBlockReasoningSearch : DoubaoAppCallBlock() {
     @JsonProperty("id")
-    private String id;
+    var id: String? = null
 
     @JsonProperty("type")
-    private String type = ResponsesConstants.DOBAO_APP_BLOCK_TYPE_REASONING_SEARCH;
+    var type: String? = ResponsesConstants.DOBAO_APP_BLOCK_TYPE_REASONING_SEARCH
 
     @JsonProperty("summary")
-    private String summary;
+    var summary: String? = null
 
     @JsonProperty("queries")
-    private List<String> queries;
+    var queries: List<String?>? = null
 
     @JsonProperty("results")
-    private List<DoubaoAppSearchResult> results;
+    private var results: List<DoubaoAppSearchResult?>? = null
 
     @JsonProperty("status")
-    private String status;
+    var status: String? = null
 
     @JsonProperty("parent_id")
-    private String parentId;
+    var parentId: String? = null
 
-    public String getId() {
-        return id;
+    fun getResults(): List<DoubaoAppSearchResult?>? {
+        return results
     }
 
-    public void setId(String id) {
-        this.id = id;
+    fun setResults(results: List<DoubaoAppSearchResult?>?) {
+        this.results = results
     }
 
-    public String getType() {
-        return type;
-    }
+    class Builder {
+        private var id: String? = null
+        private var summary: String? = null
+        private var queries: List<String?>? = null
+        private var results: List<DoubaoAppSearchResult?>? = null
+        private var status: String? = null
+        private var parentId: String? = null
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public List<String> getQueries() {
-        return queries;
-    }
-
-    public void setQueries(List<String> queries) {
-        this.queries = queries;
-    }
-
-    public List<DoubaoAppSearchResult> getResults() {
-        return results;
-    }
-
-    public void setResults(List<DoubaoAppSearchResult> results) {
-        this.results = results;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    public DoubaoAppCallBlockReasoningSearch() {
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private String id;
-        private String summary;
-        private List<String> queries;
-        private List<DoubaoAppSearchResult> results;
-        private String status;
-        private String parentId;
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
+        fun id(id: String?): Builder {
+            this.id = id
+            return this
         }
 
-        public Builder summary(String summary) {
-            this.summary = summary;
-            return this;
+        fun summary(summary: String?): Builder {
+            this.summary = summary
+            return this
         }
 
-        public Builder queries(List<String> queries) {
-            this.queries = queries;
-            return this;
+        fun queries(queries: List<String?>?): Builder {
+            this.queries = queries
+            return this
         }
 
-        public Builder results(List<DoubaoAppSearchResult> results) {
-            this.results = results;
-            return this;
+        fun results(results: List<DoubaoAppSearchResult?>?): Builder {
+            this.results = results
+            return this
         }
 
-        public Builder status(String status) {
-            this.status = status;
-            return this;
+        fun status(status: String?): Builder {
+            this.status = status
+            return this
         }
 
-        public Builder parentId(String parentId) {
-            this.parentId = parentId;
-            return this;
+        fun parentId(parentId: String?): Builder {
+            this.parentId = parentId
+            return this
         }
 
-        public DoubaoAppCallBlockReasoningSearch build() {
-            DoubaoAppCallBlockReasoningSearch reasoningSearch = new DoubaoAppCallBlockReasoningSearch();
-            reasoningSearch.setId(id);
-            reasoningSearch.setSummary(summary);
-            reasoningSearch.setQueries(queries);
-            reasoningSearch.setResults(results);
-            reasoningSearch.setStatus(status);
-            reasoningSearch.setParentId(parentId);
-            return reasoningSearch;
+        fun build(): DoubaoAppCallBlockReasoningSearch {
+            val reasoningSearch: DoubaoAppCallBlockReasoningSearch = com.volcengine.ark.runtime.model.responses.item.doubaoapp.DoubaoAppCallBlockReasoningSearch()
+            reasoningSearch.id = id
+            reasoningSearch.summary = summary
+            reasoningSearch.queries = queries
+            reasoningSearch.setResults(results)
+            reasoningSearch.status = status
+            reasoningSearch.parentId = parentId
+            return reasoningSearch
         }
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "DoubaoAppCallBlockReasoningSearch{" +
                 "id='" + id + '\'' +
                 ", type='" + type + '\'' +
@@ -151,6 +92,12 @@ public class DoubaoAppCallBlockReasoningSearch extends DoubaoAppCallBlock {
                 ", results=" + results +
                 ", status='" + status + '\'' +
                 ", parentId='" + parentId + '\'' +
-                '}';
+                '}'
+    }
+
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.item.doubaoapp.DoubaoAppCallBlockReasoningSearch.Builder()
+        }
     }
 }

@@ -1,57 +1,41 @@
-package com.volcengine.ark.runtime.model.embeddings;
+package com.volcengine.ark.runtime.model.embeddings
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Embedding {
-
+class Embedding {
     /**
      * The type of object returned, should be "embedding"
      */
-    String object;
+    var `object`: String? = null
+        set(object) {
+            field = this.`object`
+        }
 
     /**
      * The embedding vector
      */
-    List<Double> embedding;
+    var embedding: List<Double?>? = null
 
     /**
      * The position of this embedding in the list
      */
-    Integer index;
+    var index: Integer? = null
 
-    public String getObject() {
-        return object;
+    fun getIndex(): Integer? {
+        return index
     }
 
-    public void setObject(String object) {
-        this.object = object;
-    }
-
-    public List<Double> getEmbedding() {
-        return embedding;
-    }
-
-    public void setEmbedding(List<Double> embedding) {
-        this.embedding = embedding;
-    }
-
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(Integer index) {
-        this.index = index;
+    fun setIndex(index: Integer?) {
+        this.index = index
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "Embedding{" +
-                "object='" + object + '\'' +
+                "object='" + this.`object` + '\'' +
                 ", embedding=" + embedding +
                 ", index=" + index +
-                '}';
+                '}'
     }
 }

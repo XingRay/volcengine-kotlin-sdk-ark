@@ -1,90 +1,60 @@
-package com.volcengine.ark.runtime.model.multimodalembeddings;
+package com.volcengine.ark.runtime.model.multimodalembeddings
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MultimodalEmbeddingResult {
-
+class MultimodalEmbeddingResult {
     /**
      * Unique id assigned to this embedding
      */
-    String id;
+    var id: String? = null
 
     /**
      * The creation time in epoch seconds.
      */
-    String created;
+    var created: String? = null
 
     /**
      * The model used for generating embeddings
      */
-    private String model;
+    var model: String? = null
 
     /**
      * The type of object returned, should be "list"
      */
-    private String object;
+    var `object`: String? = null
+        set(object) {
+            field = this.`object`
+        }
 
     /**
      * A list of the calculated embeddings
      */
-    private MultimodalEmbedding data;
+    private var data: MultimodalEmbedding? = null
 
     /**
      * The API usage for this request
      */
-    private MultimodalEmbeddingUsage usage;
+    private var usage: MultimodalEmbeddingUsage? = null
 
-    public String getModel() {
-        return model;
+    fun getData(): MultimodalEmbedding? {
+        return data
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    fun setData(data: MultimodalEmbedding?) {
+        this.data = data
     }
 
-    public String getObject() {
-        return object;
+    fun getUsage(): MultimodalEmbeddingUsage? {
+        return usage
     }
 
-    public void setObject(String object) {
-        this.object = object;
-    }
-
-    public MultimodalEmbedding getData() {
-        return data;
-    }
-
-    public void setData(MultimodalEmbedding data) {
-        this.data = data;
-    }
-
-    public MultimodalEmbeddingUsage getUsage() {
-        return usage;
-    }
-
-    public void setUsage(MultimodalEmbeddingUsage usage) {
-        this.usage = usage;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getCreated() {
-        return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
+    fun setUsage(usage: MultimodalEmbeddingUsage?) {
+        this.usage = usage
     }
 
     @Override
-    public String toString() {
-        return "EmbeddingResult{" + "id='" + id + '\'' + ", created='" + created + '\'' + ", model='" + model + '\'' + ", object='" + object + '\'' + ", data=" + data + ", usage=" + usage + '}';
+    fun toString(): String? {
+        return "EmbeddingResult{" + "id='" + id + '\'' + ", created='" + created + '\'' + ", model='" + model + '\'' + ", object='" + this.`object` + '\'' + ", data=" + data + ", usage=" + usage + '}'
     }
 }

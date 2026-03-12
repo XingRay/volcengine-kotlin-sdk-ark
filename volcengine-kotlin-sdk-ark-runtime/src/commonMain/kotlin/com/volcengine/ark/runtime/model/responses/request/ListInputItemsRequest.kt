@@ -1,78 +1,36 @@
-package com.volcengine.ark.runtime.model.responses.request;
+package com.volcengine.ark.runtime.model.responses.request
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.List;
-
-public class ListInputItemsRequest {
+class ListInputItemsRequest {
     @JsonProperty("response_id")
-    private String responseId;
+    var responseId: String? = null
 
     @JsonProperty("after")
-    private String after;
+    var after: String? = null
 
     @JsonProperty("before")
-    private String before;
+    var before: String? = null
 
     @JsonProperty("limit")
-    private Integer limit;
+    private var limit: Integer? = null
 
     @JsonProperty("order")
-    private String order;
+    var order: String? = null
 
     @JsonProperty("include")
-    private List<String> include;
+    var include: List<String?>? = null
 
-    public String getResponseId() {
-        return responseId;
+    fun getLimit(): Integer? {
+        return limit
     }
 
-    public void setResponseId(String responseId) {
-        this.responseId = responseId;
-    }
-
-    public String getAfter() {
-        return after;
-    }
-
-    public void setAfter(String after) {
-        this.after = after;
-    }
-
-    public String getBefore() {
-        return before;
-    }
-
-    public void setBefore(String before) {
-        this.before = before;
-    }
-
-    public Integer getLimit() {
-        return limit;
-    }
-
-    public void setLimit(Integer limit) {
-        this.limit = limit;
-    }
-
-    public String getOrder() {
-        return order;
-    }
-
-    public void setOrder(String order) {
-        this.order = order;
-    }
-
-    public List<String> getInclude() {
-        return include;
-    }
-
-    public void setInclude(List<String> include) {
-        this.include = include;
+    fun setLimit(limit: Integer?) {
+        this.limit = limit
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "ListInputItemsRequest{" +
                 "responseId='" + responseId + '\'' +
                 ", after='" + after + '\'' +
@@ -80,60 +38,62 @@ public class ListInputItemsRequest {
                 ", limit=" + limit +
                 ", order='" + order + '\'' +
                 ", include=" + include +
-                '}';
+                '}'
     }
 
-    public static Builder builder() {
-        return new Builder();
+    class Builder {
+        private var responseId: String? = null
+        private var after: String? = null
+        private var before: String? = null
+        private var limit: Integer? = null
+        private var order: String? = null
+        private var include: List<String?>? = null
+
+        fun responseId(responseId: String?): Builder {
+            this.responseId = responseId
+            return this
+        }
+
+        fun after(after: String?): Builder {
+            this.after = after
+            return this
+        }
+
+        fun before(before: String?): Builder {
+            this.before = before
+            return this
+        }
+
+        fun limit(limit: Integer?): Builder {
+            this.limit = limit
+            return this
+        }
+
+        fun order(order: String?): Builder {
+            this.order = order
+            return this
+        }
+
+        fun include(include: List<String?>?): Builder {
+            this.include = include
+            return this
+        }
+
+        fun build(): ListInputItemsRequest {
+            val listInputItemsRequest: ListInputItemsRequest = com.volcengine.ark.runtime.model.responses.request.ListInputItemsRequest()
+            listInputItemsRequest.responseId = responseId
+            listInputItemsRequest.after = after
+            listInputItemsRequest.before = before
+            listInputItemsRequest.setLimit(limit)
+            listInputItemsRequest.order = order
+            listInputItemsRequest.include = include
+            return listInputItemsRequest
+        }
     }
 
-    public static class Builder {
-        private String responseId;
-        private String after;
-        private String before;
-        private Integer limit;
-        private String order;
-        private List<String> include;
-
-        public Builder responseId(String responseId) {
-            this.responseId = responseId;
-            return this;
-        }
-
-        public Builder after(String after) {
-            this.after = after;
-            return this;
-        }
-
-        public Builder before(String before) {
-            this.before = before;
-            return this;
-        }
-
-        public Builder limit(Integer limit) {
-            this.limit = limit;
-            return this;
-        }
-
-        public Builder order(String order) {
-            this.order = order;
-            return this;
-        }
-
-        public Builder include(List<String> include) {
-            this.include = include;
-            return this;
-        }
-
-        public ListInputItemsRequest build() {
-            ListInputItemsRequest listInputItemsRequest = new ListInputItemsRequest();
-            listInputItemsRequest.setResponseId(responseId);
-            listInputItemsRequest.setAfter(after);
-            listInputItemsRequest.setBefore(before);
-            listInputItemsRequest.setLimit(limit);
-            listInputItemsRequest.setOrder(order);
-            listInputItemsRequest.setInclude(include);
-            return listInputItemsRequest;
+    companion object {
+        fun builder(): Builder {
+            return com.volcengine.ark.runtime.model.responses.request.ListInputItemsRequest.Builder()
         }
     }
 }

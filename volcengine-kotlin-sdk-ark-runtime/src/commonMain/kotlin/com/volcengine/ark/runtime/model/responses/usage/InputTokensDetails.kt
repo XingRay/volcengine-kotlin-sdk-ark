@@ -1,25 +1,16 @@
-package com.volcengine.ark.runtime.model.responses.usage;
+package com.volcengine.ark.runtime.model.responses.usage
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class InputTokensDetails {
+class InputTokensDetails {
     @JsonProperty("cached_tokens")
-    private Long cachedTokens;
-
-    public Long getCachedTokens() {
-        return cachedTokens;
-    }
-
-    public void setCachedTokens(Long cachedTokens) {
-        this.cachedTokens = cachedTokens;
-    }
+    var cachedTokens: Long? = null
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "InputTokensDetails{" +
                 "cachedTokens=" + cachedTokens +
-                '}';
+                '}'
     }
 }

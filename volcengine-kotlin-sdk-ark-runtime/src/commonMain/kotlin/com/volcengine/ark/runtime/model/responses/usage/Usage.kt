@@ -1,91 +1,64 @@
-package com.volcengine.ark.runtime.model.responses.usage;
+package com.volcengine.ark.runtime.model.responses.usage
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Usage {
+class Usage {
     @JsonProperty("input_tokens")
-    private Long inputTokens;
+    var inputTokens: Long? = null
 
     @JsonProperty("output_tokens")
-    private Long outputTokens;
+    var outputTokens: Long? = null
 
     @JsonProperty("total_tokens")
-    private Long totalTokens;
+    var totalTokens: Long? = null
 
     @JsonProperty("input_tokens_details")
-    private InputTokensDetails inputTokensDetails;
+    private var inputTokensDetails: InputTokensDetails? = null
 
     @JsonProperty("output_tokens_details")
-    private OutputTokensDetails outputTokensDetails;
+    private var outputTokensDetails: OutputTokensDetails? = null
 
     @JsonProperty("tool_usage")
-    private Map<String, Object> toolUsage;
+    private var toolUsage: Map<String?, Object?>? = null
 
     @JsonProperty("tool_usage_details")
-    private Map<String, Object> toolUsageDetails;
+    private var toolUsageDetails: Map<String?, Object?>? = null
 
-    public Long getInputTokens() {
-        return inputTokens;
+    fun getInputTokensDetails(): InputTokensDetails? {
+        return inputTokensDetails
     }
 
-    public void setInputTokens(Long inputTokens) {
-        this.inputTokens = inputTokens;
+    fun setInputTokensDetails(inputTokensDetails: InputTokensDetails?) {
+        this.inputTokensDetails = inputTokensDetails
     }
 
-    public Long getOutputTokens() {
-        return outputTokens;
+    fun getOutputTokensDetails(): OutputTokensDetails? {
+        return outputTokensDetails
     }
 
-    public void setOutputTokens(Long outputTokens) {
-        this.outputTokens = outputTokens;
+    fun setOutputTokensDetails(outputTokensDetails: OutputTokensDetails?) {
+        this.outputTokensDetails = outputTokensDetails
     }
 
-    public Long getTotalTokens() {
-        return totalTokens;
+    fun getToolUsage(): Map<String?, Object?>? {
+        return toolUsage
     }
 
-    public void setTotalTokens(Long totalTokens) {
-        this.totalTokens = totalTokens;
+    fun setToolUsage(toolUsage: Map<String?, Object?>?) {
+        this.toolUsage = toolUsage
     }
 
-    public InputTokensDetails getInputTokensDetails() {
-        return inputTokensDetails;
+    fun getToolUsageDetails(): Map<String?, Object?>? {
+        return toolUsageDetails
     }
 
-    public void setInputTokensDetails(InputTokensDetails inputTokensDetails) {
-        this.inputTokensDetails = inputTokensDetails;
-    }
-
-    public OutputTokensDetails getOutputTokensDetails() {
-        return outputTokensDetails;
-    }
-
-    public void setOutputTokensDetails(OutputTokensDetails outputTokensDetails) {
-        this.outputTokensDetails = outputTokensDetails;
-    }
-
-    public Map<String, Object> getToolUsage() {
-        return toolUsage;
-    }
-
-    public void setToolUsage(Map<String, Object> toolUsage) {
-        this.toolUsage = toolUsage;
-    }
-
-    public Map<String, Object> getToolUsageDetails() {
-        return toolUsageDetails;
-    }
-
-    public void setToolUsageDetails(Map<String, Object> toolUsageDetails) {
-        this.toolUsageDetails = toolUsageDetails;
+    fun setToolUsageDetails(toolUsageDetails: Map<String?, Object?>?) {
+        this.toolUsageDetails = toolUsageDetails
     }
 
     @Override
-    public String toString() {
+    fun toString(): String? {
         return "Usage{" +
                 "inputTokens=" + inputTokens +
                 ", outputTokens=" + outputTokens +
@@ -94,6 +67,6 @@ public class Usage {
                 ", outputTokensDetails=" + outputTokensDetails +
                 ", toolUsage=" + toolUsage +
                 ", toolUsageDetails=" + toolUsageDetails +
-                '}';
+                '}'
     }
 }
