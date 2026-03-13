@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -73,6 +74,7 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.slf4j.simple)
             implementation(libs.coil.network.okhttp)
+            implementation("com.volcengine:ve-tos-java-sdk:2.9.10")
         }
     }
 }

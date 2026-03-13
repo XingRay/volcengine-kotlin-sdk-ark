@@ -1,5 +1,7 @@
 package io.github.xingray.volcengine_kotlin_sdk_ark
 
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.name
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -8,6 +10,7 @@ import io.ktor.client.plugins.sse.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 actual fun createHttpClient(): HttpClient {
@@ -36,4 +39,11 @@ actual fun createHttpClient(): HttpClient {
             level = LogLevel.ALL
         }
     }
+}
+
+actual suspend fun PlatformFile.saveToTempFile(): String {
+    val tempDir = System.getProperty("java.io.tmpdir")
+    val tempFile = File(tempDir, this.name)
+    this.file.copyTo(tempFile, overwrite = true)
+    return tempFile.absolutePath
 }

@@ -9,25 +9,27 @@ import com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole
 import com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest
 import com.volcengine.ark.runtime.service.ArkClient
 import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.name
 import io.github.xingray.volcengine_kotlin_sdk_ark.model.AiModel
 import io.github.xingray.volcengine_kotlin_sdk_ark.model.AiModelType
 import io.github.xingray.volcengine_kotlin_sdk_ark.model.ImageGenerationTask
-import io.github.xingray.volcengine_kotlin_sdk_ark.model.TaskStatus
-import io.ktor.client.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.serialization.kotlinx.json.*
-import kotlinx.coroutines.delay
+import io.github.xingray.volcengine_kotlin_sdk_ark.oss.ObjectStorageService
+import io.github.xingray.volcengine_kotlin_sdk_ark.util.TimeUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 
 data class ChatUiState(
     val messages: List<ChatMessage> = emptyList(),
     val inputText: String = "",
     val isLoading: Boolean = false,
+    val isUploading: Boolean = false,
     val apiKey: String = "",
+    val accessKey: String = "",
+    val secretKey: String = "",
+    val ossBucket: String = "ark-project",
+    val ossKeyPrefix: String = "/image/",
     val selectedModel: AiModel = AiModel.getDefaultModel(),
     val temperature: Double = 0.7,
     val topP: Double = 0.9,
@@ -58,6 +60,22 @@ class ChatViewModel : ViewModel() {
 
     fun updateApiKey(apiKey: String) {
         _uiState.value = _uiState.value.copy(apiKey = apiKey)
+    }
+
+    fun updateAccessKey(accessKey: String) {
+        _uiState.value = _uiState.value.copy(accessKey = accessKey)
+    }
+
+    fun updateSecretKey(secretKey: String) {
+        _uiState.value = _uiState.value.copy(secretKey = secretKey)
+    }
+
+    fun updateOssBucket(bucket: String) {
+        _uiState.value = _uiState.value.copy(ossBucket = bucket)
+    }
+
+    fun updateOssKeyPrefix(keyPrefix: String) {
+        _uiState.value = _uiState.value.copy(ossKeyPrefix = keyPrefix)
     }
 
     fun updateModel(model: AiModel) {
@@ -139,6 +157,7 @@ class ChatViewModel : ViewModel() {
                         else -> ""
                     }
                 }
+
                 null -> ""
             }
             _uiState.value = _uiState.value.copy(
@@ -327,6 +346,7 @@ class ChatViewModel : ViewModel() {
                                     is com.volcengine.ark.runtime.model.completion.chat.ContentPart.VideoUrlPart -> ""
                                 }
                             }
+
                             null -> ""
                         }
                         val deltaReasoningContent = delta?.reasoningContent ?: ""
@@ -426,28 +446,88 @@ class ChatViewModel : ViewModel() {
                     defaultApiKey = currentState.apiKey
                 )
 
+                // 如果选择了图片文件，先上传图片
+                var imageUrl: String? = null
+                if (currentState.selectedImageFiles.isNotEmpty()) {
+                    // 检查AK/SK是否已配置
+                    if (currentState.accessKey.isBlank() || currentState.secretKey.isBlank()) {
+                        println("[${getCurrentTimestamp()}] AK/SK not configured")
+                        _uiState.value = _uiState.value.copy(
+                            errorMessage = "请先配置 Access Key 和 Secret Key",
+                            isLoading = false
+                        )
+                        return@launch
+                    }
+
+                    println("[${getCurrentTimestamp()}] Uploading image file...")
+                    _uiState.value = _uiState.value.copy(isUploading = true)
+
+                    try {
+                        val imageFile = currentState.selectedImageFiles.first()
+                        val filePath = imageFile.saveToTempFile()
+                        val fileName = imageFile.name
+
+                        println("[${getCurrentTimestamp()}] File name: $fileName, path: $filePath")
+
+                        val ossService = ObjectStorageService(
+                            ak = currentState.accessKey,
+                            sk = currentState.secretKey
+                        )
+
+                        val bucket = currentState.ossBucket
+                        val key = "${currentState.ossKeyPrefix}${TimeUtil.nowMillis()}_$fileName"
+
+                        val result = ossService.putObject(bucket, key, filePath)
+
+                        when (result) {
+                            is ApiResult.Success -> {
+                                imageUrl = result.data
+                                println("[${getCurrentTimestamp()}] Image uploaded successfully, URL: $imageUrl")
+
+                                // 清除已选择的图片
+                                _uiState.value = _uiState.value.copy(
+                                    selectedImageFiles = emptyList(),
+                                    isUploading = false
+                                )
+                            }
+
+                            is ApiResult.Error -> {
+                                println("[${getCurrentTimestamp()}] Image upload failed: ${result.message}")
+                                _uiState.value = _uiState.value.copy(isUploading = false)
+                                throw Exception("图片上传失败: ${result.message}")
+                            }
+                        }
+                    } catch (e: Exception) {
+                        println("[${getCurrentTimestamp()}] Image upload failed: ${e.message}")
+                        _uiState.value = _uiState.value.copy(isUploading = false)
+                        throw Exception("图片上传失败: ${e.message}", e)
+                    }
+                }
+
                 val request = GenerateImagesRequest(
                     model = currentState.selectedModel.id,
                     prompt = when (val content = userMessage.content) {
                         is ChatMessageContent.TextContent -> content.value
                         else -> ""
-                    }
+                    },
+                    image = imageUrl?.let { listOf(it) },
+                    watermark = false,
                 )
 
                 println("[${getCurrentTimestamp()}] Submitting image generation request...")
                 val response = client.generateImages(request)
                 println("[${getCurrentTimestamp()}] Response received: $response")
 
-                val imageUrl = response.data?.firstOrNull()?.url
+                val generatedImageUrl = response.data?.firstOrNull()?.url
                 val errorMsg = response.error?.message
 
-                if (imageUrl != null) {
-                    println("[${getCurrentTimestamp()}] Image URL: $imageUrl")
+                if (generatedImageUrl != null) {
+                    println("[${getCurrentTimestamp()}] Image URL: $generatedImageUrl")
                     // 更新最后一条消息为图片 URL
                     val currentMessages = _uiState.value.messages.toMutableList()
                     currentMessages[currentMessages.lastIndex] = ChatMessage(
                         role = ChatMessageRole.ASSISTANT,
-                        content = ChatMessageContent.TextContent(imageUrl)
+                        content = ChatMessageContent.TextContent(generatedImageUrl)
                     )
                     _uiState.value = _uiState.value.copy(
                         messages = currentMessages,
@@ -482,11 +562,15 @@ class ChatViewModel : ViewModel() {
                 _uiState.value = _uiState.value.copy(
                     messages = currentMessages,
                     errorMessage = "错误: ${e.message}",
-                    isLoading = false
+                    isLoading = false,
+                    isUploading = false
                 )
             }
         }
     }
 }
 
-expect fun createHttpClient(): HttpClient
+expect suspend fun PlatformFile.saveToTempFile(): String
+
+
+

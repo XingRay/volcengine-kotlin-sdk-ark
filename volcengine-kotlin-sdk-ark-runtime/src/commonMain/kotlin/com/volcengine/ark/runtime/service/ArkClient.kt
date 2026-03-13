@@ -22,6 +22,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.sse.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.utils.io.*
@@ -422,14 +423,23 @@ class ArkClient(
      * 上传文件
      */
     suspend fun uploadFile(
-        request: UploadFileRequest,
+        fileBytes: ByteArray,
+        filename: String,
+        purpose: String = "user_data",
         apiKey: String? = defaultApiKey,
         baseUrl: String = defaultBaseUrl
     ): FileMeta {
-        return httpClient.post("$baseUrl/api/v3/files") {
+        return httpClient.submitFormWithBinaryData(
+            url = "$baseUrl/api/v3/files",
+            formData = formData {
+                append("file", fileBytes, Headers.build {
+                    append(HttpHeaders.ContentType, "application/octet-stream")
+                    append(HttpHeaders.ContentDisposition, "filename=\"$filename\"")
+                })
+                append("purpose", purpose)
+            }
+        ) {
             apiKey?.let { bearerAuth(it) }
-            // TODO: 实现 multipart/form-data 上传
-            setBody(request)
         }.body()
     }
 

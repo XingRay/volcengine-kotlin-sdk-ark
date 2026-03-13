@@ -56,33 +56,29 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                     .padding(paddingValues)
                     .background(MaterialTheme.colorScheme.background)
             ) {
-                // Left panel - Parameters
-                ParametersPanel(
+                // Left panel - Basic Configuration
+                BasicConfigPanel(
                     apiKey = uiState.apiKey,
+                    accessKey = uiState.accessKey,
+                    secretKey = uiState.secretKey,
+                    ossBucket = uiState.ossBucket,
+                    ossKeyPrefix = uiState.ossKeyPrefix,
                     selectedModel = uiState.selectedModel,
-                    temperature = uiState.temperature,
-                    topP = uiState.topP,
-                    maxTokens = uiState.maxTokens,
-                    streamEnabled = uiState.streamEnabled,
-                    deepThinkingEnabled = uiState.deepThinkingEnabled,
                     onApiKeyChange = viewModel::updateApiKey,
+                    onAccessKeyChange = viewModel::updateAccessKey,
+                    onSecretKeyChange = viewModel::updateSecretKey,
+                    onOssBucketChange = viewModel::updateOssBucket,
+                    onOssKeyPrefixChange = viewModel::updateOssKeyPrefix,
                     onModelChange = viewModel::updateModel,
-                    onTemperatureChange = viewModel::updateTemperature,
-                    onTopPChange = viewModel::updateTopP,
-                    onMaxTokensChange = viewModel::updateMaxTokens,
-                    onStreamEnabledChange = viewModel::updateStreamEnabled,
-                    onDeepThinkingEnabledChange = viewModel::updateDeepThinkingEnabled,
-                    onAddSystemMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.SYSTEM) },
-                    onAddAssistantMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.ASSISTANT) },
-                    onAddUserMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.USER) },
-                    modifier = Modifier.weight(0.3f).widthIn(min = 280.dp)
+                    modifier = Modifier.weight(0.25f).widthIn(min = 250.dp)
                 )
 
-                // Right panel - Chat
+                // Middle panel - Chat
                 ChatPanel(
                     messages = uiState.messages,
                     inputText = uiState.inputText,
                     isLoading = uiState.isLoading,
+                    isUploading = uiState.isUploading,
                     editingMessageIndex = uiState.editingMessageIndex,
                     editingMessageText = uiState.editingMessageText,
                     selectedImageFiles = uiState.selectedImageFiles,
@@ -102,7 +98,26 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                     onRemoveVideoFile = viewModel::removeVideoFile,
                     onRemoveDocumentFile = viewModel::removeDocumentFile,
                     onImageClick = viewModel::showImageDialog,
-                    modifier = Modifier.weight(0.7f)
+                    modifier = Modifier.weight(0.5f)
+                )
+
+                // Right panel - Model Parameters
+                ModelParametersPanel(
+                    selectedModel = uiState.selectedModel,
+                    temperature = uiState.temperature,
+                    topP = uiState.topP,
+                    maxTokens = uiState.maxTokens,
+                    streamEnabled = uiState.streamEnabled,
+                    deepThinkingEnabled = uiState.deepThinkingEnabled,
+                    onTemperatureChange = viewModel::updateTemperature,
+                    onTopPChange = viewModel::updateTopP,
+                    onMaxTokensChange = viewModel::updateMaxTokens,
+                    onStreamEnabledChange = viewModel::updateStreamEnabled,
+                    onDeepThinkingEnabledChange = viewModel::updateDeepThinkingEnabled,
+                    onAddSystemMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.SYSTEM) },
+                    onAddAssistantMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.ASSISTANT) },
+                    onAddUserMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.USER) },
+                    modifier = Modifier.weight(0.25f).widthIn(min = 250.dp)
                 )
             }
 
@@ -130,8 +145,243 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun BasicConfigPanel(
+    apiKey: String,
+    accessKey: String,
+    secretKey: String,
+    ossBucket: String,
+    ossKeyPrefix: String,
+    selectedModel: AiModel,
+    onApiKeyChange: (String) -> Unit,
+    onAccessKeyChange: (String) -> Unit,
+    onSecretKeyChange: (String) -> Unit,
+    onOssBucketChange: (String) -> Unit,
+    onOssKeyPrefixChange: (String) -> Unit,
+    onModelChange: (AiModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val modelOptions = AiModel.AVAILABLE_MODELS
+    var expanded by remember { mutableStateOf(false) }
+
+    Surface(
+        modifier = modifier.fillMaxHeight(),
+        color = MaterialTheme.colorScheme.surfaceVariant
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "Basic Configuration",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            OutlinedTextField(
+                value = apiKey,
+                onValueChange = onApiKeyChange,
+                label = { Text("API Key") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
+                value = accessKey,
+                onValueChange = onAccessKeyChange,
+                label = { Text("Access Key (AK)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
+                value = secretKey,
+                onValueChange = onSecretKeyChange,
+                label = { Text("Secret Key (SK)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
+                value = ossBucket,
+                onValueChange = onOssBucketChange,
+                label = { Text("OSS Bucket") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
+                value = ossKeyPrefix,
+                onValueChange = onOssKeyPrefixChange,
+                label = { Text("OSS Key Prefix") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            // Model dropdown
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = it },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = selectedModel.name,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Model") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    leadingIcon = { ModelTypeChip(selectedModel.type) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+                    singleLine = true
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    modelOptions.forEach { model ->
+                        DropdownMenuItem(
+                            text = {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    ModelTypeChip(model.type)
+                                    Text(model.name)
+                                }
+                            },
+                            onClick = {
+                                onModelChange(model)
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ModelParametersPanel(
+    selectedModel: AiModel,
+    temperature: Double,
+    topP: Double,
+    maxTokens: Int,
+    streamEnabled: Boolean,
+    deepThinkingEnabled: Boolean,
+    onTemperatureChange: (Double) -> Unit,
+    onTopPChange: (Double) -> Unit,
+    onMaxTokensChange: (Int) -> Unit,
+    onStreamEnabledChange: (Boolean) -> Unit,
+    onDeepThinkingEnabledChange: (Boolean) -> Unit,
+    onAddSystemMessage: () -> Unit,
+    onAddAssistantMessage: () -> Unit,
+    onAddUserMessage: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier.fillMaxHeight(),
+        color = MaterialTheme.colorScheme.surfaceVariant
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "Model Parameters",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            // Add message buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = onAddSystemMessage,
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = "System",
+                        style = MaterialTheme.typography.labelMedium,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
+                }
+                Button(
+                    onClick = onAddAssistantMessage,
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = "Assistant",
+                        style = MaterialTheme.typography.labelMedium,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
+                }
+                Button(
+                    onClick = onAddUserMessage,
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = "User",
+                        style = MaterialTheme.typography.labelMedium,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            // Display different parameters based on model type
+            when (selectedModel.type) {
+                AiModelType.TEXT -> {
+                    TextModelParamsPanel(
+                        temperature = temperature,
+                        topP = topP,
+                        maxTokens = maxTokens,
+                        streamEnabled = streamEnabled,
+                        deepThinkingEnabled = deepThinkingEnabled,
+                        onTemperatureChange = onTemperatureChange,
+                        onTopPChange = onTopPChange,
+                        onMaxTokensChange = onMaxTokensChange,
+                        onStreamEnabledChange = onStreamEnabledChange,
+                        onDeepThinkingEnabledChange = onDeepThinkingEnabledChange
+                    )
+                }
+                AiModelType.IMAGE -> {
+                    ImageModelParamsPanel()
+                }
+                AiModelType.VIDEO -> {
+                    VideoModelParamsPanel()
+                }
+                AiModelType.AUDIO -> {
+                    AudioModelParamsPanel()
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun ParametersPanel(
     apiKey: String,
+    accessKey: String,
+    secretKey: String,
+    ossBucket: String,
+    ossKeyPrefix: String,
     selectedModel: AiModel,
     temperature: Double,
     topP: Double,
@@ -139,6 +389,10 @@ fun ParametersPanel(
     streamEnabled: Boolean,
     deepThinkingEnabled: Boolean,
     onApiKeyChange: (String) -> Unit,
+    onAccessKeyChange: (String) -> Unit,
+    onSecretKeyChange: (String) -> Unit,
+    onOssBucketChange: (String) -> Unit,
+    onOssKeyPrefixChange: (String) -> Unit,
     onModelChange: (AiModel) -> Unit,
     onTemperatureChange: (Double) -> Unit,
     onTopPChange: (Double) -> Unit,
@@ -217,6 +471,38 @@ fun ParametersPanel(
                 value = apiKey,
                 onValueChange = onApiKeyChange,
                 label = { Text("API Key") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
+                value = accessKey,
+                onValueChange = onAccessKeyChange,
+                label = { Text("Access Key (AK)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
+                value = secretKey,
+                onValueChange = onSecretKeyChange,
+                label = { Text("Secret Key (SK)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
+                value = ossBucket,
+                onValueChange = onOssBucketChange,
+                label = { Text("OSS Bucket") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
+                value = ossKeyPrefix,
+                onValueChange = onOssKeyPrefixChange,
+                label = { Text("OSS Key Prefix") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -302,6 +588,7 @@ fun ChatPanel(
     messages: List<com.volcengine.ark.runtime.model.completion.chat.ChatMessage>,
     inputText: String,
     isLoading: Boolean,
+    isUploading: Boolean,
     editingMessageIndex: Int?,
     editingMessageText: String,
     selectedImageFiles: List<PlatformFile>,
@@ -465,19 +752,38 @@ fun ChatPanel(
                 modifier = Modifier.weight(1f),
                 placeholder = { Text("Type a message...") },
                 maxLines = 4,
-                enabled = !isLoading
+                enabled = !isLoading && !isUploading
             )
 
             Button(
                 onClick = onSendClick,
-                enabled = !isLoading && inputText.isNotBlank(),
+                enabled = !isLoading && !isUploading && inputText.isNotBlank(),
                 modifier = Modifier.height(56.dp)
             ) {
-                Text(
-                    text = "Send",
-                    maxLines = 1,
-                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
-                )
+                if (isUploading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "上传中...",
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
+                } else if (isLoading) {
+                    Text(
+                        text = "生成中...",
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
+                } else {
+                    Text(
+                        text = "Send",
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }
