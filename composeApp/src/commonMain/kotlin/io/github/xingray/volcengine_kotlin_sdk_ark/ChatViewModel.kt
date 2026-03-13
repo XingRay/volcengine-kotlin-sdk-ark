@@ -7,6 +7,8 @@ import com.volcengine.ark.runtime.model.completion.chat.ChatMessage
 import com.volcengine.ark.runtime.model.completion.chat.ChatMessageContent
 import com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole
 import com.volcengine.ark.runtime.service.ArkClient
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.xingray.volcengine_kotlin_sdk_ark.model.AiModel
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
@@ -21,7 +23,7 @@ data class ChatUiState(
     val inputText: String = "",
     val isLoading: Boolean = false,
     val apiKey: String = "",
-    val model: String = "doubao-seed-2-0-lite-260215",
+    val selectedModel: AiModel = AiModel.getDefaultModel(),
     val temperature: Double = 0.7,
     val topP: Double = 0.9,
     val maxTokens: Int = 2048,
@@ -32,7 +34,10 @@ data class ChatUiState(
     val addMessageText: String = "",
     val editingMessageIndex: Int? = null,
     val editingMessageText: String = "",
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val selectedImageFiles: List<PlatformFile> = emptyList(),
+    val selectedVideoFiles: List<PlatformFile> = emptyList(),
+    val selectedDocumentFiles: List<PlatformFile> = emptyList()
 )
 
 class ChatViewModel : ViewModel() {
@@ -47,8 +52,8 @@ class ChatViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(apiKey = apiKey)
     }
 
-    fun updateModel(model: String) {
-        _uiState.value = _uiState.value.copy(model = model)
+    fun updateModel(model: AiModel) {
+        _uiState.value = _uiState.value.copy(selectedModel = model)
     }
 
     fun updateTemperature(temperature: Double) {
@@ -167,6 +172,42 @@ class ChatViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(errorMessage = null)
     }
 
+    fun addImageFiles(files: List<PlatformFile>) {
+        _uiState.value = _uiState.value.copy(
+            selectedImageFiles = _uiState.value.selectedImageFiles + files
+        )
+    }
+
+    fun addVideoFiles(files: List<PlatformFile>) {
+        _uiState.value = _uiState.value.copy(
+            selectedVideoFiles = _uiState.value.selectedVideoFiles + files
+        )
+    }
+
+    fun addDocumentFiles(files: List<PlatformFile>) {
+        _uiState.value = _uiState.value.copy(
+            selectedDocumentFiles = _uiState.value.selectedDocumentFiles + files
+        )
+    }
+
+    fun removeImageFile(file: PlatformFile) {
+        _uiState.value = _uiState.value.copy(
+            selectedImageFiles = _uiState.value.selectedImageFiles.filter { it != file }
+        )
+    }
+
+    fun removeVideoFile(file: PlatformFile) {
+        _uiState.value = _uiState.value.copy(
+            selectedVideoFiles = _uiState.value.selectedVideoFiles.filter { it != file }
+        )
+    }
+
+    fun removeDocumentFile(file: PlatformFile) {
+        _uiState.value = _uiState.value.copy(
+            selectedDocumentFiles = _uiState.value.selectedDocumentFiles.filter { it != file }
+        )
+    }
+
     fun sendMessage() {
         val currentState = _uiState.value
 
@@ -199,7 +240,7 @@ class ChatViewModel : ViewModel() {
             try {
                 println("[${getCurrentTimestamp()}] === Starting chat request ===")
                 println("[${getCurrentTimestamp()}] API Key: ${currentState.apiKey.take(10)}...")
-                println("[${getCurrentTimestamp()}] Model: ${currentState.model}")
+                println("[${getCurrentTimestamp()}] Model: ${currentState.selectedModel.id}")
                 println("[${getCurrentTimestamp()}] Stream enabled: ${currentState.streamEnabled}")
 
                 val httpClient = createHttpClient()
@@ -210,7 +251,7 @@ class ChatViewModel : ViewModel() {
                 )
 
                 val request = ChatCompletionRequest(
-                    model = currentState.model,
+                    model = currentState.selectedModel.id,
                     messages = updatedMessages,
                     temperature = currentState.temperature,
                     topP = currentState.topP,

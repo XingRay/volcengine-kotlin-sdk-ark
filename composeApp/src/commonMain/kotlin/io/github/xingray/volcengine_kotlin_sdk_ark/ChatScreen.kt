@@ -4,13 +4,27 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.dialogs.FileKitMode
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.name
+import io.github.xingray.volcengine_kotlin_sdk_ark.model.AiModel
+import io.github.xingray.volcengine_kotlin_sdk_ark.model.AiModelType
 
 @Composable
 fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
@@ -40,7 +54,7 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                 // Left panel - Parameters
                 ParametersPanel(
                     apiKey = uiState.apiKey,
-                    model = uiState.model,
+                    selectedModel = uiState.selectedModel,
                     temperature = uiState.temperature,
                     topP = uiState.topP,
                     maxTokens = uiState.maxTokens,
@@ -66,6 +80,9 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                     isLoading = uiState.isLoading,
                     editingMessageIndex = uiState.editingMessageIndex,
                     editingMessageText = uiState.editingMessageText,
+                    selectedImageFiles = uiState.selectedImageFiles,
+                    selectedVideoFiles = uiState.selectedVideoFiles,
+                    selectedDocumentFiles = uiState.selectedDocumentFiles,
                     onInputChange = viewModel::updateInputText,
                     onSendClick = viewModel::sendMessage,
                     onDeleteMessage = viewModel::deleteMessage,
@@ -73,6 +90,12 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                     onEditingTextChange = viewModel::updateEditingMessageText,
                     onConfirmEdit = viewModel::confirmEditMessage,
                     onCancelEdit = viewModel::cancelEditMessage,
+                    onAddImageFiles = viewModel::addImageFiles,
+                    onAddVideoFiles = viewModel::addVideoFiles,
+                    onAddDocumentFiles = viewModel::addDocumentFiles,
+                    onRemoveImageFile = viewModel::removeImageFile,
+                    onRemoveVideoFile = viewModel::removeVideoFile,
+                    onRemoveDocumentFile = viewModel::removeDocumentFile,
                     modifier = Modifier.weight(0.7f)
                 )
             }
@@ -91,17 +114,18 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ParametersPanel(
     apiKey: String,
-    model: String,
+    selectedModel: AiModel,
     temperature: Double,
     topP: Double,
     maxTokens: Int,
     streamEnabled: Boolean,
     deepThinkingEnabled: Boolean,
     onApiKeyChange: (String) -> Unit,
-    onModelChange: (String) -> Unit,
+    onModelChange: (AiModel) -> Unit,
     onTemperatureChange: (Double) -> Unit,
     onTopPChange: (Double) -> Unit,
     onMaxTokensChange: (Int) -> Unit,
@@ -112,6 +136,9 @@ fun ParametersPanel(
     onAddUserMessage: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val modelOptions = AiModel.AVAILABLE_MODELS
+    var expanded by remember { mutableStateOf(false) }
+
     Surface(
         modifier = modifier.fillMaxHeight(),
         color = MaterialTheme.colorScheme.surfaceVariant
@@ -119,6 +146,7 @@ fun ParametersPanel(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -179,64 +207,77 @@ fun ParametersPanel(
                 singleLine = true
             )
 
-            OutlinedTextField(
-                value = model,
-                onValueChange = onModelChange,
-                label = { Text("Model") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            Column {
-                Text("Temperature: $temperature")
-                Slider(
-                    value = temperature.toFloat(),
-                    onValueChange = { onTemperatureChange(it.toDouble()) },
-                    valueRange = 0f..2f,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            Column {
-                Text("Top P: $topP")
-                Slider(
-                    value = topP.toFloat(),
-                    onValueChange = { onTopPChange(it.toDouble()) },
-                    valueRange = 0f..1f,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            OutlinedTextField(
-                value = maxTokens.toString(),
-                onValueChange = { onMaxTokensChange(it.toIntOrNull() ?: maxTokens) },
-                label = { Text("Max Tokens") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            // Model dropdown
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = it },
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Stream Mode")
-                Switch(
-                    checked = streamEnabled,
-                    onCheckedChange = onStreamEnabledChange
+                OutlinedTextField(
+                    value = selectedModel.name,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Model") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    leadingIcon = { ModelTypeChip(selectedModel.type) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+                    singleLine = true
                 )
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    modelOptions.forEach { model ->
+                        DropdownMenuItem(
+                            text = {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    ModelTypeChip(model.type)
+                                    Text(
+                                        text = model.name,
+                                        maxLines = 1,
+                                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                    )
+                                }
+                            },
+                            onClick = {
+                                onModelChange(model)
+                                expanded = false
+                            }
+                        )
+                    }
+                }
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("深度思考")
-                Switch(
-                    checked = deepThinkingEnabled,
-                    onCheckedChange = onDeepThinkingEnabledChange
-                )
+            // Type-specific parameter panels
+            when (selectedModel.type) {
+                AiModelType.TEXT -> {
+                    TextModelParamsPanel(
+                        temperature = temperature,
+                        topP = topP,
+                        maxTokens = maxTokens,
+                        streamEnabled = streamEnabled,
+                        deepThinkingEnabled = deepThinkingEnabled,
+                        onTemperatureChange = onTemperatureChange,
+                        onTopPChange = onTopPChange,
+                        onMaxTokensChange = onMaxTokensChange,
+                        onStreamEnabledChange = onStreamEnabledChange,
+                        onDeepThinkingEnabledChange = onDeepThinkingEnabledChange
+                    )
+                }
+                AiModelType.IMAGE -> {
+                    ImageModelParamsPanel()
+                }
+                AiModelType.VIDEO -> {
+                    VideoModelParamsPanel()
+                }
+                AiModelType.AUDIO -> {
+                    AudioModelParamsPanel()
+                }
             }
         }
     }
@@ -249,6 +290,9 @@ fun ChatPanel(
     isLoading: Boolean,
     editingMessageIndex: Int?,
     editingMessageText: String,
+    selectedImageFiles: List<PlatformFile>,
+    selectedVideoFiles: List<PlatformFile>,
+    selectedDocumentFiles: List<PlatformFile>,
     onInputChange: (String) -> Unit,
     onSendClick: () -> Unit,
     onDeleteMessage: (Int) -> Unit,
@@ -256,6 +300,12 @@ fun ChatPanel(
     onEditingTextChange: (String) -> Unit,
     onConfirmEdit: () -> Unit,
     onCancelEdit: () -> Unit,
+    onAddImageFiles: (List<PlatformFile>) -> Unit,
+    onAddVideoFiles: (List<PlatformFile>) -> Unit,
+    onAddDocumentFiles: (List<PlatformFile>) -> Unit,
+    onRemoveImageFile: (PlatformFile) -> Unit,
+    onRemoveVideoFile: (PlatformFile) -> Unit,
+    onRemoveDocumentFile: (PlatformFile) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -312,6 +362,80 @@ fun ChatPanel(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        // File picker launchers
+        val imagePickerLauncher = rememberFilePickerLauncher(
+            type = FileKitType.Image,
+            mode = FileKitMode.Multiple(),
+        ) { files ->
+            files?.let { onAddImageFiles(it) }
+        }
+
+        val videoPickerLauncher = rememberFilePickerLauncher(
+            type = FileKitType.Video,
+            mode = FileKitMode.Multiple(),
+        ) { files ->
+            files?.let { onAddVideoFiles(it) }
+        }
+
+        val documentPickerLauncher = rememberFilePickerLauncher(
+            type = FileKitType.File(extensions = listOf("pdf", "doc", "docx", "txt", "md")),
+            mode = FileKitMode.Multiple(),
+        ) { files ->
+            files?.let { onAddDocumentFiles(it) }
+        }
+
+        // File selection buttons
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            IconButton(
+                onClick = { imagePickerLauncher.launch() },
+                enabled = !isLoading
+            ) {
+                Icon(Icons.Default.Image, contentDescription = "选择图片")
+            }
+            IconButton(
+                onClick = { videoPickerLauncher.launch() },
+                enabled = !isLoading
+            ) {
+                Icon(Icons.Default.VideoLibrary, contentDescription = "选择视频")
+            }
+            IconButton(
+                onClick = { documentPickerLauncher.launch() },
+                enabled = !isLoading
+            ) {
+                Icon(Icons.Default.AttachFile, contentDescription = "选择文档")
+            }
+        }
+
+        // Selected files display
+        if (selectedImageFiles.isNotEmpty() || selectedVideoFiles.isNotEmpty() || selectedDocumentFiles.isNotEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                selectedImageFiles.forEach { file ->
+                    FileChip(
+                        fileName = file.name,
+                        onRemove = { onRemoveImageFile(file) }
+                    )
+                }
+                selectedVideoFiles.forEach { file ->
+                    FileChip(
+                        fileName = file.name,
+                        onRemove = { onRemoveVideoFile(file) }
+                    )
+                }
+                selectedDocumentFiles.forEach { file ->
+                    FileChip(
+                        fileName = file.name,
+                        onRemove = { onRemoveDocumentFile(file) }
+                    )
+                }
+            }
+        }
 
         // Input area
         Row(
@@ -568,6 +692,165 @@ fun EditMessageCard(
                         overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun ModelTypeChip(type: AiModelType) {
+    val backgroundColor = when (type) {
+        AiModelType.TEXT -> Color(0xFF4CAF50)      // 绿色
+        AiModelType.IMAGE -> Color(0xFF2196F3)     // 蓝色
+        AiModelType.VIDEO -> Color(0xFFFF9800)     // 橙色
+        AiModelType.AUDIO -> Color(0xFF9C27B0)     // 紫色
+    }
+
+    Surface(
+        shape = RoundedCornerShape(4.dp),
+        color = backgroundColor,
+        modifier = Modifier.padding(0.dp)
+    ) {
+        Text(
+            text = type.label,
+            style = MaterialTheme.typography.labelSmall,
+            color = Color.White,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+            maxLines = 1
+        )
+    }
+}
+
+@Composable
+fun TextModelParamsPanel(
+    temperature: Double,
+    topP: Double,
+    maxTokens: Int,
+    streamEnabled: Boolean,
+    deepThinkingEnabled: Boolean,
+    onTemperatureChange: (Double) -> Unit,
+    onTopPChange: (Double) -> Unit,
+    onMaxTokensChange: (Int) -> Unit,
+    onStreamEnabledChange: (Boolean) -> Unit,
+    onDeepThinkingEnabledChange: (Boolean) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Column {
+            Text("Temperature: $temperature")
+            Slider(
+                value = temperature.toFloat(),
+                onValueChange = { onTemperatureChange(it.toDouble()) },
+                valueRange = 0f..2f,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        Column {
+            Text("Top P: $topP")
+            Slider(
+                value = topP.toFloat(),
+                onValueChange = { onTopPChange(it.toDouble()) },
+                valueRange = 0f..1f,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        OutlinedTextField(
+            value = maxTokens.toString(),
+            onValueChange = { onMaxTokensChange(it.toIntOrNull() ?: maxTokens) },
+            label = { Text("Max Tokens") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Stream Mode")
+            Switch(
+                checked = streamEnabled,
+                onCheckedChange = onStreamEnabledChange
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("深度思考")
+            Switch(
+                checked = deepThinkingEnabled,
+                onCheckedChange = onDeepThinkingEnabledChange
+            )
+        }
+    }
+}
+
+@Composable
+fun ImageModelParamsPanel() {
+    Text(
+        text = "图片生成模型参数（待实现）",
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+}
+
+@Composable
+fun VideoModelParamsPanel() {
+    Text(
+        text = "视频生成模型参数（待实现）",
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+}
+
+@Composable
+fun AudioModelParamsPanel() {
+    Text(
+        text = "音频生成模型参数（待实现）",
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+}
+
+@Composable
+fun FileChip(
+    fileName: String,
+    onRemove: () -> Unit
+) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        modifier = Modifier.padding(vertical = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = fileName,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f, fill = false)
+            )
+            IconButton(
+                onClick = onRemove,
+                modifier = Modifier.size(20.dp)
+            ) {
+                Text(
+                    text = "×",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
             }
         }
     }
