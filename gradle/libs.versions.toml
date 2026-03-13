@@ -5,6 +5,7 @@ kotlinx-serialization = "1.10.0"
 kotlinx-datetime = "0.7.1"
 slf4j = "2.0.9"
 filekit = "0.13.0"
+coil = "3.4.0"
 
 compose-multiplatform = "1.10.2"
 compose-lifecycle = "2.9.6"
@@ -73,6 +74,10 @@ slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 # FileKit
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
 filekit-dialogs-compose = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref = "filekit" }
+
+# Coil
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

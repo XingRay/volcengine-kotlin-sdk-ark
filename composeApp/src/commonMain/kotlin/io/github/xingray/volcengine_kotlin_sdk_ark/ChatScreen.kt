@@ -1,6 +1,7 @@
 package io.github.xingray.volcengine_kotlin_sdk_ark
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -9,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.material3.*
@@ -16,8 +18,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.dialogs.FileKitMode
 import io.github.vinceglb.filekit.dialogs.FileKitType
@@ -96,6 +101,7 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                     onRemoveImageFile = viewModel::removeImageFile,
                     onRemoveVideoFile = viewModel::removeVideoFile,
                     onRemoveDocumentFile = viewModel::removeDocumentFile,
+                    onImageClick = viewModel::showImageDialog,
                     modifier = Modifier.weight(0.7f)
                 )
             }
@@ -108,6 +114,14 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                     onTextChange = viewModel::updateAddMessageText,
                     onConfirm = viewModel::confirmAddMessage,
                     onDismiss = viewModel::hideAddMessageDialog
+                )
+            }
+
+            // Image dialog
+            if (uiState.showImageDialog && uiState.dialogImageUrl != null) {
+                ImageDialog(
+                    imageUrl = uiState.dialogImageUrl!!,
+                    onDismiss = viewModel::hideImageDialog
                 )
             }
         }
@@ -306,6 +320,7 @@ fun ChatPanel(
     onRemoveImageFile: (PlatformFile) -> Unit,
     onRemoveVideoFile: (PlatformFile) -> Unit,
     onRemoveDocumentFile: (PlatformFile) -> Unit,
+    onImageClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -341,7 +356,8 @@ fun ChatPanel(
                     MessageBubble(
                         message = message,
                         onEdit = { onEditMessage(index) },
-                        onDelete = { onDeleteMessage(index) }
+                        onDelete = { onDeleteMessage(index) },
+                        onImageClick = onImageClick
                     )
                 }
             }
@@ -471,7 +487,8 @@ fun ChatPanel(
 fun MessageBubble(
     message: com.volcengine.ark.runtime.model.completion.chat.ChatMessage,
     onEdit: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onImageClick: (String) -> Unit
 ) {
     val isUser = message.role == com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.USER
     val alignment = if (isUser) Alignment.CenterEnd else Alignment.CenterStart
@@ -500,6 +517,9 @@ fun MessageBubble(
 
         null -> ""
     }
+
+    // Check if content is an image URL
+    val isImageUrl = contentText.startsWith("http://") || contentText.startsWith("https://")
 
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -568,11 +588,30 @@ fun MessageBubble(
 
                 // Display main content
                 if (contentText.isNotEmpty()) {
-                    Text(
-                        text = contentText,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = textColor
-                    )
+                    if (isImageUrl && !isUser) {
+                        // Display image with AsyncImage
+                        AsyncImage(
+                            model = contentText,
+                            contentDescription = "Generated image",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(max = 300.dp)
+                                .clickable { onImageClick(contentText) },
+                            contentScale = ContentScale.Fit
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = contentText,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = textColor.copy(alpha = 0.7f)
+                        )
+                    } else {
+                        Text(
+                            text = contentText,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = textColor
+                        )
+                    }
                 }
             }
         }
@@ -851,6 +890,42 @@ fun FileChip(
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun ImageDialog(
+    imageUrl: String,
+    onDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.fillMaxSize(0.9f)
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = "Full size image",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit
+                )
+
+                IconButton(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
     }

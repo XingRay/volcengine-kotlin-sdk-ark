@@ -6,12 +6,17 @@ import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionRequest
 import com.volcengine.ark.runtime.model.completion.chat.ChatMessage
 import com.volcengine.ark.runtime.model.completion.chat.ChatMessageContent
 import com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole
+import com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest
 import com.volcengine.ark.runtime.service.ArkClient
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.xingray.volcengine_kotlin_sdk_ark.model.AiModel
+import io.github.xingray.volcengine_kotlin_sdk_ark.model.AiModelType
+import io.github.xingray.volcengine_kotlin_sdk_ark.model.ImageGenerationTask
+import io.github.xingray.volcengine_kotlin_sdk_ark.model.TaskStatus
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,7 +42,10 @@ data class ChatUiState(
     val errorMessage: String? = null,
     val selectedImageFiles: List<PlatformFile> = emptyList(),
     val selectedVideoFiles: List<PlatformFile> = emptyList(),
-    val selectedDocumentFiles: List<PlatformFile> = emptyList()
+    val selectedDocumentFiles: List<PlatformFile> = emptyList(),
+    val imageGenerationTask: ImageGenerationTask? = null,
+    val showImageDialog: Boolean = false,
+    val dialogImageUrl: String? = null
 )
 
 class ChatViewModel : ViewModel() {
@@ -208,6 +216,20 @@ class ChatViewModel : ViewModel() {
         )
     }
 
+    fun showImageDialog(imageUrl: String) {
+        _uiState.value = _uiState.value.copy(
+            showImageDialog = true,
+            dialogImageUrl = imageUrl
+        )
+    }
+
+    fun hideImageDialog() {
+        _uiState.value = _uiState.value.copy(
+            showImageDialog = false,
+            dialogImageUrl = null
+        )
+    }
+
     fun sendMessage() {
         val currentState = _uiState.value
 
@@ -224,6 +246,15 @@ class ChatViewModel : ViewModel() {
             return
         }
 
+        // 根据模型类型分发到不同的处理逻辑
+        when (currentState.selectedModel.type) {
+            AiModelType.IMAGE -> sendImageGenerationMessage()
+            else -> sendChatMessage()
+        }
+    }
+
+    private fun sendChatMessage() {
+        val currentState = _uiState.value
         val userMessage = ChatMessage(
             role = ChatMessageRole.USER,
             content = ChatMessageContent.TextContent(currentState.inputText)
@@ -355,6 +386,101 @@ class ChatViewModel : ViewModel() {
                 println("[${getCurrentTimestamp()}] Error message: ${e.message}")
 
                 _uiState.value = _uiState.value.copy(
+                    errorMessage = "错误: ${e.message}",
+                    isLoading = false
+                )
+            }
+        }
+    }
+
+    private fun sendImageGenerationMessage() {
+        val currentState = _uiState.value
+        val userMessage = ChatMessage(
+            role = ChatMessageRole.USER,
+            content = ChatMessageContent.TextContent(currentState.inputText)
+        )
+        val updatedMessages = currentState.messages + userMessage
+
+        // 添加一个空的 assistant 消息用于显示 loading
+        val loadingMessage = ChatMessage(
+            role = ChatMessageRole.ASSISTANT,
+            content = ChatMessageContent.TextContent("")
+        )
+
+        _uiState.value = currentState.copy(
+            messages = updatedMessages + loadingMessage,
+            inputText = "",
+            isLoading = true
+        )
+
+        viewModelScope.launch {
+            try {
+                println("[${getCurrentTimestamp()}] === Starting image generation request ===")
+                println("[${getCurrentTimestamp()}] API Key: ${currentState.apiKey.take(10)}...")
+                println("[${getCurrentTimestamp()}] Model: ${currentState.selectedModel.id}")
+                println("[${getCurrentTimestamp()}] Prompt: ${userMessage.content}")
+
+                val httpClient = createHttpClient()
+                val client = ArkClient(
+                    httpClient = httpClient,
+                    defaultApiKey = currentState.apiKey
+                )
+
+                val request = GenerateImagesRequest(
+                    model = currentState.selectedModel.id,
+                    prompt = when (val content = userMessage.content) {
+                        is ChatMessageContent.TextContent -> content.value
+                        else -> ""
+                    }
+                )
+
+                println("[${getCurrentTimestamp()}] Submitting image generation request...")
+                val response = client.generateImages(request)
+                println("[${getCurrentTimestamp()}] Response received: $response")
+
+                val imageUrl = response.data?.firstOrNull()?.url
+                val errorMsg = response.error?.message
+
+                if (imageUrl != null) {
+                    println("[${getCurrentTimestamp()}] Image URL: $imageUrl")
+                    // 更新最后一条消息为图片 URL
+                    val currentMessages = _uiState.value.messages.toMutableList()
+                    currentMessages[currentMessages.lastIndex] = ChatMessage(
+                        role = ChatMessageRole.ASSISTANT,
+                        content = ChatMessageContent.TextContent(imageUrl)
+                    )
+                    _uiState.value = _uiState.value.copy(
+                        messages = currentMessages,
+                        isLoading = false
+                    )
+                } else {
+                    println("[${getCurrentTimestamp()}] Image generation failed: $errorMsg")
+                    val currentMessages = _uiState.value.messages.toMutableList()
+                    currentMessages[currentMessages.lastIndex] = ChatMessage(
+                        role = ChatMessageRole.ASSISTANT,
+                        content = ChatMessageContent.TextContent("图片生成失败: ${errorMsg ?: "未知错误"}")
+                    )
+                    _uiState.value = _uiState.value.copy(
+                        messages = currentMessages,
+                        isLoading = false,
+                        errorMessage = "图片生成失败: ${errorMsg ?: "未知错误"}"
+                    )
+                }
+
+                httpClient.close()
+                println("[${getCurrentTimestamp()}] === Image generation request completed ===")
+            } catch (e: Exception) {
+                println("[${getCurrentTimestamp()}] === Error occurred ===")
+                println("[${getCurrentTimestamp()}] Error type: ${e::class.simpleName}")
+                println("[${getCurrentTimestamp()}] Error message: ${e.message}")
+
+                val currentMessages = _uiState.value.messages.toMutableList()
+                currentMessages[currentMessages.lastIndex] = ChatMessage(
+                    role = ChatMessageRole.ASSISTANT,
+                    content = ChatMessageContent.TextContent("错误: ${e.message}")
+                )
+                _uiState.value = _uiState.value.copy(
+                    messages = currentMessages,
                     errorMessage = "错误: ${e.message}",
                     isLoading = false
                 )

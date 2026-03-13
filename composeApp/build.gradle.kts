@@ -61,6 +61,7 @@ kotlin {
             implementation(libs.filekit.core)
             implementation(libs.filekit.dialogs.compose)
             implementation(compose.materialIconsExtended)
+            implementation(libs.coil.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -71,6 +72,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.ktor.client.logging)
             implementation(libs.slf4j.simple)
+            implementation(libs.coil.network.okhttp)
         }
     }
 }
