@@ -286,14 +286,12 @@ class ChatViewModel : ViewModel() {
 
     private fun sendChatMessage() {
         val currentState = _uiState.value
-        val userMessage = ChatMessage(
-            role = ChatMessageRole.USER,
-            content = ChatMessageContent.TextContent(currentState.inputText)
-        )
-        val updatedMessages = currentState.messages + userMessage
+
+        // 保存当前的输入文本和选中的图片文件
+        val inputText = currentState.inputText
+        val selectedImageFiles = currentState.selectedImageFiles
 
         _uiState.value = currentState.copy(
-            messages = updatedMessages,
             inputText = "",
             isLoading = true
         )
@@ -304,6 +302,121 @@ class ChatViewModel : ViewModel() {
                 println("[${getCurrentTimestamp()}] API Key: ${currentState.apiKey.take(10)}...")
                 println("[${getCurrentTimestamp()}] Model: ${currentState.selectedModel.id}")
                 println("[${getCurrentTimestamp()}] Stream enabled: ${currentState.streamEnabled}")
+                println("[${getCurrentTimestamp()}] Selected image files: ${selectedImageFiles.size}")
+
+                // 如果选择了图片文件，先上传图片
+                val imageUrls = mutableListOf<String>()
+                if (selectedImageFiles.isNotEmpty()) {
+                    // 检查AK/SK是否已配置
+                    if (currentState.accessKey.isBlank() || currentState.secretKey.isBlank()) {
+                        println("[${getCurrentTimestamp()}] AK/SK not configured")
+                        _uiState.value = _uiState.value.copy(
+                            errorMessage = "请先配置 Access Key 和 Secret Key",
+                            isLoading = false
+                        )
+                        return@launch
+                    }
+
+                    println("[${getCurrentTimestamp()}] Uploading ${selectedImageFiles.size} image file(s)...")
+                    _uiState.value = _uiState.value.copy(isUploading = true)
+
+                    try {
+                        val ossService = ObjectStorageService(
+                            ak = currentState.accessKey,
+                            sk = currentState.secretKey
+                        )
+
+                        // 上传所有选中的图片
+                        for ((index, imageFile) in selectedImageFiles.withIndex()) {
+                            println("[${getCurrentTimestamp()}] Uploading image ${index + 1}/${selectedImageFiles.size}")
+
+                            // 在后台线程中执行文件操作
+                            val filePath = withContext(Dispatchers.Default) {
+                                imageFile.saveToTempFile()
+                            }
+                            val fileName = imageFile.name
+
+                            println("[${getCurrentTimestamp()}] File name: $fileName, path: $filePath")
+
+                            val bucket = currentState.ossBucket
+                            val key = "${currentState.ossKeyPrefix}${TimeUtil.nowMillis()}_${index}_$fileName"
+
+                            // 在后台线程中执行上传操作
+                            val result = withContext(Dispatchers.Default) {
+                                ossService.putObject(bucket, key, filePath)
+                            }
+
+                            when (result) {
+                                is ApiResult.Success -> {
+                                    imageUrls.add(result.data)
+                                    println("[${getCurrentTimestamp()}] Image ${index + 1} uploaded successfully, URL: ${result.data}")
+                                }
+
+                                is ApiResult.Error -> {
+                                    println("[${getCurrentTimestamp()}] Image ${index + 1} upload failed: ${result.message}")
+                                    _uiState.value = _uiState.value.copy(isUploading = false)
+                                    throw Exception("图片 ${index + 1} 上传失败: ${result.message}")
+                                }
+                            }
+                        }
+
+                        // 清除已选择的图片
+                        _uiState.value = _uiState.value.copy(
+                            selectedImageFiles = emptyList(),
+                            isUploading = false
+                        )
+
+                        println("[${getCurrentTimestamp()}] All images uploaded successfully. Total: ${imageUrls.size}")
+                    } catch (e: Exception) {
+                        println("[${getCurrentTimestamp()}] Image upload failed: ${e.message}")
+                        _uiState.value = _uiState.value.copy(isUploading = false)
+                        throw Exception("图片上传失败: ${e.message}", e)
+                    }
+                }
+
+                // 构建用户消息
+                val userMessage = if (imageUrls.isNotEmpty()) {
+                    // 有图片时使用 MultiContent 格式
+                    val contentParts = mutableListOf<com.volcengine.ark.runtime.model.completion.chat.ContentPart>()
+
+                    // 添加所有图片
+                    imageUrls.forEach { imageUrl ->
+                        contentParts.add(
+                            com.volcengine.ark.runtime.model.completion.chat.ContentPart.ImageUrlPart(
+                                imageUrl = com.volcengine.ark.runtime.model.completion.chat.ImageUrl(url = imageUrl)
+                            )
+                        )
+                    }
+
+                    // 添加文本
+                    if (inputText.isNotBlank()) {
+                        contentParts.add(
+                            com.volcengine.ark.runtime.model.completion.chat.ContentPart.TextPart(
+                                text = inputText
+                            )
+                        )
+                    }
+
+                    println("[${getCurrentTimestamp()}] Creating MultiContent message with ${imageUrls.size} images and text: $inputText")
+
+                    ChatMessage(
+                        role = ChatMessageRole.USER,
+                        content = ChatMessageContent.MultiContent(contentParts)
+                    )
+                } else {
+                    // 没有图片时使用 TextContent 格式
+                    println("[${getCurrentTimestamp()}] Creating TextContent message: $inputText")
+                    ChatMessage(
+                        role = ChatMessageRole.USER,
+                        content = ChatMessageContent.TextContent(inputText)
+                    )
+                }
+
+                val updatedMessages = currentState.messages + userMessage
+
+                _uiState.value = _uiState.value.copy(
+                    messages = updatedMessages
+                )
 
                 val httpClient = createHttpClient()
 
@@ -419,7 +532,8 @@ class ChatViewModel : ViewModel() {
 
                 _uiState.value = _uiState.value.copy(
                     errorMessage = "错误: ${e.message}",
-                    isLoading = false
+                    isLoading = false,
+                    isUploading = false
                 )
             }
         }

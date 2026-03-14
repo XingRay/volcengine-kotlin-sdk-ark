@@ -69,6 +69,7 @@ object ChatMessageContentSerializer : KSerializer<ChatMessageContent> {
                 )
                 ChatMessageContent.MultiContent(items)
             }
+
             else -> throw IllegalArgumentException("不支持的 content 类型: ${element::class.simpleName}")
         }
     }
@@ -77,40 +78,96 @@ object ChatMessageContentSerializer : KSerializer<ChatMessageContent> {
 /**
  * 内容部分：密封类表示多内容数组中的单个项
  */
-@Serializable
+@Serializable(with = ContentPartSerializer::class)
 sealed class ContentPart {
-    abstract val type: String
-
     /**
      * 文本类型
      */
     @Serializable
-    @SerialName("text")
     data class TextPart(
-        @SerialName("type") override val type: String = "text",
-        @SerialName("text") val text: String
+        val text: String
     ) : ContentPart()
 
     /**
      * 图片 URL 类型
      */
     @Serializable
-    @SerialName("image_url")
     data class ImageUrlPart(
-        @SerialName("type") override val type: String = "image_url",
-        @SerialName("image_url") val imageUrl: ImageUrl
+        val imageUrl: ImageUrl
     ) : ContentPart()
 
     /**
      * 视频 URL 类型
      */
     @Serializable
-    @SerialName("video_url")
     data class VideoUrlPart(
-        @SerialName("type") override val type: String = "video_url",
-        @SerialName("video_url") val videoUrl: VideoUrl,
-        @SerialName("fps") val fps: Double? = null
+        val videoUrl: VideoUrl,
+        val fps: Double? = null
     ) : ContentPart()
+}
+
+/**
+ * ContentPart 自定义序列化器
+ */
+object ContentPartSerializer : KSerializer<ContentPart> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("ContentPart", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: ContentPart) {
+        require(encoder is JsonEncoder)
+        val jsonObject = when (value) {
+            is ContentPart.TextPart -> buildJsonObject {
+                put("type", "text")
+                put("text", value.text)
+            }
+
+            is ContentPart.ImageUrlPart -> buildJsonObject {
+                put("type", "image_url")
+                put("image_url", encoder.json.encodeToJsonElement(ImageUrl.serializer(), value.imageUrl))
+            }
+
+            is ContentPart.VideoUrlPart -> buildJsonObject {
+                put("type", "video_url")
+                put("video_url", encoder.json.encodeToJsonElement(VideoUrl.serializer(), value.videoUrl))
+                value.fps?.let { put("fps", it) }
+            }
+        }
+        encoder.encodeJsonElement(jsonObject)
+    }
+
+    override fun deserialize(decoder: Decoder): ContentPart {
+        require(decoder is JsonDecoder)
+        val element = decoder.decodeJsonElement()
+        require(element is JsonObject)
+
+        val type = element["type"]?.jsonPrimitive?.content
+            ?: throw IllegalArgumentException("Missing 'type' field in ContentPart")
+
+        return when (type) {
+            "text" -> {
+                val text = element["text"]?.jsonPrimitive?.content
+                    ?: throw IllegalArgumentException("Missing 'text' field in TextPart")
+                ContentPart.TextPart(text)
+            }
+
+            "image_url" -> {
+                val imageUrl = element["image_url"]?.let {
+                    decoder.json.decodeFromJsonElement(ImageUrl.serializer(), it)
+                } ?: throw IllegalArgumentException("Missing 'image_url' field in ImageUrlPart")
+                ContentPart.ImageUrlPart(imageUrl)
+            }
+
+            "video_url" -> {
+                val videoUrl = element["video_url"]?.let {
+                    decoder.json.decodeFromJsonElement(VideoUrl.serializer(), it)
+                } ?: throw IllegalArgumentException("Missing 'video_url' field in VideoUrlPart")
+                val fps = element["fps"]?.jsonPrimitive?.doubleOrNull
+                ContentPart.VideoUrlPart(videoUrl, fps)
+            }
+
+            else -> throw IllegalArgumentException("Unknown ContentPart type: $type")
+        }
+    }
 }
 
 /**

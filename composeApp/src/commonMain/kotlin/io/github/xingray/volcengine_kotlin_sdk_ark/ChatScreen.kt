@@ -831,25 +831,42 @@ fun MessageBubble(
         MaterialTheme.colorScheme.onSecondaryContainer
     }
 
-    val contentText = when (val content = message.content) {
-        is com.volcengine.ark.runtime.model.completion.chat.ChatMessageContent.TextContent -> content.value
+    // 解析消息内容
+    val textContent = StringBuilder()
+    val imageUrls = mutableListOf<String>()
+
+    when (val content = message.content) {
+        is com.volcengine.ark.runtime.model.completion.chat.ChatMessageContent.TextContent -> {
+            val text = content.value
+            // 检查是否是多个图片 URL（用换行符分隔）
+            val lines = text.split("\n").filter { it.isNotBlank() }
+            val allAreUrls = lines.all { it.startsWith("http://") || it.startsWith("https://") }
+
+            if (allAreUrls && lines.isNotEmpty() && !isUser) {
+                // 所有行都是 URL，作为图片显示
+                imageUrls.addAll(lines)
+            } else {
+                // 普通文本
+                textContent.append(text)
+            }
+        }
         is com.volcengine.ark.runtime.model.completion.chat.ChatMessageContent.MultiContent -> {
-            content.items.joinToString("\n") { part ->
+            content.items.forEach { part ->
                 when (part) {
-                    is com.volcengine.ark.runtime.model.completion.chat.ContentPart.TextPart -> part.text
-                    is com.volcengine.ark.runtime.model.completion.chat.ContentPart.ImageUrlPart -> "[Image: ${part.imageUrl.url}]"
-                    is com.volcengine.ark.runtime.model.completion.chat.ContentPart.VideoUrlPart -> "[Video: ${part.videoUrl.url}]"
+                    is com.volcengine.ark.runtime.model.completion.chat.ContentPart.TextPart -> {
+                        textContent.append(part.text)
+                    }
+                    is com.volcengine.ark.runtime.model.completion.chat.ContentPart.ImageUrlPart -> {
+                        imageUrls.add(part.imageUrl.url)
+                    }
+                    is com.volcengine.ark.runtime.model.completion.chat.ContentPart.VideoUrlPart -> {
+                        textContent.append("[Video: ${part.videoUrl.url}]")
+                    }
                 }
             }
         }
-
-        null -> ""
+        null -> {}
     }
-
-    // Check if content contains image URLs (split by newline)
-    val lines = contentText.split("\n").filter { it.isNotBlank() }
-    val imageUrls = lines.filter { it.startsWith("http://") || it.startsWith("https://") }
-    val hasImages = imageUrls.isNotEmpty() && !isUser
 
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -916,33 +933,38 @@ fun MessageBubble(
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
-                // Display main content
-                if (contentText.isNotEmpty()) {
-                    if (hasImages) {
-                        // Display multiple images in a grid
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            imageUrls.forEach { imageUrl ->
-                                AsyncImage(
-                                    model = imageUrl,
-                                    contentDescription = "Generated image",
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .heightIn(max = 300.dp)
-                                        .clickable { onImageClick(imageUrl) },
-                                    contentScale = ContentScale.Fit
-                                )
-                            }
+                // Display images if any
+                if (imageUrls.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        imageUrls.forEach { imageUrl ->
+                            AsyncImage(
+                                model = imageUrl,
+                                contentDescription = "Image",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(max = 300.dp)
+                                    .clickable { onImageClick(imageUrl) },
+                                contentScale = ContentScale.Fit
+                            )
                         }
-                    } else {
-                        Text(
-                            text = contentText,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = textColor
-                        )
                     }
+
+                    // Add spacing if there's also text
+                    if (textContent.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+
+                // Display text content if any
+                if (textContent.isNotEmpty()) {
+                    Text(
+                        text = textContent.toString(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = textColor
+                    )
                 }
             }
         }
