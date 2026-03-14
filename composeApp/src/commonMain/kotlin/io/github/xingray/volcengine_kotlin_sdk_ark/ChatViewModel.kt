@@ -40,6 +40,8 @@ data class ChatUiState(
     val deepThinkingEnabled: Boolean = false,
     val sequentialImageGenerationEnabled: Boolean = false,
     val maxImagesCount: Int = 4,
+    val imageDetailLevel: com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail = com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail.HIGH,
+    val videoFps: Float = 1.0f,
     val showAddMessageDialog: Boolean = false,
     val addMessageRole: ChatMessageRole? = null,
     val addMessageText: String = "",
@@ -112,6 +114,14 @@ class ChatViewModel : ViewModel() {
 
     fun updateMaxImagesCount(count: Int) {
         _uiState.value = _uiState.value.copy(maxImagesCount = count)
+    }
+
+    fun updateImageDetailLevel(detail: com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail) {
+        _uiState.value = _uiState.value.copy(imageDetailLevel = detail)
+    }
+
+    fun updateVideoFps(fps: Float) {
+        _uiState.value = _uiState.value.copy(videoFps = fps)
     }
 
     fun showAddMessageDialog(role: ChatMessageRole) {
@@ -287,9 +297,10 @@ class ChatViewModel : ViewModel() {
     private fun sendChatMessage() {
         val currentState = _uiState.value
 
-        // 保存当前的输入文本和选中的图片文件
+        // 保存当前的输入文本和选中的文件
         val inputText = currentState.inputText
         val selectedImageFiles = currentState.selectedImageFiles
+        val selectedVideoFiles = currentState.selectedVideoFiles
 
         _uiState.value = currentState.copy(
             inputText = "",
@@ -303,10 +314,12 @@ class ChatViewModel : ViewModel() {
                 println("[${getCurrentTimestamp()}] Model: ${currentState.selectedModel.id}")
                 println("[${getCurrentTimestamp()}] Stream enabled: ${currentState.streamEnabled}")
                 println("[${getCurrentTimestamp()}] Selected image files: ${selectedImageFiles.size}")
+                println("[${getCurrentTimestamp()}] Selected video files: ${selectedVideoFiles.size}")
 
-                // 如果选择了图片文件，先上传图片
-                val imageUrls = mutableListOf<String>()
-                if (selectedImageFiles.isNotEmpty()) {
+                // 检查是否需要上传文件
+                val needUpload = selectedImageFiles.isNotEmpty() || selectedVideoFiles.isNotEmpty()
+
+                if (needUpload) {
                     // 检查AK/SK是否已配置
                     if (currentState.accessKey.isBlank() || currentState.secretKey.isBlank()) {
                         println("[${getCurrentTimestamp()}] AK/SK not configured")
@@ -317,8 +330,18 @@ class ChatViewModel : ViewModel() {
                         return@launch
                     }
 
-                    println("[${getCurrentTimestamp()}] Uploading ${selectedImageFiles.size} image file(s)...")
                     _uiState.value = _uiState.value.copy(isUploading = true)
+
+                    val ossService = ObjectStorageService(
+                        ak = currentState.accessKey,
+                        sk = currentState.secretKey
+                    )
+                }
+
+                // 上传图片文件
+                val imageUrls = mutableListOf<String>()
+                if (selectedImageFiles.isNotEmpty()) {
+                    println("[${getCurrentTimestamp()}] Uploading ${selectedImageFiles.size} image file(s)...")
 
                     try {
                         val ossService = ObjectStorageService(
@@ -362,8 +385,7 @@ class ChatViewModel : ViewModel() {
 
                         // 清除已选择的图片
                         _uiState.value = _uiState.value.copy(
-                            selectedImageFiles = emptyList(),
-                            isUploading = false
+                            selectedImageFiles = emptyList()
                         )
 
                         println("[${getCurrentTimestamp()}] All images uploaded successfully. Total: ${imageUrls.size}")
@@ -374,16 +396,94 @@ class ChatViewModel : ViewModel() {
                     }
                 }
 
+                // 上传视频文件
+                val videoUrls = mutableListOf<String>()
+                if (selectedVideoFiles.isNotEmpty()) {
+                    println("[${getCurrentTimestamp()}] Uploading ${selectedVideoFiles.size} video file(s)...")
+
+                    try {
+                        val ossService = ObjectStorageService(
+                            ak = currentState.accessKey,
+                            sk = currentState.secretKey
+                        )
+
+                        // 上传所有选中的视频
+                        for ((index, videoFile) in selectedVideoFiles.withIndex()) {
+                            println("[${getCurrentTimestamp()}] Uploading video ${index + 1}/${selectedVideoFiles.size}")
+
+                            // 在后台线程中执行文件操作
+                            val filePath = withContext(Dispatchers.Default) {
+                                videoFile.saveToTempFile()
+                            }
+                            val fileName = videoFile.name
+
+                            println("[${getCurrentTimestamp()}] File name: $fileName, path: $filePath")
+
+                            val bucket = currentState.ossBucket
+                            val key = "${currentState.ossKeyPrefix}${TimeUtil.nowMillis()}_${index}_$fileName"
+
+                            // 在后台线程中执行上传操作
+                            val result = withContext(Dispatchers.Default) {
+                                ossService.putObject(bucket, key, filePath)
+                            }
+
+                            when (result) {
+                                is ApiResult.Success -> {
+                                    videoUrls.add(result.data)
+                                    println("[${getCurrentTimestamp()}] Video ${index + 1} uploaded successfully, URL: ${result.data}")
+                                }
+
+                                is ApiResult.Error -> {
+                                    println("[${getCurrentTimestamp()}] Video ${index + 1} upload failed: ${result.message}")
+                                    _uiState.value = _uiState.value.copy(isUploading = false)
+                                    throw Exception("视频 ${index + 1} 上传失败: ${result.message}")
+                                }
+                            }
+                        }
+
+                        // 清除已选择的视频
+                        _uiState.value = _uiState.value.copy(
+                            selectedVideoFiles = emptyList()
+                        )
+
+                        println("[${getCurrentTimestamp()}] All videos uploaded successfully. Total: ${videoUrls.size}")
+                    } catch (e: Exception) {
+                        println("[${getCurrentTimestamp()}] Video upload failed: ${e.message}")
+                        _uiState.value = _uiState.value.copy(isUploading = false)
+                        throw Exception("视频上传失败: ${e.message}", e)
+                    }
+                }
+
+                // 上传完成，关闭上传状态
+                if (needUpload) {
+                    _uiState.value = _uiState.value.copy(isUploading = false)
+                }
+
                 // 构建用户消息
-                val userMessage = if (imageUrls.isNotEmpty()) {
-                    // 有图片时使用 MultiContent 格式
+                val userMessage = if (imageUrls.isNotEmpty() || videoUrls.isNotEmpty()) {
+                    // 有图片或视频时使用 MultiContent 格式
                     val contentParts = mutableListOf<com.volcengine.ark.runtime.model.completion.chat.ContentPart>()
 
                     // 添加所有图片
                     imageUrls.forEach { imageUrl ->
                         contentParts.add(
                             com.volcengine.ark.runtime.model.completion.chat.ContentPart.ImageUrlPart(
-                                imageUrl = com.volcengine.ark.runtime.model.completion.chat.ImageUrl(url = imageUrl)
+                                imageUrl = com.volcengine.ark.runtime.model.completion.chat.ImageUrl(
+                                    url = imageUrl,
+                                    detail = currentState.imageDetailLevel
+                                )
+                            )
+                        )
+                    }
+
+                    // 添加所有视频
+                    videoUrls.forEach { videoUrl ->
+                        contentParts.add(
+                            com.volcengine.ark.runtime.model.completion.chat.ContentPart.VideoUrlPart(
+                                videoUrl = com.volcengine.ark.runtime.model.completion.chat.VideoUrl(
+                                    url = videoUrl,
+                                    fps = currentState.videoFps
+                                )
                             )
                         )
                     }
@@ -397,14 +497,14 @@ class ChatViewModel : ViewModel() {
                         )
                     }
 
-                    println("[${getCurrentTimestamp()}] Creating MultiContent message with ${imageUrls.size} images and text: $inputText")
+                    println("[${getCurrentTimestamp()}] Creating MultiContent message with ${imageUrls.size} images, ${videoUrls.size} videos and text: $inputText")
 
                     ChatMessage(
                         role = ChatMessageRole.USER,
                         content = ChatMessageContent.MultiContent(contentParts)
                     )
                 } else {
-                    // 没有图片时使用 TextContent 格式
+                    // 没有图片或视频时使用 TextContent 格式
                     println("[${getCurrentTimestamp()}] Creating TextContent message: $inputText")
                     ChatMessage(
                         role = ChatMessageRole.USER,

@@ -93,7 +93,7 @@ sealed class ContentPart {
      */
     @Serializable
     data class ImageUrlPart(
-        val imageUrl: ImageUrl
+        val imageUrl: ImageUrl,
     ) : ContentPart()
 
     /**
@@ -171,6 +171,25 @@ object ContentPartSerializer : KSerializer<ContentPart> {
 }
 
 /**
+ * messages.content.image_url.detail string
+ * 取值范围：low、high、xhigh。
+ * 理解图片的精细度、不同模型默认取值及对应的具体像素区间，参见控制图片理解的精细度。
+ */
+@Serializable
+enum class ImageUrlDetail(val value: String) {
+
+    @SerialName("low")
+    LOW("low"),
+
+    @SerialName("high")
+    HIGH("high"),
+
+    @SerialName("xhigh")
+    XHIGH("xhigh"),
+
+}
+
+/**
  * 图片 URL 数据模型
  */
 @Serializable
@@ -179,7 +198,7 @@ data class ImageUrl(
     val url: String,
 
     @SerialName("detail")
-    val detail: String? = null
+    val detail: ImageUrlDetail? = null,
 )
 
 /**
@@ -188,5 +207,15 @@ data class ImageUrl(
 @Serializable
 data class VideoUrl(
     @SerialName("url")
-    val url: String
+    val url: String,
+
+    /**
+     * 抽帧频率，详见视频理解。
+     * 取值范围：[0.2, 5]
+     * 取值越高，对视频中画面变化越敏感。
+     * 取值越低，对视频中画面变化越迟钝，但 token 花费少，速度更快。
+     */
+    @SerialName("fps")
+    val fps: Float?,
+
 )

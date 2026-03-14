@@ -111,6 +111,8 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                     deepThinkingEnabled = uiState.deepThinkingEnabled,
                     sequentialImageGenerationEnabled = uiState.sequentialImageGenerationEnabled,
                     maxImagesCount = uiState.maxImagesCount,
+                    imageDetailLevel = uiState.imageDetailLevel,
+                    videoFps = uiState.videoFps,
                     onTemperatureChange = viewModel::updateTemperature,
                     onTopPChange = viewModel::updateTopP,
                     onMaxTokensChange = viewModel::updateMaxTokens,
@@ -118,6 +120,8 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                     onDeepThinkingEnabledChange = viewModel::updateDeepThinkingEnabled,
                     onSequentialImageGenerationEnabledChange = viewModel::updateSequentialImageGenerationEnabled,
                     onMaxImagesCountChange = viewModel::updateMaxImagesCount,
+                    onImageDetailLevelChange = viewModel::updateImageDetailLevel,
+                    onVideoFpsChange = viewModel::updateVideoFps,
                     onAddSystemMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.SYSTEM) },
                     onAddAssistantMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.ASSISTANT) },
                     onAddUserMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.USER) },
@@ -280,6 +284,8 @@ fun ModelParametersPanel(
     deepThinkingEnabled: Boolean,
     sequentialImageGenerationEnabled: Boolean,
     maxImagesCount: Int,
+    imageDetailLevel: com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail,
+    videoFps: Float,
     onTemperatureChange: (Double) -> Unit,
     onTopPChange: (Double) -> Unit,
     onMaxTokensChange: (Int) -> Unit,
@@ -287,6 +293,8 @@ fun ModelParametersPanel(
     onDeepThinkingEnabledChange: (Boolean) -> Unit,
     onSequentialImageGenerationEnabledChange: (Boolean) -> Unit,
     onMaxImagesCountChange: (Int) -> Unit,
+    onImageDetailLevelChange: (com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail) -> Unit,
+    onVideoFpsChange: (Float) -> Unit,
     onAddSystemMessage: () -> Unit,
     onAddAssistantMessage: () -> Unit,
     onAddUserMessage: () -> Unit,
@@ -361,11 +369,15 @@ fun ModelParametersPanel(
                         maxTokens = maxTokens,
                         streamEnabled = streamEnabled,
                         deepThinkingEnabled = deepThinkingEnabled,
+                        imageDetailLevel = imageDetailLevel,
+                        videoFps = videoFps,
                         onTemperatureChange = onTemperatureChange,
                         onTopPChange = onTopPChange,
                         onMaxTokensChange = onMaxTokensChange,
                         onStreamEnabledChange = onStreamEnabledChange,
-                        onDeepThinkingEnabledChange = onDeepThinkingEnabledChange
+                        onDeepThinkingEnabledChange = onDeepThinkingEnabledChange,
+                        onImageDetailLevelChange = onImageDetailLevelChange,
+                        onVideoFpsChange = onVideoFpsChange
                     )
                 }
                 AiModelType.IMAGE -> {
@@ -403,6 +415,8 @@ fun ParametersPanel(
     deepThinkingEnabled: Boolean,
     sequentialImageGenerationEnabled: Boolean,
     maxImagesCount: Int,
+    imageDetailLevel: com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail,
+    videoFps: Float,
     onApiKeyChange: (String) -> Unit,
     onAccessKeyChange: (String) -> Unit,
     onSecretKeyChange: (String) -> Unit,
@@ -416,6 +430,8 @@ fun ParametersPanel(
     onDeepThinkingEnabledChange: (Boolean) -> Unit,
     onSequentialImageGenerationEnabledChange: (Boolean) -> Unit,
     onMaxImagesCountChange: (Int) -> Unit,
+    onImageDetailLevelChange: (com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail) -> Unit,
+    onVideoFpsChange: (Float) -> Unit,
     onAddSystemMessage: () -> Unit,
     onAddAssistantMessage: () -> Unit,
     onAddUserMessage: () -> Unit,
@@ -579,11 +595,15 @@ fun ParametersPanel(
                         maxTokens = maxTokens,
                         streamEnabled = streamEnabled,
                         deepThinkingEnabled = deepThinkingEnabled,
+                        imageDetailLevel = imageDetailLevel,
+                        videoFps = videoFps,
                         onTemperatureChange = onTemperatureChange,
                         onTopPChange = onTopPChange,
                         onMaxTokensChange = onMaxTokensChange,
                         onStreamEnabledChange = onStreamEnabledChange,
-                        onDeepThinkingEnabledChange = onDeepThinkingEnabledChange
+                        onDeepThinkingEnabledChange = onDeepThinkingEnabledChange,
+                        onImageDetailLevelChange = onImageDetailLevelChange,
+                        onVideoFpsChange = onVideoFpsChange
                     )
                 }
                 AiModelType.IMAGE -> {
@@ -1120,11 +1140,15 @@ fun TextModelParamsPanel(
     maxTokens: Int,
     streamEnabled: Boolean,
     deepThinkingEnabled: Boolean,
+    imageDetailLevel: com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail,
+    videoFps: Float,
     onTemperatureChange: (Double) -> Unit,
     onTopPChange: (Double) -> Unit,
     onMaxTokensChange: (Int) -> Unit,
     onStreamEnabledChange: (Boolean) -> Unit,
-    onDeepThinkingEnabledChange: (Boolean) -> Unit
+    onDeepThinkingEnabledChange: (Boolean) -> Unit,
+    onImageDetailLevelChange: (com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail) -> Unit,
+    onVideoFpsChange: (Float) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -1179,6 +1203,83 @@ fun TextModelParamsPanel(
             Switch(
                 checked = deepThinkingEnabled,
                 onCheckedChange = onDeepThinkingEnabledChange
+            )
+        }
+
+        // 图片理解精细度
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "图片理解精细度",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = { onImageDetailLevelChange(com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail.LOW) },
+                    modifier = Modifier.weight(1f),
+                    colors = if (imageDetailLevel == com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail.LOW) {
+                        ButtonDefaults.buttonColors()
+                    } else {
+                        ButtonDefaults.outlinedButtonColors()
+                    }
+                ) {
+                    Text("低")
+                }
+                Button(
+                    onClick = { onImageDetailLevelChange(com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail.HIGH) },
+                    modifier = Modifier.weight(1f),
+                    colors = if (imageDetailLevel == com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail.HIGH) {
+                        ButtonDefaults.buttonColors()
+                    } else {
+                        ButtonDefaults.outlinedButtonColors()
+                    }
+                ) {
+                    Text("高")
+                }
+                Button(
+                    onClick = { onImageDetailLevelChange(com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail.XHIGH) },
+                    modifier = Modifier.weight(1f),
+                    colors = if (imageDetailLevel == com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail.XHIGH) {
+                        ButtonDefaults.buttonColors()
+                    } else {
+                        ButtonDefaults.outlinedButtonColors()
+                    }
+                ) {
+                    Text("极高")
+                }
+            }
+        }
+
+        // 视频理解FPS
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "视频理解FPS",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = String.format("%.1f", videoFps),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            Slider(
+                value = videoFps,
+                onValueChange = onVideoFpsChange,
+                valueRange = 0.2f..5f,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
