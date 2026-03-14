@@ -7,50 +7,54 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class GenerateImagesRequest(
     @SerialName("model")
-    var model: String? = null,
+    val model: String? = null,
 
     @SerialName("prompt")
-    var prompt: String? = null,
+    val prompt: String? = null,
 
     @SerialName("image")
     @Serializable(with = ImageListSerializer::class) // 替换自定义反序列化器
-    var image: List<String>? = null,
+    val image: List<String>? = null,
 
     @SerialName("response_format")
-    var responseFormat: String? = null,
+    val responseFormat: String? = null,
 
     @SerialName("seed")
-    var seed: Int? = null,
+    val seed: Int? = null,
 
     @SerialName("guidance_scale")
-    var guidanceScale: Double? = null,
+    val guidanceScale: Double? = null,
 
     @SerialName("size")
-    var size: String? = null,
+    val size: String? = null,
 
     @SerialName("watermark")
-    var watermark: Boolean? = null,
+    val watermark: Boolean? = null,
 
     @SerialName("optimize_prompt")
-    var optimizePrompt: Boolean? = null,
+    val optimizePrompt: Boolean? = null,
 
     @SerialName("optimize_prompt_options")
-    var optimizePromptOptions: OptimizePromptOptions? = null,
+    val optimizePromptOptions: OptimizePromptOptions? = null,
 
+    /**
+     * auto：自动判断模式，模型会根据用户提供的提示词自主判断是否返回组图以及组图包含的图片数量。
+     * disabled：关闭组图功能，模型只会生成一张图。
+     */
     @SerialName("sequential_image_generation")
-    var sequentialImageGeneration: String? = null,
+    val sequentialImageGeneration: SequentialImageGeneration? = null,
 
     @SerialName("sequential_image_generation_options")
-    var sequentialImageGenerationOptions: SequentialImageGenerationOptions? = null,
+    val sequentialImageGenerationOptions: SequentialImageGenerationOptions? = null,
 
     @SerialName("stream")
-    var stream: Boolean? = null,
+    val stream: Boolean? = null,
 
     @SerialName("tools")
-    var tools: List<ContentGenerationTool>? = null,
+    val tools: List<ContentGenerationTool>? = null,
 
     @SerialName("output_format")
-    var outputFormat: String? = null
+    val outputFormat: String? = null
 ) {
 
     companion object {
@@ -65,7 +69,7 @@ data class GenerateImagesRequest(
             private var watermark: Boolean? = null
             private var optimizePrompt: Boolean? = null
             private var optimizePromptOptions: OptimizePromptOptions? = null
-            private var sequentialImageGeneration: String? = null
+            private var sequentialImageGeneration: SequentialImageGeneration? = null
             private var sequentialImageGenerationOptions: SequentialImageGenerationOptions? = null
             private var stream: Boolean? = null
             private var tools: List<ContentGenerationTool>? = null
@@ -90,7 +94,7 @@ data class GenerateImagesRequest(
                 this.optimizePromptOptions = optimizePromptOptions
             }
 
-            fun sequentialImageGeneration(sequentialImageGeneration: String?) = apply {
+            fun sequentialImageGeneration(sequentialImageGeneration: SequentialImageGeneration?) = apply {
                 this.sequentialImageGeneration = sequentialImageGeneration
             }
 

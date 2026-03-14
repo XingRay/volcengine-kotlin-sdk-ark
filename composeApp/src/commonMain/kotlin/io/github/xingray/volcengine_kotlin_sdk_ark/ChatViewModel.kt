@@ -15,10 +15,12 @@ import io.github.xingray.volcengine_kotlin_sdk_ark.model.AiModelType
 import io.github.xingray.volcengine_kotlin_sdk_ark.model.ImageGenerationTask
 import io.github.xingray.volcengine_kotlin_sdk_ark.oss.ObjectStorageService
 import io.github.xingray.volcengine_kotlin_sdk_ark.util.TimeUtil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class ChatUiState(
     val messages: List<ChatMessage> = emptyList(),
@@ -36,6 +38,8 @@ data class ChatUiState(
     val maxTokens: Int = 2048,
     val streamEnabled: Boolean = false,
     val deepThinkingEnabled: Boolean = false,
+    val sequentialImageGenerationEnabled: Boolean = false,
+    val maxImagesCount: Int = 4,
     val showAddMessageDialog: Boolean = false,
     val addMessageRole: ChatMessageRole? = null,
     val addMessageText: String = "",
@@ -100,6 +104,14 @@ class ChatViewModel : ViewModel() {
 
     fun updateDeepThinkingEnabled(enabled: Boolean) {
         _uiState.value = _uiState.value.copy(deepThinkingEnabled = enabled)
+    }
+
+    fun updateSequentialImageGenerationEnabled(enabled: Boolean) {
+        _uiState.value = _uiState.value.copy(sequentialImageGenerationEnabled = enabled)
+    }
+
+    fun updateMaxImagesCount(count: Int) {
+        _uiState.value = _uiState.value.copy(maxImagesCount = count)
     }
 
     fun showAddMessageDialog(role: ChatMessageRole) {
@@ -447,7 +459,7 @@ class ChatViewModel : ViewModel() {
                 )
 
                 // 如果选择了图片文件，先上传图片
-                var imageUrl: String? = null
+                val imageUrls = mutableListOf<String>()
                 if (currentState.selectedImageFiles.isNotEmpty()) {
                     // 检查AK/SK是否已配置
                     if (currentState.accessKey.isBlank() || currentState.secretKey.isBlank()) {
@@ -459,44 +471,56 @@ class ChatViewModel : ViewModel() {
                         return@launch
                     }
 
-                    println("[${getCurrentTimestamp()}] Uploading image file...")
+                    println("[${getCurrentTimestamp()}] Uploading ${currentState.selectedImageFiles.size} image file(s)...")
                     _uiState.value = _uiState.value.copy(isUploading = true)
 
                     try {
-                        val imageFile = currentState.selectedImageFiles.first()
-                        val filePath = imageFile.saveToTempFile()
-                        val fileName = imageFile.name
-
-                        println("[${getCurrentTimestamp()}] File name: $fileName, path: $filePath")
-
                         val ossService = ObjectStorageService(
                             ak = currentState.accessKey,
                             sk = currentState.secretKey
                         )
 
-                        val bucket = currentState.ossBucket
-                        val key = "${currentState.ossKeyPrefix}${TimeUtil.nowMillis()}_$fileName"
+                        // 上传所有选中的图片
+                        for ((index, imageFile) in currentState.selectedImageFiles.withIndex()) {
+                            println("[${getCurrentTimestamp()}] Uploading image ${index + 1}/${currentState.selectedImageFiles.size}")
 
-                        val result = ossService.putObject(bucket, key, filePath)
+                            // 在后台线程中执行文件操作
+                            val filePath = withContext(Dispatchers.Default) {
+                                imageFile.saveToTempFile()
+                            }
+                            val fileName = imageFile.name
 
-                        when (result) {
-                            is ApiResult.Success -> {
-                                imageUrl = result.data
-                                println("[${getCurrentTimestamp()}] Image uploaded successfully, URL: $imageUrl")
+                            println("[${getCurrentTimestamp()}] File name: $fileName, path: $filePath")
 
-                                // 清除已选择的图片
-                                _uiState.value = _uiState.value.copy(
-                                    selectedImageFiles = emptyList(),
-                                    isUploading = false
-                                )
+                            val bucket = currentState.ossBucket
+                            val key = "${currentState.ossKeyPrefix}${TimeUtil.nowMillis()}_${index}_$fileName"
+
+                            // 在后台线程中执行上传操作
+                            val result = withContext(Dispatchers.Default) {
+                                ossService.putObject(bucket, key, filePath)
                             }
 
-                            is ApiResult.Error -> {
-                                println("[${getCurrentTimestamp()}] Image upload failed: ${result.message}")
-                                _uiState.value = _uiState.value.copy(isUploading = false)
-                                throw Exception("图片上传失败: ${result.message}")
+                            when (result) {
+                                is ApiResult.Success -> {
+                                    imageUrls.add(result.data)
+                                    println("[${getCurrentTimestamp()}] Image ${index + 1} uploaded successfully, URL: ${result.data}")
+                                }
+
+                                is ApiResult.Error -> {
+                                    println("[${getCurrentTimestamp()}] Image ${index + 1} upload failed: ${result.message}")
+                                    _uiState.value = _uiState.value.copy(isUploading = false)
+                                    throw Exception("图片 ${index + 1} 上传失败: ${result.message}")
+                                }
                             }
                         }
+
+                        // 清除已选择的图片
+                        _uiState.value = _uiState.value.copy(
+                            selectedImageFiles = emptyList(),
+                            isUploading = false
+                        )
+
+                        println("[${getCurrentTimestamp()}] All images uploaded successfully. Total: ${imageUrls.size}")
                     } catch (e: Exception) {
                         println("[${getCurrentTimestamp()}] Image upload failed: ${e.message}")
                         _uiState.value = _uiState.value.copy(isUploading = false)
@@ -510,24 +534,39 @@ class ChatViewModel : ViewModel() {
                         is ChatMessageContent.TextContent -> content.value
                         else -> ""
                     },
-                    image = imageUrl?.let { listOf(it) },
+                    image = imageUrls.takeIf { it.isNotEmpty() },
                     watermark = false,
+                    sequentialImageGeneration = if (currentState.sequentialImageGenerationEnabled) {
+                        com.volcengine.ark.runtime.model.images.generation.SequentialImageGeneration.AUTO
+                    } else {
+                        com.volcengine.ark.runtime.model.images.generation.SequentialImageGeneration.DISABLED
+                    },
+                    sequentialImageGenerationOptions = if (currentState.sequentialImageGenerationEnabled) {
+                        com.volcengine.ark.runtime.model.images.generation.SequentialImageGenerationOptions(
+                            maxImages = currentState.maxImagesCount
+                        )
+                    } else {
+                        null
+                    }
                 )
 
                 println("[${getCurrentTimestamp()}] Submitting image generation request...")
                 val response = client.generateImages(request)
                 println("[${getCurrentTimestamp()}] Response received: $response")
 
-                val generatedImageUrl = response.data?.firstOrNull()?.url
+                val generatedImages = response.data
                 val errorMsg = response.error?.message
 
-                if (generatedImageUrl != null) {
-                    println("[${getCurrentTimestamp()}] Image URL: $generatedImageUrl")
-                    // 更新最后一条消息为图片 URL
+                if (!generatedImages.isNullOrEmpty()) {
+                    println("[${getCurrentTimestamp()}] Generated ${generatedImages.size} image(s)")
+                    // 将所有生成的图片 URL 拼接成一条消息
+                    val imageUrlsText = generatedImages.mapNotNull { it?.url }.joinToString("\n")
+
+                    // 更新最后一条消息为图片 URLs
                     val currentMessages = _uiState.value.messages.toMutableList()
                     currentMessages[currentMessages.lastIndex] = ChatMessage(
                         role = ChatMessageRole.ASSISTANT,
-                        content = ChatMessageContent.TextContent(generatedImageUrl)
+                        content = ChatMessageContent.TextContent(imageUrlsText)
                     )
                     _uiState.value = _uiState.value.copy(
                         messages = currentMessages,

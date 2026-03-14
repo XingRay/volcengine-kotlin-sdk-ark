@@ -109,11 +109,15 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                     maxTokens = uiState.maxTokens,
                     streamEnabled = uiState.streamEnabled,
                     deepThinkingEnabled = uiState.deepThinkingEnabled,
+                    sequentialImageGenerationEnabled = uiState.sequentialImageGenerationEnabled,
+                    maxImagesCount = uiState.maxImagesCount,
                     onTemperatureChange = viewModel::updateTemperature,
                     onTopPChange = viewModel::updateTopP,
                     onMaxTokensChange = viewModel::updateMaxTokens,
                     onStreamEnabledChange = viewModel::updateStreamEnabled,
                     onDeepThinkingEnabledChange = viewModel::updateDeepThinkingEnabled,
+                    onSequentialImageGenerationEnabledChange = viewModel::updateSequentialImageGenerationEnabled,
+                    onMaxImagesCountChange = viewModel::updateMaxImagesCount,
                     onAddSystemMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.SYSTEM) },
                     onAddAssistantMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.ASSISTANT) },
                     onAddUserMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.USER) },
@@ -274,11 +278,15 @@ fun ModelParametersPanel(
     maxTokens: Int,
     streamEnabled: Boolean,
     deepThinkingEnabled: Boolean,
+    sequentialImageGenerationEnabled: Boolean,
+    maxImagesCount: Int,
     onTemperatureChange: (Double) -> Unit,
     onTopPChange: (Double) -> Unit,
     onMaxTokensChange: (Int) -> Unit,
     onStreamEnabledChange: (Boolean) -> Unit,
     onDeepThinkingEnabledChange: (Boolean) -> Unit,
+    onSequentialImageGenerationEnabledChange: (Boolean) -> Unit,
+    onMaxImagesCountChange: (Int) -> Unit,
     onAddSystemMessage: () -> Unit,
     onAddAssistantMessage: () -> Unit,
     onAddUserMessage: () -> Unit,
@@ -361,7 +369,12 @@ fun ModelParametersPanel(
                     )
                 }
                 AiModelType.IMAGE -> {
-                    ImageModelParamsPanel()
+                    ImageModelParamsPanel(
+                        sequentialImageGenerationEnabled = sequentialImageGenerationEnabled,
+                        maxImagesCount = maxImagesCount,
+                        onSequentialImageGenerationEnabledChange = onSequentialImageGenerationEnabledChange,
+                        onMaxImagesCountChange = onMaxImagesCountChange
+                    )
                 }
                 AiModelType.VIDEO -> {
                     VideoModelParamsPanel()
@@ -388,6 +401,8 @@ fun ParametersPanel(
     maxTokens: Int,
     streamEnabled: Boolean,
     deepThinkingEnabled: Boolean,
+    sequentialImageGenerationEnabled: Boolean,
+    maxImagesCount: Int,
     onApiKeyChange: (String) -> Unit,
     onAccessKeyChange: (String) -> Unit,
     onSecretKeyChange: (String) -> Unit,
@@ -399,6 +414,8 @@ fun ParametersPanel(
     onMaxTokensChange: (Int) -> Unit,
     onStreamEnabledChange: (Boolean) -> Unit,
     onDeepThinkingEnabledChange: (Boolean) -> Unit,
+    onSequentialImageGenerationEnabledChange: (Boolean) -> Unit,
+    onMaxImagesCountChange: (Int) -> Unit,
     onAddSystemMessage: () -> Unit,
     onAddAssistantMessage: () -> Unit,
     onAddUserMessage: () -> Unit,
@@ -570,7 +587,12 @@ fun ParametersPanel(
                     )
                 }
                 AiModelType.IMAGE -> {
-                    ImageModelParamsPanel()
+                    ImageModelParamsPanel(
+                        sequentialImageGenerationEnabled = sequentialImageGenerationEnabled,
+                        maxImagesCount = maxImagesCount,
+                        onSequentialImageGenerationEnabledChange = onSequentialImageGenerationEnabledChange,
+                        onMaxImagesCountChange = onMaxImagesCountChange
+                    )
                 }
                 AiModelType.VIDEO -> {
                     VideoModelParamsPanel()
@@ -824,8 +846,10 @@ fun MessageBubble(
         null -> ""
     }
 
-    // Check if content is an image URL
-    val isImageUrl = contentText.startsWith("http://") || contentText.startsWith("https://")
+    // Check if content contains image URLs (split by newline)
+    val lines = contentText.split("\n").filter { it.isNotBlank() }
+    val imageUrls = lines.filter { it.startsWith("http://") || it.startsWith("https://") }
+    val hasImages = imageUrls.isNotEmpty() && !isUser
 
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -894,23 +918,24 @@ fun MessageBubble(
 
                 // Display main content
                 if (contentText.isNotEmpty()) {
-                    if (isImageUrl && !isUser) {
-                        // Display image with AsyncImage
-                        AsyncImage(
-                            model = contentText,
-                            contentDescription = "Generated image",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(max = 300.dp)
-                                .clickable { onImageClick(contentText) },
-                            contentScale = ContentScale.Fit
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = contentText,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = textColor.copy(alpha = 0.7f)
-                        )
+                    if (hasImages) {
+                        // Display multiple images in a grid
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            imageUrls.forEach { imageUrl ->
+                                AsyncImage(
+                                    model = imageUrl,
+                                    contentDescription = "Generated image",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .heightIn(max = 300.dp)
+                                        .clickable { onImageClick(imageUrl) },
+                                    contentScale = ContentScale.Fit
+                                )
+                            }
+                        }
                     } else {
                         Text(
                             text = contentText,
@@ -1138,12 +1163,71 @@ fun TextModelParamsPanel(
 }
 
 @Composable
-fun ImageModelParamsPanel() {
-    Text(
-        text = "图片生成模型参数（待实现）",
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
+fun ImageModelParamsPanel(
+    sequentialImageGenerationEnabled: Boolean,
+    maxImagesCount: Int,
+    onSequentialImageGenerationEnabledChange: (Boolean) -> Unit,
+    onMaxImagesCountChange: (Int) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // 生成组图开关
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "生成组图",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Switch(
+                checked = sequentialImageGenerationEnabled,
+                onCheckedChange = onSequentialImageGenerationEnabledChange
+            )
+        }
+
+        // 组图数量滑块
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "组图数量",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (sequentialImageGenerationEnabled) {
+                        MaterialTheme.colorScheme.onSurface
+                    } else {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                    }
+                )
+                Text(
+                    text = maxImagesCount.toString(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (sequentialImageGenerationEnabled) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                    }
+                )
+            }
+            Slider(
+                value = maxImagesCount.toFloat(),
+                onValueChange = { onMaxImagesCountChange(it.toInt()) },
+                valueRange = 1f..15f,
+                steps = 13,
+                enabled = sequentialImageGenerationEnabled,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
 }
 
 @Composable
@@ -1206,31 +1290,83 @@ fun ImageDialog(
     imageUrl: String,
     onDismiss: () -> Unit
 ) {
+    val clipboardManager = androidx.compose.ui.platform.LocalClipboardManager.current
+
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(16.dp),
             color = MaterialTheme.colorScheme.surface,
             modifier = Modifier.fillMaxSize(0.9f)
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = "Full size image",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit
-                )
-
-                IconButton(
-                    onClick = onDismiss,
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Image display area
+                Box(
                     modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(16.dp)
+                        .weight(1f)
+                        .fillMaxWidth()
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
-                        tint = MaterialTheme.colorScheme.onSurface
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = "Full size image",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Fit
                     )
+
+                    // Close button at top right
+                    IconButton(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                                shape = RoundedCornerShape(50)
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+
+                // URL display and copy area at bottom
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = imageUrl,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = {
+                                // Copy to clipboard
+                                clipboardManager.setText(
+                                    androidx.compose.ui.text.AnnotatedString(imageUrl)
+                                )
+                            },
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = "复制",
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        }
+                    }
                 }
             }
         }
