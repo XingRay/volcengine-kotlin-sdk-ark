@@ -2,6 +2,7 @@ package io.github.xingray.volcengine_kotlin_sdk_ark
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import kotlin.system.exitProcess
 
 fun main() {
     // 设置控制台输出编码为 UTF-8
@@ -15,7 +16,10 @@ fun main() {
 
     application {
         Window(
-            onCloseRequest = ::exitApplication,
+            onCloseRequest = {
+                exitApplication()
+                exitProcess(0)
+            },
             title = "volcengine_kotlin_sdk_ark",
         ) {
             App()

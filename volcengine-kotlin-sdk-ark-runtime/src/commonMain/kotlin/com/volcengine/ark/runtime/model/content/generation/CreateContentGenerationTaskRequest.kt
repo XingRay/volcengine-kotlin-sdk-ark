@@ -167,7 +167,7 @@ data class CreateContentGenerationTaskRequest(
     @Serializable
     data class Content(
         @SerialName("type")
-        val type: String? = null,
+        val type: GenerationRequestContentType? = null,
 
         @SerialName("text")
         val text: String? = null,
@@ -176,59 +176,43 @@ data class CreateContentGenerationTaskRequest(
         val imageUrl: ImageUrl? = null,
 
         @SerialName("role")
-        val role: String? = null,
+        val role: ImageRole? = null,
 
         @SerialName("draft_task")
         val draftTask: DraftTask? = null
     ) {
         companion object {
-
-            class Builder {
-                private var type: String? = null
-                private var text: String? = null
-                private var imageUrl: ImageUrl? = null
-                private var role: String? = null
-                private var draftTask: DraftTask? = null
-
-                fun type(type: String?): Builder {
-                    this.type = type
-                    return this
-                }
-
-                fun text(text: String?): Builder {
-                    this.text = text
-                    return this
-                }
-
-                fun imageUrl(imageUrl: ImageUrl?): Builder {
-                    this.imageUrl = imageUrl
-                    return this
-                }
-
-                fun role(role: String?): Builder {
-                    this.role = role
-                    return this
-                }
-
-                fun draftTask(draftTask: DraftTask?): Builder {
-                    this.draftTask = draftTask
-                    return this
-                }
-
-                fun build(): Content {
-                    return Content(
-                        type = type,
-                        text = text,
-                        imageUrl = imageUrl,
-                        role = role,
-                        draftTask = draftTask,
-                    )
-                }
+            fun text(prompt: String): Content {
+                return Content(
+                    type = GenerationRequestContentType.TEXT,
+                    text = prompt,
+                )
             }
 
-            fun builder(): Builder {
-                return Builder()
+            fun firstFrame(url: String): Content {
+                return Content(
+                    type = GenerationRequestContentType.IMAGE_URL,
+                    imageUrl = ImageUrl(url),
+                    role = ImageRole.FIRST_FRAME,
+                )
             }
+
+            fun lastFrame(url: String): Content {
+                return Content(
+                    type = GenerationRequestContentType.IMAGE_URL,
+                    imageUrl = ImageUrl(url),
+                    role = ImageRole.LAST_FRAME,
+                )
+            }
+
+            fun referenceImage(url: String): Content {
+                return Content(
+                    type = GenerationRequestContentType.IMAGE_URL,
+                    imageUrl = ImageUrl(url),
+                    role = ImageRole.REFERENCE_IMAGE,
+                )
+            }
+
         }
 
     }

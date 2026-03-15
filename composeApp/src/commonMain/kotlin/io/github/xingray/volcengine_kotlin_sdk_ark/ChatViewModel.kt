@@ -8,7 +8,6 @@ import com.volcengine.ark.runtime.model.completion.chat.ChatMessageContent
 import com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole
 import com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest
 import com.volcengine.ark.runtime.model.content.generation.GetContentGenerationTaskRequest
-import com.volcengine.ark.runtime.model.content.generation.ImageUrl
 import com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest
 import com.volcengine.ark.runtime.service.ArkClient
 import io.github.vinceglb.filekit.PlatformFile
@@ -969,12 +968,7 @@ class ChatViewModel : ViewModel() {
                     else -> ""
                 }
                 if (promptText.isNotEmpty()) {
-                    contentList.add(
-                        CreateContentGenerationTaskRequest.Content(
-                            type = "text",
-                            text = promptText,
-                        )
-                    )
+                    contentList.add(CreateContentGenerationTaskRequest.Content.text(promptText))
                 }
 
                 // 根据生成模式添加图片内容
@@ -982,46 +976,22 @@ class ChatViewModel : ViewModel() {
                     VideoGenerationMode.FIRST_FRAME -> {
                         // 首帧模式：需要1张图片
                         if (imageUrls.isNotEmpty()) {
-                            contentList.add(
-                                CreateContentGenerationTaskRequest.Content(
-                                    type = "image_url",
-                                    imageUrl = ImageUrl(url = imageUrls[0]),
-                                    role = "first_frame"
-                                )
-                            )
+                            contentList.add(CreateContentGenerationTaskRequest.Content.firstFrame(imageUrls[0]))
                         }
                     }
 
                     VideoGenerationMode.FIRST_LAST_FRAME -> {
                         // 首尾帧模式：需要2张图片
                         if (imageUrls.size >= 2) {
-                            contentList.add(
-                                CreateContentGenerationTaskRequest.Content(
-                                    type = "image_url",
-                                    imageUrl = ImageUrl(url = imageUrls[0]),
-                                    role = "first_frame"
-                                )
-                            )
-                            contentList.add(
-                                CreateContentGenerationTaskRequest.Content(
-                                    type = "image_url",
-                                    imageUrl = ImageUrl(url = imageUrls[1]),
-                                    role = "last_frame"
-                                )
-                            )
+                            contentList.add(CreateContentGenerationTaskRequest.Content.firstFrame(imageUrls[0]))
+                            contentList.add(CreateContentGenerationTaskRequest.Content.lastFrame(imageUrls[1]))
                         }
                     }
 
                     VideoGenerationMode.REFERENCE_IMAGE -> {
                         // 参考图模式：1-4张图片
                         for (imageUrl in imageUrls.take(4)) {
-                            contentList.add(
-                                CreateContentGenerationTaskRequest.Content(
-                                    type = "image_url",
-                                    imageUrl = ImageUrl(url = imageUrl),
-                                    role = "reference_image"
-                                )
-                            )
+                            contentList.add(CreateContentGenerationTaskRequest.Content.referenceImage(imageUrl))
                         }
                     }
 
