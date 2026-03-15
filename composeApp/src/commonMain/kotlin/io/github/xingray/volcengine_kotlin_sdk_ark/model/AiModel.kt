@@ -26,6 +26,31 @@ data class AiModel(
                 id = "doubao-seedream-4-0-250828",
                 name = "Doubao Seedream 4.0",
                 type = AiModelType.IMAGE
+            ),
+            AiModel(
+                id = "doubao-seedance-1-5-pro-251215",
+                name = "Seedance 1.5 Pro",
+                type = AiModelType.VIDEO
+            ),
+            AiModel(
+                id = "doubao-seedance-1-0-pro-250528",
+                name = "Seedance 1.0 Pro",
+                type = AiModelType.VIDEO
+            ),
+            AiModel(
+                id = "doubao-seedance-1-0-pro-fast-251015",
+                name = "Seedance 1.0 Pro Fast",
+                type = AiModelType.VIDEO
+            ),
+            AiModel(
+                id = "doubao-seedance-1-0-lite-t2v-250428",
+                name = "Seedance 1.0 Lite T2V",
+                type = AiModelType.VIDEO
+            ),
+            AiModel(
+                id = "doubao-seedance-1-0-lite-i2v-250428",
+                name = "Seedance 1.0 Lite I2V",
+                type = AiModelType.VIDEO
             )
         )
 

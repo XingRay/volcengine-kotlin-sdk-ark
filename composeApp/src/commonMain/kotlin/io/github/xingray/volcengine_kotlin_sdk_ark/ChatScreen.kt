@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitMode
 import io.github.vinceglb.filekit.dialogs.FileKitType
-import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.name
 import io.github.xingray.volcengine_kotlin_sdk_ark.model.AiModel
 import io.github.xingray.volcengine_kotlin_sdk_ark.model.AiModelType
@@ -113,6 +113,12 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                     maxImagesCount = uiState.maxImagesCount,
                     imageDetailLevel = uiState.imageDetailLevel,
                     videoFps = uiState.videoFps,
+                    videoDuration = uiState.videoDuration,
+                    videoResolution = uiState.videoResolution,
+                    videoRatio = uiState.videoRatio,
+                    videoGenerateAudio = uiState.videoGenerateAudio,
+                    videoSampleMode = uiState.videoSampleMode,
+                    videoGenerationMode = uiState.videoGenerationMode,
                     onTemperatureChange = viewModel::updateTemperature,
                     onTopPChange = viewModel::updateTopP,
                     onMaxTokensChange = viewModel::updateMaxTokens,
@@ -122,6 +128,12 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel { ChatViewModel() }) {
                     onMaxImagesCountChange = viewModel::updateMaxImagesCount,
                     onImageDetailLevelChange = viewModel::updateImageDetailLevel,
                     onVideoFpsChange = viewModel::updateVideoFps,
+                    onVideoDurationChange = viewModel::updateVideoDuration,
+                    onVideoResolutionChange = viewModel::updateVideoResolution,
+                    onVideoRatioChange = viewModel::updateVideoRatio,
+                    onVideoGenerateAudioChange = viewModel::updateVideoGenerateAudio,
+                    onVideoSampleModeChange = viewModel::updateVideoSampleMode,
+                    onVideoGenerationModeChange = viewModel::updateVideoGenerationMode,
                     onAddSystemMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.SYSTEM) },
                     onAddAssistantMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.ASSISTANT) },
                     onAddUserMessage = { viewModel.showAddMessageDialog(com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole.USER) },
@@ -286,6 +298,12 @@ fun ModelParametersPanel(
     maxImagesCount: Int,
     imageDetailLevel: com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail,
     videoFps: Float,
+    videoDuration: Int,
+    videoResolution: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoResolution,
+    videoRatio: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoRatio,
+    videoGenerateAudio: Boolean,
+    videoSampleMode: Boolean,
+    videoGenerationMode: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoGenerationMode,
     onTemperatureChange: (Double) -> Unit,
     onTopPChange: (Double) -> Unit,
     onMaxTokensChange: (Int) -> Unit,
@@ -295,6 +313,12 @@ fun ModelParametersPanel(
     onMaxImagesCountChange: (Int) -> Unit,
     onImageDetailLevelChange: (com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail) -> Unit,
     onVideoFpsChange: (Float) -> Unit,
+    onVideoDurationChange: (Int) -> Unit,
+    onVideoResolutionChange: (io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoResolution) -> Unit,
+    onVideoRatioChange: (io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoRatio) -> Unit,
+    onVideoGenerateAudioChange: (Boolean) -> Unit,
+    onVideoSampleModeChange: (Boolean) -> Unit,
+    onVideoGenerationModeChange: (io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoGenerationMode) -> Unit,
     onAddSystemMessage: () -> Unit,
     onAddAssistantMessage: () -> Unit,
     onAddUserMessage: () -> Unit,
@@ -380,6 +404,7 @@ fun ModelParametersPanel(
                         onVideoFpsChange = onVideoFpsChange
                     )
                 }
+
                 AiModelType.IMAGE -> {
                     ImageModelParamsPanel(
                         sequentialImageGenerationEnabled = sequentialImageGenerationEnabled,
@@ -388,9 +413,24 @@ fun ModelParametersPanel(
                         onMaxImagesCountChange = onMaxImagesCountChange
                     )
                 }
+
                 AiModelType.VIDEO -> {
-                    VideoModelParamsPanel()
+                    VideoModelParamsPanel(
+                        videoDuration = videoDuration,
+                        videoResolution = videoResolution,
+                        videoRatio = videoRatio,
+                        videoGenerateAudio = videoGenerateAudio,
+                        videoSampleMode = videoSampleMode,
+                        videoGenerationMode = videoGenerationMode,
+                        onVideoDurationChange = onVideoDurationChange,
+                        onVideoResolutionChange = onVideoResolutionChange,
+                        onVideoRatioChange = onVideoRatioChange,
+                        onVideoGenerateAudioChange = onVideoGenerateAudioChange,
+                        onVideoSampleModeChange = onVideoSampleModeChange,
+                        onVideoGenerationModeChange = onVideoGenerationModeChange
+                    )
                 }
+
                 AiModelType.AUDIO -> {
                     AudioModelParamsPanel()
                 }
@@ -417,6 +457,12 @@ fun ParametersPanel(
     maxImagesCount: Int,
     imageDetailLevel: com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail,
     videoFps: Float,
+    videoDuration: Int,
+    videoResolution: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoResolution,
+    videoRatio: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoRatio,
+    videoGenerateAudio: Boolean,
+    videoSampleMode: Boolean,
+    videoGenerationMode: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoGenerationMode,
     onApiKeyChange: (String) -> Unit,
     onAccessKeyChange: (String) -> Unit,
     onSecretKeyChange: (String) -> Unit,
@@ -432,6 +478,12 @@ fun ParametersPanel(
     onMaxImagesCountChange: (Int) -> Unit,
     onImageDetailLevelChange: (com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail) -> Unit,
     onVideoFpsChange: (Float) -> Unit,
+    onVideoDurationChange: (Int) -> Unit,
+    onVideoResolutionChange: (io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoResolution) -> Unit,
+    onVideoRatioChange: (io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoRatio) -> Unit,
+    onVideoGenerateAudioChange: (Boolean) -> Unit,
+    onVideoSampleModeChange: (Boolean) -> Unit,
+    onVideoGenerationModeChange: (io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoGenerationMode) -> Unit,
     onAddSystemMessage: () -> Unit,
     onAddAssistantMessage: () -> Unit,
     onAddUserMessage: () -> Unit,
@@ -606,6 +658,7 @@ fun ParametersPanel(
                         onVideoFpsChange = onVideoFpsChange
                     )
                 }
+
                 AiModelType.IMAGE -> {
                     ImageModelParamsPanel(
                         sequentialImageGenerationEnabled = sequentialImageGenerationEnabled,
@@ -614,9 +667,24 @@ fun ParametersPanel(
                         onMaxImagesCountChange = onMaxImagesCountChange
                     )
                 }
+
                 AiModelType.VIDEO -> {
-                    VideoModelParamsPanel()
+                    VideoModelParamsPanel(
+                        videoDuration = videoDuration,
+                        videoResolution = videoResolution,
+                        videoRatio = videoRatio,
+                        videoGenerateAudio = videoGenerateAudio,
+                        videoSampleMode = videoSampleMode,
+                        videoGenerationMode = videoGenerationMode,
+                        onVideoDurationChange = onVideoDurationChange,
+                        onVideoResolutionChange = onVideoResolutionChange,
+                        onVideoRatioChange = onVideoRatioChange,
+                        onVideoGenerateAudioChange = onVideoGenerateAudioChange,
+                        onVideoSampleModeChange = onVideoSampleModeChange,
+                        onVideoGenerationModeChange = onVideoGenerationModeChange
+                    )
                 }
+
                 AiModelType.AUDIO -> {
                     AudioModelParamsPanel()
                 }
@@ -854,39 +922,55 @@ fun MessageBubble(
     // 解析消息内容
     val textContent = StringBuilder()
     val imageUrls = mutableListOf<String>()
+    val videoUrls = mutableListOf<String>()
 
     when (val content = message.content) {
         is com.volcengine.ark.runtime.model.completion.chat.ChatMessageContent.TextContent -> {
             val text = content.value
-            // 检查是否是多个图片 URL（用换行符分隔）
+            // 检查是否是多个 URL（用换行符分隔）
             val lines = text.split("\n").filter { it.isNotBlank() }
             val allAreUrls = lines.all { it.startsWith("http://") || it.startsWith("https://") }
 
             if (allAreUrls && lines.isNotEmpty() && !isUser) {
-                // 所有行都是 URL，作为图片显示
-                imageUrls.addAll(lines)
+                // 所有行都是 URL，判断是图片还是视频
+                lines.forEach { url ->
+                    if (url.contains("/image/") || url.endsWith(".jpg") || url.endsWith(".png") || url.endsWith(".jpeg") || url.endsWith(".webp")) {
+                        imageUrls.add(url)
+                    } else if (url.contains("/video/") || url.endsWith(".mp4") || url.endsWith(".mov") || url.endsWith(".avi")) {
+                        videoUrls.add(url)
+                    } else {
+                        // 默认作为图片处理
+                        imageUrls.add(url)
+                    }
+                }
             } else {
                 // 普通文本
                 textContent.append(text)
             }
         }
+
         is com.volcengine.ark.runtime.model.completion.chat.ChatMessageContent.MultiContent -> {
             content.items.forEach { part ->
                 when (part) {
                     is com.volcengine.ark.runtime.model.completion.chat.ContentPart.TextPart -> {
                         textContent.append(part.text)
                     }
+
                     is com.volcengine.ark.runtime.model.completion.chat.ContentPart.ImageUrlPart -> {
                         imageUrls.add(part.imageUrl.url)
                     }
+
                     is com.volcengine.ark.runtime.model.completion.chat.ContentPart.VideoUrlPart -> {
-                        textContent.append("[Video: ${part.videoUrl.url}]")
+                        videoUrls.add(part.videoUrl.url)
                     }
                 }
             }
         }
+
         null -> {}
     }
+
+    val clipboardManager = androidx.compose.ui.platform.LocalClipboardManager.current
 
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -969,6 +1053,58 @@ fun MessageBubble(
                                     .clickable { onImageClick(imageUrl) },
                                 contentScale = ContentScale.Fit
                             )
+                        }
+                    }
+
+                    // Add spacing if there's also text or videos
+                    if (textContent.isNotEmpty() || videoUrls.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+
+                // Display videos if any
+                if (videoUrls.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        videoUrls.forEach { videoUrl ->
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = textColor.copy(alpha = 0.1f),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        clipboardManager.setText(androidx.compose.ui.text.AnnotatedString(videoUrl))
+                                    }
+                            ) {
+                                Column(modifier = Modifier.padding(12.dp)) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "🎬 视频",
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = textColor
+                                        )
+                                        Text(
+                                            text = "点击复制",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = textColor.copy(alpha = 0.6f)
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(
+                                        text = videoUrl,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = textColor.copy(alpha = 0.8f),
+                                        maxLines = 2,
+                                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                    )
+                                }
+                            }
                         }
                     }
 
@@ -1270,7 +1406,7 @@ fun TextModelParamsPanel(
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text = String.format("%.1f", videoFps),
+                    text = videoFps.toString(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -1354,12 +1490,218 @@ fun ImageModelParamsPanel(
 }
 
 @Composable
-fun VideoModelParamsPanel() {
-    Text(
-        text = "视频生成模型参数（待实现）",
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
+fun VideoModelParamsPanel(
+    videoDuration: Int,
+    videoResolution: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoResolution,
+    videoRatio: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoRatio,
+    videoGenerateAudio: Boolean,
+    videoSampleMode: Boolean,
+    videoGenerationMode: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoGenerationMode,
+    onVideoDurationChange: (Int) -> Unit,
+    onVideoResolutionChange: (io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoResolution) -> Unit,
+    onVideoRatioChange: (io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoRatio) -> Unit,
+    onVideoGenerateAudioChange: (Boolean) -> Unit,
+    onVideoSampleModeChange: (Boolean) -> Unit,
+    onVideoGenerationModeChange: (io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoGenerationMode) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // 视频时长
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "视频时长（秒）",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = videoDuration.toString(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            Slider(
+                value = videoDuration.toFloat(),
+                onValueChange = { onVideoDurationChange(it.toInt()) },
+                valueRange = 2f..12f,
+                steps = 9,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        // 分辨率
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "分辨率",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoResolution.entries.forEach { resolution ->
+                    Button(
+                        onClick = { onVideoResolutionChange(resolution) },
+                        modifier = Modifier.weight(1f),
+                        colors = if (videoResolution == resolution) {
+                            ButtonDefaults.buttonColors()
+                        } else {
+                            ButtonDefaults.outlinedButtonColors()
+                        }
+                    ) {
+                        Text(resolution.displayName)
+                    }
+                }
+            }
+        }
+
+        // 宽高比
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "宽高比",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoRatio.entries.take(3).forEach { ratio ->
+                        Button(
+                            onClick = { onVideoRatioChange(ratio) },
+                            modifier = Modifier.weight(1f),
+                            colors = if (videoRatio == ratio) {
+                                ButtonDefaults.buttonColors()
+                            } else {
+                                ButtonDefaults.outlinedButtonColors()
+                            }
+                        ) {
+                            Text(ratio.displayName)
+                        }
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoRatio.entries.drop(3).forEach { ratio ->
+                        Button(
+                            onClick = { onVideoRatioChange(ratio) },
+                            modifier = Modifier.weight(1f),
+                            colors = if (videoRatio == ratio) {
+                                ButtonDefaults.buttonColors()
+                            } else {
+                                ButtonDefaults.outlinedButtonColors()
+                            }
+                        ) {
+                            Text(ratio.displayName)
+                        }
+                    }
+                }
+            }
+        }
+
+        // 生成音频
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "生成音频",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Switch(
+                checked = videoGenerateAudio,
+                onCheckedChange = onVideoGenerateAudioChange
+            )
+        }
+
+        // 样片模式
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "样片模式",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Switch(
+                checked = videoSampleMode,
+                onCheckedChange = onVideoSampleModeChange
+            )
+        }
+
+        // 生成方式
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "生成方式",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoGenerationMode.entries.take(2).forEach { mode ->
+                        Button(
+                            onClick = { onVideoGenerationModeChange(mode) },
+                            modifier = Modifier.weight(1f),
+                            colors = if (videoGenerationMode == mode) {
+                                ButtonDefaults.buttonColors()
+                            } else {
+                                ButtonDefaults.outlinedButtonColors()
+                            }
+                        ) {
+                            Text(mode.displayName)
+                        }
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoGenerationMode.entries.drop(2).forEach { mode ->
+                        Button(
+                            onClick = { onVideoGenerationModeChange(mode) },
+                            modifier = Modifier.weight(1f),
+                            colors = if (videoGenerationMode == mode) {
+                                ButtonDefaults.buttonColors()
+                            } else {
+                                ButtonDefaults.outlinedButtonColors()
+                            }
+                        ) {
+                            Text(mode.displayName)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable

@@ -12,7 +12,10 @@ import com.volcengine.ark.runtime.model.context.CreateContextResult
 import com.volcengine.ark.runtime.model.context.chat.ContextChatCompletionRequest
 import com.volcengine.ark.runtime.model.embeddings.EmbeddingRequest
 import com.volcengine.ark.runtime.model.embeddings.EmbeddingResult
-import com.volcengine.ark.runtime.model.files.*
+import com.volcengine.ark.runtime.model.files.DeleteFileResponse
+import com.volcengine.ark.runtime.model.files.FileMeta
+import com.volcengine.ark.runtime.model.files.ListFilesRequest
+import com.volcengine.ark.runtime.model.files.ListFilesResponse
 import com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest
 import com.volcengine.ark.runtime.model.images.generation.ImageGenStreamEvent
 import com.volcengine.ark.runtime.model.images.generation.ImagesResponse
@@ -23,14 +26,10 @@ import io.ktor.client.call.*
 import io.ktor.client.plugins.sse.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.utils.io.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
-
-internal expect fun getCurrentTimestamp(): String
 
 /**
  * Ark API 客户端
@@ -90,7 +89,7 @@ class ArkClient(
         apiKey: String? = defaultApiKey,
         baseUrl: String = defaultBaseUrl
     ): Flow<ChatCompletionChunk> = flow {
-        println("[${getCurrentTimestamp()}] Starting stream request")
+        println("Starting stream request")
         try {
             httpClient.sse(
                 request = {
@@ -101,27 +100,27 @@ class ArkClient(
                     method = HttpMethod.Post
                 }
             ) {
-                println("[${getCurrentTimestamp()}] SSE connection established")
+                println("SSE connection established")
                 incoming.collect { event ->
-                    println("[${getCurrentTimestamp()}] Received SSE event: ${event.event}, data: ${event.data}")
+                    println("Received SSE event: ${event.event}, data: ${event.data}")
                     event.data?.let { data ->
                         if (data != "[DONE]") {
                             try {
                                 val chunk = json.decodeFromString<ChatCompletionChunk>(data)
-                                println("[${getCurrentTimestamp()}] Parsed chunk successfully, emitting")
+                                println("Parsed chunk successfully, emitting")
                                 emit(chunk)
-                                println("[${getCurrentTimestamp()}] Chunk emitted")
+                                println("Chunk emitted")
                             } catch (e: Exception) {
-                                println("[${getCurrentTimestamp()}] Failed to parse SSE chunk: ${e.message}")
-                                println("[${getCurrentTimestamp()}] Raw data: $data")
+                                println("Failed to parse SSE chunk: ${e.message}")
+                                println("Raw data: $data")
                             }
                         }
                     }
                 }
-                println("[${getCurrentTimestamp()}] SSE stream completed")
+                println("SSE stream completed")
             }
         } catch (e: Exception) {
-            println("[${getCurrentTimestamp()}] SSE stream error: ${e.message}")
+            println("SSE stream error: ${e.message}")
             throw e
         }
     }

@@ -6,6 +6,9 @@ import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionRequest
 import com.volcengine.ark.runtime.model.completion.chat.ChatMessage
 import com.volcengine.ark.runtime.model.completion.chat.ChatMessageContent
 import com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole
+import com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest
+import com.volcengine.ark.runtime.model.content.generation.GetContentGenerationTaskRequest
+import com.volcengine.ark.runtime.model.content.generation.ImageUrl
 import com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest
 import com.volcengine.ark.runtime.service.ArkClient
 import io.github.vinceglb.filekit.PlatformFile
@@ -13,8 +16,10 @@ import io.github.vinceglb.filekit.name
 import io.github.xingray.volcengine_kotlin_sdk_ark.model.AiModel
 import io.github.xingray.volcengine_kotlin_sdk_ark.model.AiModelType
 import io.github.xingray.volcengine_kotlin_sdk_ark.model.ImageGenerationTask
+import io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoGenerationMode
 import io.github.xingray.volcengine_kotlin_sdk_ark.oss.ObjectStorageService
 import io.github.xingray.volcengine_kotlin_sdk_ark.util.TimeUtil
+import io.github.xingray.volcengine_kotlin_sdk_ark.util.saveToTempFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,6 +47,13 @@ data class ChatUiState(
     val maxImagesCount: Int = 4,
     val imageDetailLevel: com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail = com.volcengine.ark.runtime.model.completion.chat.ImageUrlDetail.HIGH,
     val videoFps: Float = 1.0f,
+    // 视频生成参数
+    val videoDuration: Int = 5,
+    val videoResolution: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoResolution = io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoResolution.P480,
+    val videoRatio: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoRatio = io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoRatio.RATIO_16_9,
+    val videoGenerateAudio: Boolean = false,
+    val videoSampleMode: Boolean = true,
+    val videoGenerationMode: VideoGenerationMode = VideoGenerationMode.TEXT_TO_VIDEO,
     val showAddMessageDialog: Boolean = false,
     val addMessageRole: ChatMessageRole? = null,
     val addMessageText: String = "",
@@ -122,6 +134,30 @@ class ChatViewModel : ViewModel() {
 
     fun updateVideoFps(fps: Float) {
         _uiState.value = _uiState.value.copy(videoFps = fps)
+    }
+
+    fun updateVideoDuration(duration: Int) {
+        _uiState.value = _uiState.value.copy(videoDuration = duration)
+    }
+
+    fun updateVideoResolution(resolution: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoResolution) {
+        _uiState.value = _uiState.value.copy(videoResolution = resolution)
+    }
+
+    fun updateVideoRatio(ratio: io.github.xingray.volcengine_kotlin_sdk_ark.model.VideoRatio) {
+        _uiState.value = _uiState.value.copy(videoRatio = ratio)
+    }
+
+    fun updateVideoGenerateAudio(enabled: Boolean) {
+        _uiState.value = _uiState.value.copy(videoGenerateAudio = enabled)
+    }
+
+    fun updateVideoSampleMode(enabled: Boolean) {
+        _uiState.value = _uiState.value.copy(videoSampleMode = enabled)
+    }
+
+    fun updateVideoGenerationMode(mode: VideoGenerationMode) {
+        _uiState.value = _uiState.value.copy(videoGenerationMode = mode)
     }
 
     fun showAddMessageDialog(role: ChatMessageRole) {
@@ -276,13 +312,13 @@ class ChatViewModel : ViewModel() {
 
         // 验证输入
         if (currentState.inputText.isBlank()) {
-            println("[${getCurrentTimestamp()}] === Validation failed: Input text is blank ===")
+            println("=== Validation failed: Input text is blank ===")
             _uiState.value = _uiState.value.copy(errorMessage = "请输入消息内容")
             return
         }
 
         if (currentState.apiKey.isBlank()) {
-            println("[${getCurrentTimestamp()}] === Validation failed: API Key is blank ===")
+            println("=== Validation failed: API Key is blank ===")
             _uiState.value = _uiState.value.copy(errorMessage = "请先输入 API Key")
             return
         }
@@ -290,6 +326,7 @@ class ChatViewModel : ViewModel() {
         // 根据模型类型分发到不同的处理逻辑
         when (currentState.selectedModel.type) {
             AiModelType.IMAGE -> sendImageGenerationMessage()
+            AiModelType.VIDEO -> sendVideoGenerationMessage()
             else -> sendChatMessage()
         }
     }
@@ -309,12 +346,12 @@ class ChatViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                println("[${getCurrentTimestamp()}] === Starting chat request ===")
-                println("[${getCurrentTimestamp()}] API Key: ${currentState.apiKey.take(10)}...")
-                println("[${getCurrentTimestamp()}] Model: ${currentState.selectedModel.id}")
-                println("[${getCurrentTimestamp()}] Stream enabled: ${currentState.streamEnabled}")
-                println("[${getCurrentTimestamp()}] Selected image files: ${selectedImageFiles.size}")
-                println("[${getCurrentTimestamp()}] Selected video files: ${selectedVideoFiles.size}")
+                println("=== Starting chat request ===")
+                println("API Key: ${currentState.apiKey.take(10)}...")
+                println("Model: ${currentState.selectedModel.id}")
+                println("Stream enabled: ${currentState.streamEnabled}")
+                println("Selected image files: ${selectedImageFiles.size}")
+                println("Selected video files: ${selectedVideoFiles.size}")
 
                 // 检查是否需要上传文件
                 val needUpload = selectedImageFiles.isNotEmpty() || selectedVideoFiles.isNotEmpty()
@@ -322,7 +359,7 @@ class ChatViewModel : ViewModel() {
                 if (needUpload) {
                     // 检查AK/SK是否已配置
                     if (currentState.accessKey.isBlank() || currentState.secretKey.isBlank()) {
-                        println("[${getCurrentTimestamp()}] AK/SK not configured")
+                        println("AK/SK not configured")
                         _uiState.value = _uiState.value.copy(
                             errorMessage = "请先配置 Access Key 和 Secret Key",
                             isLoading = false
@@ -332,7 +369,7 @@ class ChatViewModel : ViewModel() {
 
                     _uiState.value = _uiState.value.copy(isUploading = true)
 
-                    val ossService = ObjectStorageService(
+                    ObjectStorageService(
                         ak = currentState.accessKey,
                         sk = currentState.secretKey
                     )
@@ -341,7 +378,7 @@ class ChatViewModel : ViewModel() {
                 // 上传图片文件
                 val imageUrls = mutableListOf<String>()
                 if (selectedImageFiles.isNotEmpty()) {
-                    println("[${getCurrentTimestamp()}] Uploading ${selectedImageFiles.size} image file(s)...")
+                    println("Uploading ${selectedImageFiles.size} image file(s)...")
 
                     try {
                         val ossService = ObjectStorageService(
@@ -351,7 +388,7 @@ class ChatViewModel : ViewModel() {
 
                         // 上传所有选中的图片
                         for ((index, imageFile) in selectedImageFiles.withIndex()) {
-                            println("[${getCurrentTimestamp()}] Uploading image ${index + 1}/${selectedImageFiles.size}")
+                            println("Uploading image ${index + 1}/${selectedImageFiles.size}")
 
                             // 在后台线程中执行文件操作
                             val filePath = withContext(Dispatchers.Default) {
@@ -359,7 +396,7 @@ class ChatViewModel : ViewModel() {
                             }
                             val fileName = imageFile.name
 
-                            println("[${getCurrentTimestamp()}] File name: $fileName, path: $filePath")
+                            println("File name: $fileName, path: $filePath")
 
                             val bucket = currentState.ossBucket
                             val key = "${currentState.ossKeyPrefix}${TimeUtil.nowMillis()}_${index}_$fileName"
@@ -372,11 +409,11 @@ class ChatViewModel : ViewModel() {
                             when (result) {
                                 is ApiResult.Success -> {
                                     imageUrls.add(result.data)
-                                    println("[${getCurrentTimestamp()}] Image ${index + 1} uploaded successfully, URL: ${result.data}")
+                                    println("Image ${index + 1} uploaded successfully, URL: ${result.data}")
                                 }
 
                                 is ApiResult.Error -> {
-                                    println("[${getCurrentTimestamp()}] Image ${index + 1} upload failed: ${result.message}")
+                                    println("Image ${index + 1} upload failed: ${result.message}")
                                     _uiState.value = _uiState.value.copy(isUploading = false)
                                     throw Exception("图片 ${index + 1} 上传失败: ${result.message}")
                                 }
@@ -388,9 +425,9 @@ class ChatViewModel : ViewModel() {
                             selectedImageFiles = emptyList()
                         )
 
-                        println("[${getCurrentTimestamp()}] All images uploaded successfully. Total: ${imageUrls.size}")
+                        println("All images uploaded successfully. Total: ${imageUrls.size}")
                     } catch (e: Exception) {
-                        println("[${getCurrentTimestamp()}] Image upload failed: ${e.message}")
+                        println("Image upload failed: ${e.message}")
                         _uiState.value = _uiState.value.copy(isUploading = false)
                         throw Exception("图片上传失败: ${e.message}", e)
                     }
@@ -399,7 +436,7 @@ class ChatViewModel : ViewModel() {
                 // 上传视频文件
                 val videoUrls = mutableListOf<String>()
                 if (selectedVideoFiles.isNotEmpty()) {
-                    println("[${getCurrentTimestamp()}] Uploading ${selectedVideoFiles.size} video file(s)...")
+                    println("Uploading ${selectedVideoFiles.size} video file(s)...")
 
                     try {
                         val ossService = ObjectStorageService(
@@ -409,7 +446,7 @@ class ChatViewModel : ViewModel() {
 
                         // 上传所有选中的视频
                         for ((index, videoFile) in selectedVideoFiles.withIndex()) {
-                            println("[${getCurrentTimestamp()}] Uploading video ${index + 1}/${selectedVideoFiles.size}")
+                            println("Uploading video ${index + 1}/${selectedVideoFiles.size}")
 
                             // 在后台线程中执行文件操作
                             val filePath = withContext(Dispatchers.Default) {
@@ -417,7 +454,7 @@ class ChatViewModel : ViewModel() {
                             }
                             val fileName = videoFile.name
 
-                            println("[${getCurrentTimestamp()}] File name: $fileName, path: $filePath")
+                            println("File name: $fileName, path: $filePath")
 
                             val bucket = currentState.ossBucket
                             val key = "${currentState.ossKeyPrefix}${TimeUtil.nowMillis()}_${index}_$fileName"
@@ -430,11 +467,11 @@ class ChatViewModel : ViewModel() {
                             when (result) {
                                 is ApiResult.Success -> {
                                     videoUrls.add(result.data)
-                                    println("[${getCurrentTimestamp()}] Video ${index + 1} uploaded successfully, URL: ${result.data}")
+                                    println("Video ${index + 1} uploaded successfully, URL: ${result.data}")
                                 }
 
                                 is ApiResult.Error -> {
-                                    println("[${getCurrentTimestamp()}] Video ${index + 1} upload failed: ${result.message}")
+                                    println("Video ${index + 1} upload failed: ${result.message}")
                                     _uiState.value = _uiState.value.copy(isUploading = false)
                                     throw Exception("视频 ${index + 1} 上传失败: ${result.message}")
                                 }
@@ -446,9 +483,9 @@ class ChatViewModel : ViewModel() {
                             selectedVideoFiles = emptyList()
                         )
 
-                        println("[${getCurrentTimestamp()}] All videos uploaded successfully. Total: ${videoUrls.size}")
+                        println("All videos uploaded successfully. Total: ${videoUrls.size}")
                     } catch (e: Exception) {
-                        println("[${getCurrentTimestamp()}] Video upload failed: ${e.message}")
+                        println("Video upload failed: ${e.message}")
                         _uiState.value = _uiState.value.copy(isUploading = false)
                         throw Exception("视频上传失败: ${e.message}", e)
                     }
@@ -497,7 +534,7 @@ class ChatViewModel : ViewModel() {
                         )
                     }
 
-                    println("[${getCurrentTimestamp()}] Creating MultiContent message with ${imageUrls.size} images, ${videoUrls.size} videos and text: $inputText")
+                    println("Creating MultiContent message with ${imageUrls.size} images, ${videoUrls.size} videos and text: $inputText")
 
                     ChatMessage(
                         role = ChatMessageRole.USER,
@@ -505,7 +542,7 @@ class ChatViewModel : ViewModel() {
                     )
                 } else {
                     // 没有图片或视频时使用 TextContent 格式
-                    println("[${getCurrentTimestamp()}] Creating TextContent message: $inputText")
+                    println("Creating TextContent message: $inputText")
                     ChatMessage(
                         role = ChatMessageRole.USER,
                         content = ChatMessageContent.TextContent(inputText)
@@ -541,11 +578,11 @@ class ChatViewModel : ViewModel() {
                     )
                 )
 
-                println("[${getCurrentTimestamp()}] Request created, sending...")
+                println("Request created, sending...")
 
                 if (currentState.streamEnabled) {
                     // Stream mode
-                    println("[${getCurrentTimestamp()}] Using stream mode")
+                    println("Using stream mode")
                     val streamFlow = client.streamChatCompletion(request)
                     val assistantMessageBuilder = StringBuilder()
 
@@ -557,10 +594,10 @@ class ChatViewModel : ViewModel() {
                     _uiState.value = _uiState.value.copy(
                         messages = _uiState.value.messages + emptyAssistantMessage
                     )
-                    println("[${getCurrentTimestamp()}] Empty assistant message added to UI")
+                    println("Empty assistant message added to UI")
 
                     streamFlow.collect { chunk ->
-                        println("[${getCurrentTimestamp()}] Received chunk in ViewModel")
+                        println("Received chunk in ViewModel")
                         val delta = chunk.choices?.firstOrNull()?.message
                         val deltaContent = when (val content = delta?.content) {
                             is ChatMessageContent.TextContent -> content.value
@@ -578,10 +615,10 @@ class ChatViewModel : ViewModel() {
 
                         if (deltaContent.isNotEmpty() || deltaReasoningContent.isNotEmpty()) {
                             if (deltaContent.isNotEmpty()) {
-                                println("[${getCurrentTimestamp()}] Delta content: $deltaContent")
+                                println("Delta content: $deltaContent")
                             }
                             if (deltaReasoningContent.isNotEmpty()) {
-                                println("[${getCurrentTimestamp()}] Delta reasoning content: $deltaReasoningContent")
+                                println("Delta reasoning content: $deltaReasoningContent")
                             }
                             assistantMessageBuilder.append(deltaContent)
                             val currentMessages = _uiState.value.messages.toMutableList()
@@ -595,27 +632,27 @@ class ChatViewModel : ViewModel() {
                             _uiState.value = _uiState.value.copy(
                                 messages = currentMessages
                             )
-                            println("[${getCurrentTimestamp()}] UI updated with accumulated content")
+                            println("UI updated with accumulated content")
                         }
                     }
 
-                    println("[${getCurrentTimestamp()}] Stream completed")
+                    println("Stream completed")
                     _uiState.value = _uiState.value.copy(isLoading = false)
                 } else {
                     // Non-stream mode
-                    println("[${getCurrentTimestamp()}] Using non-stream mode")
+                    println("Using non-stream mode")
                     val response = client.createChatCompletion(request)
-                    println("[${getCurrentTimestamp()}] Response received: $response")
+                    println("Response received: $response")
                     val assistantMessage = response.choices?.firstOrNull()?.message
 
                     if (assistantMessage != null) {
-                        println("[${getCurrentTimestamp()}] Assistant message: $assistantMessage")
+                        println("Assistant message: $assistantMessage")
                         _uiState.value = _uiState.value.copy(
                             messages = updatedMessages + assistantMessage,
                             isLoading = false
                         )
                     } else {
-                        println("[${getCurrentTimestamp()}] No assistant message in response")
+                        println("No assistant message in response")
                         _uiState.value = _uiState.value.copy(
                             errorMessage = "服务器返回了空响应，请检查模型名称是否正确",
                             isLoading = false
@@ -624,11 +661,11 @@ class ChatViewModel : ViewModel() {
                 }
 
                 httpClient.close()
-                println("[${getCurrentTimestamp()}] === Chat request completed ===")
+                println("=== Chat request completed ===")
             } catch (e: Exception) {
-                println("[${getCurrentTimestamp()}] === Error occurred ===")
-                println("[${getCurrentTimestamp()}] Error type: ${e::class.simpleName}")
-                println("[${getCurrentTimestamp()}] Error message: ${e.message}")
+                println("=== Error occurred ===")
+                println("Error type: ${e::class.simpleName}")
+                println("Error message: ${e.message}")
 
                 _uiState.value = _uiState.value.copy(
                     errorMessage = "错误: ${e.message}",
@@ -661,10 +698,10 @@ class ChatViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                println("[${getCurrentTimestamp()}] === Starting image generation request ===")
-                println("[${getCurrentTimestamp()}] API Key: ${currentState.apiKey.take(10)}...")
-                println("[${getCurrentTimestamp()}] Model: ${currentState.selectedModel.id}")
-                println("[${getCurrentTimestamp()}] Prompt: ${userMessage.content}")
+                println("=== Starting image generation request ===")
+                println("API Key: ${currentState.apiKey.take(10)}...")
+                println("Model: ${currentState.selectedModel.id}")
+                println("Prompt: ${userMessage.content}")
 
                 val httpClient = createHttpClient()
                 val client = ArkClient(
@@ -677,7 +714,7 @@ class ChatViewModel : ViewModel() {
                 if (currentState.selectedImageFiles.isNotEmpty()) {
                     // 检查AK/SK是否已配置
                     if (currentState.accessKey.isBlank() || currentState.secretKey.isBlank()) {
-                        println("[${getCurrentTimestamp()}] AK/SK not configured")
+                        println("AK/SK not configured")
                         _uiState.value = _uiState.value.copy(
                             errorMessage = "请先配置 Access Key 和 Secret Key",
                             isLoading = false
@@ -685,7 +722,7 @@ class ChatViewModel : ViewModel() {
                         return@launch
                     }
 
-                    println("[${getCurrentTimestamp()}] Uploading ${currentState.selectedImageFiles.size} image file(s)...")
+                    println("Uploading ${currentState.selectedImageFiles.size} image file(s)...")
                     _uiState.value = _uiState.value.copy(isUploading = true)
 
                     try {
@@ -696,7 +733,7 @@ class ChatViewModel : ViewModel() {
 
                         // 上传所有选中的图片
                         for ((index, imageFile) in currentState.selectedImageFiles.withIndex()) {
-                            println("[${getCurrentTimestamp()}] Uploading image ${index + 1}/${currentState.selectedImageFiles.size}")
+                            println("Uploading image ${index + 1}/${currentState.selectedImageFiles.size}")
 
                             // 在后台线程中执行文件操作
                             val filePath = withContext(Dispatchers.Default) {
@@ -704,7 +741,7 @@ class ChatViewModel : ViewModel() {
                             }
                             val fileName = imageFile.name
 
-                            println("[${getCurrentTimestamp()}] File name: $fileName, path: $filePath")
+                            println("File name: $fileName, path: $filePath")
 
                             val bucket = currentState.ossBucket
                             val key = "${currentState.ossKeyPrefix}${TimeUtil.nowMillis()}_${index}_$fileName"
@@ -717,11 +754,11 @@ class ChatViewModel : ViewModel() {
                             when (result) {
                                 is ApiResult.Success -> {
                                     imageUrls.add(result.data)
-                                    println("[${getCurrentTimestamp()}] Image ${index + 1} uploaded successfully, URL: ${result.data}")
+                                    println("Image ${index + 1} uploaded successfully, URL: ${result.data}")
                                 }
 
                                 is ApiResult.Error -> {
-                                    println("[${getCurrentTimestamp()}] Image ${index + 1} upload failed: ${result.message}")
+                                    println("Image ${index + 1} upload failed: ${result.message}")
                                     _uiState.value = _uiState.value.copy(isUploading = false)
                                     throw Exception("图片 ${index + 1} 上传失败: ${result.message}")
                                 }
@@ -734,9 +771,9 @@ class ChatViewModel : ViewModel() {
                             isUploading = false
                         )
 
-                        println("[${getCurrentTimestamp()}] All images uploaded successfully. Total: ${imageUrls.size}")
+                        println("All images uploaded successfully. Total: ${imageUrls.size}")
                     } catch (e: Exception) {
-                        println("[${getCurrentTimestamp()}] Image upload failed: ${e.message}")
+                        println("Image upload failed: ${e.message}")
                         _uiState.value = _uiState.value.copy(isUploading = false)
                         throw Exception("图片上传失败: ${e.message}", e)
                     }
@@ -764,15 +801,15 @@ class ChatViewModel : ViewModel() {
                     }
                 )
 
-                println("[${getCurrentTimestamp()}] Submitting image generation request...")
+                println("Submitting image generation request...")
                 val response = client.generateImages(request)
-                println("[${getCurrentTimestamp()}] Response received: $response")
+                println("Response received: $response")
 
                 val generatedImages = response.data
                 val errorMsg = response.error?.message
 
                 if (!generatedImages.isNullOrEmpty()) {
-                    println("[${getCurrentTimestamp()}] Generated ${generatedImages.size} image(s)")
+                    println("Generated ${generatedImages.size} image(s)")
                     // 将所有生成的图片 URL 拼接成一条消息
                     val imageUrlsText = generatedImages.mapNotNull { it?.url }.joinToString("\n")
 
@@ -787,7 +824,7 @@ class ChatViewModel : ViewModel() {
                         isLoading = false
                     )
                 } else {
-                    println("[${getCurrentTimestamp()}] Image generation failed: $errorMsg")
+                    println("Image generation failed: $errorMsg")
                     val currentMessages = _uiState.value.messages.toMutableList()
                     currentMessages[currentMessages.lastIndex] = ChatMessage(
                         role = ChatMessageRole.ASSISTANT,
@@ -801,11 +838,305 @@ class ChatViewModel : ViewModel() {
                 }
 
                 httpClient.close()
-                println("[${getCurrentTimestamp()}] === Image generation request completed ===")
+                println("=== Image generation request completed ===")
             } catch (e: Exception) {
-                println("[${getCurrentTimestamp()}] === Error occurred ===")
-                println("[${getCurrentTimestamp()}] Error type: ${e::class.simpleName}")
-                println("[${getCurrentTimestamp()}] Error message: ${e.message}")
+                println("=== Error occurred ===")
+                println("Error type: ${e::class.simpleName}")
+                println("Error message: ${e.message}")
+
+                val currentMessages = _uiState.value.messages.toMutableList()
+                currentMessages[currentMessages.lastIndex] = ChatMessage(
+                    role = ChatMessageRole.ASSISTANT,
+                    content = ChatMessageContent.TextContent("错误: ${e.message}")
+                )
+                _uiState.value = _uiState.value.copy(
+                    messages = currentMessages,
+                    errorMessage = "错误: ${e.message}",
+                    isLoading = false,
+                    isUploading = false
+                )
+            }
+        }
+    }
+
+    private fun sendVideoGenerationMessage() {
+        val currentState = _uiState.value
+        val userMessage = ChatMessage(
+//            role = ChatMessageRole.USER,
+            content = ChatMessageContent.TextContent(currentState.inputText)
+        )
+        val updatedMessages = currentState.messages + userMessage
+
+        // 添加一个空的 assistant 消息用于显示 loading
+        val loadingMessage = ChatMessage(
+            role = ChatMessageRole.ASSISTANT,
+            content = ChatMessageContent.TextContent("")
+        )
+
+        _uiState.value = currentState.copy(
+            messages = updatedMessages + loadingMessage,
+            inputText = "",
+            isLoading = true
+        )
+
+        viewModelScope.launch {
+            try {
+                println("=== Starting video generation request ===")
+                println("API Key: ${currentState.apiKey.take(10)}...")
+                println("Model: ${currentState.selectedModel.id}")
+                println("Prompt: ${userMessage.content}")
+
+                val httpClient = createHttpClient()
+                val client = ArkClient(
+                    httpClient = httpClient,
+                    defaultApiKey = currentState.apiKey
+                )
+
+                // 如果选择了图片文件，先上传图片
+                val imageUrls = mutableListOf<String>()
+                if (currentState.selectedImageFiles.isNotEmpty()) {
+                    // 检查AK/SK是否已配置
+                    if (currentState.accessKey.isBlank() || currentState.secretKey.isBlank()) {
+                        println("AK/SK not configured")
+                        _uiState.value = _uiState.value.copy(
+                            errorMessage = "请先配置 Access Key 和 Secret Key",
+                            isLoading = false
+                        )
+                        return@launch
+                    }
+
+                    println("Uploading ${currentState.selectedImageFiles.size} image file(s)...")
+                    _uiState.value = _uiState.value.copy(isUploading = true)
+
+                    try {
+                        val ossService = ObjectStorageService(
+                            ak = currentState.accessKey,
+                            sk = currentState.secretKey
+                        )
+
+                        // 上传所有选中的图片
+                        for ((index, imageFile) in currentState.selectedImageFiles.withIndex()) {
+                            println("Uploading image ${index + 1}/${currentState.selectedImageFiles.size}")
+
+                            val filePath = withContext(Dispatchers.Default) {
+                                imageFile.saveToTempFile()
+                            }
+                            val fileName = imageFile.name
+
+                            println("File name: $fileName, path: $filePath")
+
+                            val bucket = currentState.ossBucket
+                            val key = "${currentState.ossKeyPrefix}${TimeUtil.nowMillis()}_${index}_$fileName"
+
+                            val result = withContext(Dispatchers.Default) {
+                                ossService.putObject(bucket, key, filePath)
+                            }
+
+                            when (result) {
+                                is ApiResult.Success -> {
+                                    imageUrls.add(result.data)
+                                    println("Image ${index + 1} uploaded successfully, URL: ${result.data}")
+                                }
+
+                                is ApiResult.Error -> {
+                                    println("Image ${index + 1} upload failed: ${result.message}")
+                                    _uiState.value = _uiState.value.copy(isUploading = false)
+                                    throw Exception("图片 ${index + 1} 上传失败: ${result.message}")
+                                }
+                            }
+                        }
+
+                        // 清除已选择的图片
+                        _uiState.value = _uiState.value.copy(
+                            selectedImageFiles = emptyList(),
+                            isUploading = false
+                        )
+
+                        println("All images uploaded successfully. Total: ${imageUrls.size}")
+                    } catch (e: Exception) {
+                        println("Image upload failed: ${e.message}")
+                        _uiState.value = _uiState.value.copy(isUploading = false)
+                        throw Exception("图片上传失败: ${e.message}", e)
+                    }
+                }
+
+                // 构建视频生成请求的 content
+                val contentList = mutableListOf<CreateContentGenerationTaskRequest.Content>()
+
+                // 添加文本内容
+                val promptText = when (val content = userMessage.content) {
+                    is ChatMessageContent.TextContent -> content.value
+                    else -> ""
+                }
+                if (promptText.isNotEmpty()) {
+                    contentList.add(
+                        CreateContentGenerationTaskRequest.Content(
+                            type = "text",
+                            text = promptText,
+                        )
+                    )
+                }
+
+                // 根据生成模式添加图片内容
+                when (currentState.videoGenerationMode) {
+                    VideoGenerationMode.FIRST_FRAME -> {
+                        // 首帧模式：需要1张图片
+                        if (imageUrls.isNotEmpty()) {
+                            contentList.add(
+                                CreateContentGenerationTaskRequest.Content(
+                                    type = "image_url",
+                                    imageUrl = ImageUrl(url = imageUrls[0]),
+                                    role = "first_frame"
+                                )
+                            )
+                        }
+                    }
+
+                    VideoGenerationMode.FIRST_LAST_FRAME -> {
+                        // 首尾帧模式：需要2张图片
+                        if (imageUrls.size >= 2) {
+                            contentList.add(
+                                CreateContentGenerationTaskRequest.Content(
+                                    type = "image_url",
+                                    imageUrl = ImageUrl(url = imageUrls[0]),
+                                    role = "first_frame"
+                                )
+                            )
+                            contentList.add(
+                                CreateContentGenerationTaskRequest.Content(
+                                    type = "image_url",
+                                    imageUrl = ImageUrl(url = imageUrls[1]),
+                                    role = "last_frame"
+                                )
+                            )
+                        }
+                    }
+
+                    VideoGenerationMode.REFERENCE_IMAGE -> {
+                        // 参考图模式：1-4张图片
+                        for (imageUrl in imageUrls.take(4)) {
+                            contentList.add(
+                                CreateContentGenerationTaskRequest.Content(
+                                    type = "image_url",
+                                    imageUrl = ImageUrl(url = imageUrl),
+                                    role = "reference_image"
+                                )
+                            )
+                        }
+                    }
+
+                    VideoGenerationMode.TEXT_TO_VIDEO -> {
+                        // 文字描述模式：不需要图片
+                    }
+                }
+
+                val request = CreateContentGenerationTaskRequest(
+                    model = currentState.selectedModel.id,
+                    content = contentList,
+                    resolution = currentState.videoResolution.value,
+                    ratio = currentState.videoRatio.value,
+                    duration = currentState.videoDuration.toLong(),
+                    generateAudio = currentState.videoGenerateAudio,
+                    draft = currentState.videoSampleMode
+                )
+
+                println("Submitting video generation task...")
+                val createResponse = try {
+                    client.createContentGenerationTask(request)
+                } catch (e: Exception) {
+                    println("Task creation failed: ${e.message}")
+                    // 尝试从异常消息中提取错误信息
+                    val errorMessage = e.message ?: "未知错误"
+                    println("Error message: $errorMessage")
+                    throw Exception("视频生成任务创建失败: $errorMessage")
+                }
+
+                println("Task created successfully: ${createResponse.id}")
+
+                val taskId = createResponse.id
+                if (taskId == null) {
+                    throw Exception("任务创建失败: 未返回任务ID")
+                }
+
+                // 轮询任务状态
+                println("Polling task status...")
+                var taskResponse: com.volcengine.ark.runtime.model.content.generation.GetContentGenerationTaskResponse? = null
+                var pollCount = 0
+                val maxPollCount = 120 // 最多轮询2分钟（每秒一次）
+
+                while (pollCount < maxPollCount) {
+                    kotlinx.coroutines.delay(1000) // 每秒轮询一次
+                    pollCount++
+
+                    taskResponse = client.getContentGenerationTask(
+                        GetContentGenerationTaskRequest(taskId = taskId)
+                    )
+
+                    println("Poll #$pollCount - Status: ${taskResponse.status}")
+
+                    // 如果有错误信息，输出详细日志
+                    if (taskResponse.error != null) {
+                        println("Task error detected:")
+                        println("  Code: ${taskResponse.error?.code}")
+                        println("  Message: ${taskResponse.error?.message}")
+                    }
+
+                    when (taskResponse.status) {
+                        "succeeded" -> {
+                            println("Task succeeded!")
+                            println("Video URL: ${taskResponse.content?.videoUrl}")
+                            break
+                        }
+
+                        "failed" -> {
+                            val error = taskResponse.error
+                            val errorCode = error?.code ?: "Unknown"
+                            val errorMsg = error?.message ?: "未知错误"
+                            println("Task failed - Code: $errorCode, Message: $errorMsg")
+                            throw Exception("视频生成失败 [$errorCode]: $errorMsg")
+                        }
+
+                        "pending", "processing" -> {
+                            // 继续轮询
+                            continue
+                        }
+
+                        else -> {
+                            println("Unknown status: ${taskResponse.status}")
+                        }
+                    }
+                }
+
+                if (taskResponse?.status != "succeeded") {
+                    throw Exception("视频生成超时: 任务在${maxPollCount}秒内未完成")
+                }
+
+                // 获取视频URL
+                val videoUrl = taskResponse.content?.videoUrl
+                if (videoUrl != null) {
+                    println("Video generated successfully: $videoUrl")
+                    println("Full response: $taskResponse")
+
+                    // 更新最后一条消息为视频 URL
+                    val currentMessages = _uiState.value.messages.toMutableList()
+                    currentMessages[currentMessages.lastIndex] = ChatMessage(
+                        role = ChatMessageRole.ASSISTANT,
+                        content = ChatMessageContent.TextContent(videoUrl)
+                    )
+                    _uiState.value = _uiState.value.copy(
+                        messages = currentMessages,
+                        isLoading = false
+                    )
+                } else {
+                    throw Exception("视频生成失败: 未返回视频URL")
+                }
+
+                httpClient.close()
+                println("=== Video generation request completed ===")
+            } catch (e: Exception) {
+                println("=== Error occurred ===")
+                println("Error type: ${e::class.simpleName}")
+                println("Error message: ${e.message}")
 
                 val currentMessages = _uiState.value.messages.toMutableList()
                 currentMessages[currentMessages.lastIndex] = ChatMessage(
@@ -823,7 +1154,7 @@ class ChatViewModel : ViewModel() {
     }
 }
 
-expect suspend fun PlatformFile.saveToTempFile(): String
+
 
 
 
