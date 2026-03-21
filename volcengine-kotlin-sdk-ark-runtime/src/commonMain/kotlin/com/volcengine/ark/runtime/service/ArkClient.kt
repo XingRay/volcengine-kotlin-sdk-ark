@@ -237,6 +237,7 @@ class ArkClient(
                                 val chunk = json.decodeFromString<ChatCompletionChunk>(data)
                                 emit(chunk)
                             } catch (e: Exception) {
+                                e.printStackTrace()
                                 println("Failed to parse SSE chunk: ${e.message}")
                                 println("Raw data: $data")
                             }
@@ -341,6 +342,7 @@ class ArkClient(
                                 val streamEvent = json.decodeFromString<ImageGenStreamEvent>(data)
                                 emit(streamEvent)
                             } catch (e: Exception) {
+                                e.printStackTrace()
                                 println("Failed to parse SSE chunk: ${e.message}")
                                 println("Raw data: $data")
                             }

@@ -9,6 +9,8 @@ import com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole
 import com.volcengine.ark.runtime.model.content.generation.CreateContentGenerationTaskRequest
 import com.volcengine.ark.runtime.model.content.generation.GetContentGenerationTaskRequest
 import com.volcengine.ark.runtime.model.images.generation.GenerateImagesRequest
+import com.volcengine.ark.runtime.model.images.generation.SequentialImageGeneration
+import com.volcengine.ark.runtime.model.images.generation.SequentialImageGenerationOptions
 import com.volcengine.ark.runtime.service.ArkClient
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.name
@@ -787,12 +789,12 @@ class ChatViewModel : ViewModel() {
                     image = imageUrls.takeIf { it.isNotEmpty() },
                     watermark = false,
                     sequentialImageGeneration = if (currentState.sequentialImageGenerationEnabled) {
-                        com.volcengine.ark.runtime.model.images.generation.SequentialImageGeneration.AUTO
+                        SequentialImageGeneration.AUTO
                     } else {
-                        com.volcengine.ark.runtime.model.images.generation.SequentialImageGeneration.DISABLED
+                        SequentialImageGeneration.DISABLED
                     },
                     sequentialImageGenerationOptions = if (currentState.sequentialImageGenerationEnabled) {
-                        com.volcengine.ark.runtime.model.images.generation.SequentialImageGenerationOptions(
+                        SequentialImageGenerationOptions(
                             maxImages = currentState.maxImagesCount
                         )
                     } else {

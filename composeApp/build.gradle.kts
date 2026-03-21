@@ -61,7 +61,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.filekit.core)
             implementation(libs.filekit.dialogs.compose)
-            implementation(compose.materialIconsExtended)
+            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
             implementation(libs.coil.compose)
         }
         commonTest.dependencies {
